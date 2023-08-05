@@ -19,17 +19,27 @@ const Preview: FC<Props> = ({ movie, className }) => {
   return (
     <div className={`p-3 rounded-lg border bg-card text-card-foreground shadow-sm ${className}`}>
       <div className='flex flex-col lg:flex-row max-w-[100%] gap-3 overflow-hidden'>
-        <Poster title={movie.title} width={300} height={450} size={250} poster={movie.poster_path} />
+        <Poster
+          title={movie.title}
+          width={300}
+          height={450}
+          size={250}
+          poster={movie.poster_path}
+          className='max-w-[300px]'
+        />
         <div className='flex flex-col grow lg:max-w-[calc(100%-(300px+0.75rem))]'>
           <div className='flex'>
-            <div className='flex flex-row w-full items-end justify-between text-lg font-semibold'>
-              <span>
-                <Title title={movie.title} /> {movie.release_date && `(${new Date(movie.release_date).getFullYear()})`}
+            <div className='flex flex-row flex-wrap w-full text-lg font-semibold'>
+              <span className='flex w-full items-center'>
+                <span className='mr-2 w-full'>
+                  <Title title={movie.title} />
+                </span>
+                {movie.release_date && <span className='ml-auto'>{new Date(movie.release_date).getFullYear()}</span>}
               </span>
-              <div className='flex items-center gap-2'>
-                <Star />
+              <span className='flex items-center ml-auto gap-1 mt-[-8px]'>
+                <Star size={18} />
                 <span>{movie.vote_average}</span>
-              </div>
+              </span>
             </div>
           </div>
           <Separator className='my-4' />

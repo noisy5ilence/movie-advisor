@@ -9,7 +9,13 @@ import '@/styles/index.css';
 
 export const metadata: Metadata = {
   title: 'Movie advisor',
-  description: 'It will help you find a movie for evening'
+  description: 'It will help you find a movie for evening',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false
+  }
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

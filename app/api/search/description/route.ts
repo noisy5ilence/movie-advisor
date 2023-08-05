@@ -11,9 +11,9 @@ export async function GET(request: Request) {
   try {
     const completion = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: `Based on the movie description: ${params.description}, suggest 5 movies. Format of suggestions: only title separated by comma`,
-      max_tokens: 70,
-      temperature: 0.4,
+      prompt: `Based on the movie description: ${params.description}, suggest 10 movies. Format of suggestions: only title separated by comma`,
+      max_tokens: 120,
+      temperature: 0.2,
       stop: ['Based on the movie description:']
     });
 

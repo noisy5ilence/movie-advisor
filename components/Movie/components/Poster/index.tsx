@@ -8,14 +8,17 @@ interface Props {
   width: number;
   height: number;
   size: number;
+  className?: string;
 }
 
-const Poster: FC<Props> = ({ title, poster, width, height, size = 250 }) => {
+const Poster: FC<Props> = ({ title, poster, width, height, size = 250, className }) => {
   return (
-    <div className='max-w-[300px] h-[450px] w-full rounded-lg overflow-hidden shrink-0 relative m-auto lg:m-0'>
+    <div
+      className={`h-[${height}px] w-full flex flex-col rounded-lg overflow-hidden shrink-0 relative m-auto lg:m-0 ${className}`}
+    >
       {poster ? (
         <Image
-          className='rounded-lg '
+          className='rounded-lg m-auto'
           unoptimized
           height={height}
           width={width}
@@ -23,7 +26,7 @@ const Poster: FC<Props> = ({ title, poster, width, height, size = 250 }) => {
           alt={title}
         />
       ) : (
-        <div className={`w-[${width}px] h-[${height}px] flex items-center justify-center rounded-lg border`}>
+        <div className={'w-full h-full grow flex items-center justify-center rounded-lg border'}>
           <ImageOff size={size} strokeWidth={1} />
         </div>
       )}

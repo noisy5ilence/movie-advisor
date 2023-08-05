@@ -36,7 +36,7 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
 
   return (
     <>
-      <ul className='flex gap-3 flex-wrap'>
+      <ul className='flex gap-3 flex-wrap justify-between'>
         {pages.map((page) => (
           <Fragment key={page.page}>
             {page.results?.map((movie, index, array) => (
@@ -52,7 +52,7 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
           </Fragment>
         ))}
       </ul>
-      <div className='h-4 w-full'></div>
+      <div className='h-4 w-full' />
       {movie && (
         <Dialog defaultOpen={true} onOpenChange={(isOpen) => !isOpen && setMovie(null)}>
           <DialogContent className='block p-0'>
