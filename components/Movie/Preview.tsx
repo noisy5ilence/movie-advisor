@@ -15,7 +15,9 @@ interface Props {
 
 const Preview: FC<Props> = ({ movie, className }) => {
   const { data: credits } = useCredits({ movieId: movie?.id });
+
   if (!movie) return null;
+
   return (
     <div className={`p-3 rounded-lg border bg-card text-card-foreground shadow-sm ${className}`}>
       <div className='flex flex-col lg:flex-row max-w-[100%] gap-3 overflow-hidden'>
@@ -23,7 +25,7 @@ const Preview: FC<Props> = ({ movie, className }) => {
           title={movie.title}
           width={300}
           height={450}
-          size={250}
+          size={100}
           poster={movie.poster_path}
           className='max-w-[300px]'
         />

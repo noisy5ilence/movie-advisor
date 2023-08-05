@@ -28,7 +28,7 @@ const Card: FC<Props> = ({ movie, className }) => {
           <span className='text-lg font-semibold'>{movie.vote_average}</span>
         </div>
       </div>
-      <div className='flex justify-center relative mt-1 h-full'>
+      <div className='flex justify-center relative mt-1'>
         <Poster title={movie.title} width={300} height={450} size={100} poster={movie.poster_path} />
       </div>
     </div>

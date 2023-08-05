@@ -13,12 +13,10 @@ interface Props {
 
 const Poster: FC<Props> = ({ title, poster, width, height, size = 250, className }) => {
   return (
-    <div
-      className={`h-[${height}px] w-full flex flex-col rounded-lg overflow-hidden shrink-0 relative m-auto lg:m-0 ${className}`}
-    >
+    <div className={`w-full flex flex-col rounded-lg overflow-hidden shrink-0 lg:m-0 mx-auto relative ${className}`}>
       {poster ? (
         <Image
-          className='rounded-lg m-auto'
+          className='rounded-lg mx-auto'
           unoptimized
           height={height}
           width={width}
@@ -26,7 +24,7 @@ const Poster: FC<Props> = ({ title, poster, width, height, size = 250, className
           alt={title}
         />
       ) : (
-        <div className={'w-full h-full grow flex items-center justify-center rounded-lg border'}>
+        <div className={`h-[${height}px] w-full flex items-center justify-center rounded-lg border`}>
           <ImageOff size={size} strokeWidth={1} />
         </div>
       )}
