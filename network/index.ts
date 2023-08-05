@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 
 const client = axios.create({
   baseURL: `${process.env.NODE_ENV === 'development' ? 'http://' : 'https://'}${
-    process.env.NEXT_PUBLIC_VERCEL_URL
+    process.env.NEXT_PUBLIC_MOVIE_ADVISOR_BASE
   }/api`,
   withCredentials: true
 });
