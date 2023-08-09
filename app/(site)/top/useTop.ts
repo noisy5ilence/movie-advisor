@@ -5,12 +5,12 @@ import { useSearchParams } from 'next/navigation';
 
 import API from './api';
 
-const useTop = () => {
+const useTop = ({ starring }: { starring: string | null }) => {
   const page = useSearchParams().get('page');
 
   return useInfiniteQuery({
-    queryKey: ['top'],
-    queryFn: ({ pageParam: page }) => API.top({ page }),
+    queryKey: ['top', starring],
+    queryFn: ({ pageParam: page }) => API.top({ page, starring }),
     suspense: true,
     getNextPageParam({ page, total_pages }) {
       if (page === total_pages) return undefined;

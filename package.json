@@ -45,6 +45,7 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@types/js-cookie": "^3.0.3",
     "@types/node": "20.4.4",
     "@types/react": "18.2.15",

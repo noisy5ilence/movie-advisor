@@ -26,7 +26,7 @@ const Title: FC<Props> = ({ title }) => {
           isScrollableTitle && setIsScrollableTitle(isScrollableTitle);
         }}
       >
-        {title} &nbsp;
+        {title}&nbsp;
       </div>
     </Marquee>
   );

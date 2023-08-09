@@ -12,6 +12,13 @@ const API = {
       }
     });
   },
+  trailers({ movieId }: { movieId: number }): Promise<Trailer[]> {
+    return client.get('/trailer', {
+      params: {
+        movieId
+      }
+    });
+  },
   random({ filters }: { filters: Partial<Filters> }): Promise<Movie[]> {
     return client.get('/random', {
       params: {

@@ -25,11 +25,12 @@ const Header: FC = () => {
         </Button>
       </div>
       <Tabs value={path} className='flex-grow mt-2'>
-        <TabsList className='grid w-full grid-cols-3'>
+        <TabsList className='grid w-full grid-cols-4'>
           {[
             ['/', 'Random'],
             ['/top', 'Top'],
-            ['/search', 'Search']
+            ['/search', 'Search'],
+            ['/favorites', 'Favorites']
           ].map(([path, label]) => (
             <Link href={path} className='w-full' key={path}>
               <TabsTrigger className='w-full' value={path}>

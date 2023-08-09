@@ -44,7 +44,7 @@ const DialogContent = React.forwardRef<
         {...props}
       >
         {children}
-        <DialogPrimitive.Close type='button' autoFocus={false} className='absolute w-full block h-[20vh] outline-0' />
+        <div className='absolute w-full block h-[20vh] pointer-events-none' />
       </DialogPrimitive.Content>
     </DialogOverlay>
   </DialogPortal>

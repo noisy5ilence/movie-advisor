@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import useFilters from '@/app/(site)/useFilters';
+import filterUnknownMovies from '@/lib/filterUnknownMovies';
 
 import API from './api';
 
@@ -20,6 +21,9 @@ const useRandomMovie = () => {
     queryKey: ['random-movie', filters],
     queryFn: () => API.random({ filters }),
     suspense: true,
+    select(movies) {
+      return filterUnknownMovies(movies);
+    },
     structuralSharing(current, next) {
       const uniqueIds: Record<string, number> = {};
 
@@ -38,6 +42,12 @@ const useRandomMovie = () => {
     setIndex(indexByFilter || 0);
   }, [indexByFilter]);
 
+  const previous = () => {
+    if (!index) return;
+
+    setIndex((index) => index - 1);
+  };
+
   const next = () => {
     if ((index && index % UPDATE_RATE === 0) || movies!.length < UPDATE_RATE) {
       refetch();
@@ -51,7 +61,9 @@ const useRandomMovie = () => {
 
   return {
     movie: movies?.[index],
-    next
+    hasPrevious: index > 0,
+    next,
+    previous
   };
 };
 

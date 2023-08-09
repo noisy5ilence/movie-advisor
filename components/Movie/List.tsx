@@ -4,11 +4,12 @@ import { InfiniteData, useInfiniteQuery, UseInfiniteQueryResult } from '@tanstac
 import Card from '@/components/Movie/Card';
 import Preview from '@/components/Movie/Preview';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import filterUnknownMovies from '@/lib/filterUnknownMovies';
 
 interface Props {
   pages: Array<MovieDBResponse>;
-  hasNextPage: boolean;
-  fetchNextPage: () => void;
+  hasNextPage?: boolean;
+  fetchNextPage?: () => void;
 }
 
 const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
@@ -22,7 +23,7 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
       ([{ isIntersecting }]) => {
         if (!isIntersecting) return;
 
-        fetchNextPage();
+        fetchNextPage?.();
       },
       {
         threshold: 1
@@ -36,17 +37,17 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
 
   return (
     <>
-      <ul className='flex gap-3 flex-wrap justify-between'>
+      <ul className='flex gap-3 flex-wrap justify-between grow'>
         {pages.map((page) => (
           <Fragment key={page.page}>
-            {page.results?.map((movie, index, array) => (
+            {filterUnknownMovies(page.results)?.map((movie, index, array) => (
               <li
                 key={movie.id}
                 className='flex grow basis-[300px] cursor-pointer'
                 onClick={() => setMovie(movie)}
                 ref={array.length / 2 !== index ? undefined : (element) => setLoader(element!)}
               >
-                <Card movie={movie} className='grow' />
+                <Card movie={movie} className='grow flex flex-col' />
               </li>
             ))}
           </Fragment>
@@ -56,7 +57,15 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
       {movie && (
         <Dialog defaultOpen={true} onOpenChange={(isOpen) => !isOpen && setMovie(null)}>
           <DialogContent className='block p-0'>
-            <Preview movie={movie} className='border-none' />
+            <Preview
+              key={movie.id}
+              movie={movie}
+              className='border-none'
+              onPersonClick={() => {
+                setMovie(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
           </DialogContent>
         </Dialog>
       )}
