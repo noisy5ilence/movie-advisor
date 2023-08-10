@@ -17,7 +17,7 @@ const Card: FC<Props> = ({ movie, className }) => {
     <div
       className={`${className} p-4 rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg`}
     >
-      <div>
+      <div className='max-w-[300px] w-full mx-auto'>
         <div className='grid items-center grid-cols-[1fr_50px]'>
           <Title title={movie.title} />
           {movie.release_date && (

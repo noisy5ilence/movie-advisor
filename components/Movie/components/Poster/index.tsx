@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { ImageOff } from 'lucide-react';
 import Image from 'next/image';
 
@@ -9,9 +9,10 @@ interface Props {
   height: number;
   size: number;
   className?: string;
+  children?: ReactNode;
 }
 
-const Poster: FC<Props> = ({ title, poster, width, height, size = 250, className }) => {
+const Poster: FC<Props> = ({ title, poster, width, height, size = 250, className, children }) => {
   return (
     <div className={`w-full flex flex-col rounded-lg overflow-hidden shrink-0 lg:m-0 mx-auto relative ${className}`}>
       {poster ? (
@@ -28,6 +29,7 @@ const Poster: FC<Props> = ({ title, poster, width, height, size = 250, className
           <ImageOff size={size} strokeWidth={1} />
         </div>
       )}
+      {children}
     </div>
   );
 };
