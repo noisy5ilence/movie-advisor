@@ -7,6 +7,17 @@ const nextConfig = {
         hostname: '**'
       }
     ]
+  },
+  future: {
+    webpack5: true
+  },
+  webpack(config) {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      encoding: false
+    };
+
+    return config;
   }
 };
 

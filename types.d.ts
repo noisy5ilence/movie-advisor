@@ -73,3 +73,49 @@ interface IDName<T = number> {
   id: T;
   name: string;
 }
+
+interface TrackerTorrent {
+  author: string;
+  category: string;
+  id: string;
+  leeches: number;
+  seeds: number;
+  size: number;
+  state: string;
+  title: string;
+  downloads: number;
+  registered: Date;
+  host: string;
+}
+
+interface PirateTorrent {
+  id: string;
+  name: string;
+  size: string;
+  link: string;
+  category: Category;
+  seeders: string;
+  leechers: string;
+  uploadDate: Date;
+  magnetLink: string;
+  subcategory: Category;
+  uploader: string;
+  verified: boolean;
+  uploaderLink: string;
+}
+
+interface Torrent {
+  id: string;
+  title: string;
+  seeders: number;
+  size: string;
+  magnetLink: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+}
+
+declare module 'rutracker-api-with-proxy';
+declare module 'thepiratebayfixed';

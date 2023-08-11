@@ -29,6 +29,22 @@ const API = {
         'release_date.lte': filters.year?.[1]
       }
     });
+  },
+  torrents: {
+    tracker({ query }: { query: string }): Promise<Torrent[]> {
+      return client.get('/torrents/tracker', {
+        params: {
+          query
+        }
+      });
+    },
+    pirateBay({ query }: { query: string }): Promise<Torrent[]> {
+      return client.get('/torrents/pirate-bay', {
+        params: {
+          query
+        }
+      });
+    }
   }
 };
 

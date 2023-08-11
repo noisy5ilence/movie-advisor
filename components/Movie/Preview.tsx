@@ -6,7 +6,9 @@ import Credits from '@/components/Movie/components/Credits';
 import Poster from '@/components/Movie/components/Poster';
 import Rating from '@/components/Movie/components/Rating';
 import Title from '@/components/Movie/components/Title';
+import Torrents from '@/components/Movie/components/Torrents';
 import Trailer from '@/components/Movie/components/Trailer';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
 interface Props {
@@ -18,6 +20,7 @@ interface Props {
 const Preview: FC<Props> = ({ movie, className, onPersonClick }) => {
   const [isShowTrailer, setIsShowTrailer] = useState(false);
   const { data: trailer } = useTrailer({ movieId: movie?.id });
+  const [isShowTorrents, setIsShowTorrents] = useState(false);
 
   if (!movie) return null;
 
@@ -59,11 +62,15 @@ const Preview: FC<Props> = ({ movie, className, onPersonClick }) => {
             <div className='flex flex-col items-start grow justify-between'>
               <p className='leading-7'>{movie.overview}</p>
             </div>
+            <Button size='sm' className='h-8 mt-2' onClick={() => setIsShowTorrents(true)}>
+              Torrents
+            </Button>
           </div>
         </div>
         <Credits movieId={movie.id} onPersonClick={onPersonClick} />
       </div>
       {isShowTrailer && <Trailer trailerKey={trailer?.key} onClose={() => setIsShowTrailer(false)} />}
+      {isShowTorrents && <Torrents title={movie.title} onClose={() => setIsShowTorrents(false)} />}
     </>
   );
 };
