@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     return NextResponse.json(torrents);
   } catch (error) {
     return NextResponse.json([
-      { title: `${JSON.stringify(error)}, pass: ${process.env.TRACKER_PASSWORD}`, id: JSON.stringify(error) }
+      { title: `${JSON.stringify(error)}, ${process.env.TRACKER_LOGIN}, ${process.env.TRACKER_PASSWORD}` }
     ]);
   }
 }
