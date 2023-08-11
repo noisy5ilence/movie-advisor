@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
 import Tracker from 'rutracker-api-with-proxy';
 
-const tracker = new Tracker();
-const api = tracker.login({ username: process.env.TRACKER_LOGIN, password: process.env.TRACKER_PASSWORD });
-
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URL(request.url).searchParams.entries());
 
   try {
-    await api;
+    const tracker = new Tracker();
+    await tracker.login({ username: process.env.TRACKER_LOGIN, password: process.env.TRACKER_PASSWORD });
 
     const results: TrackerTorrent[] = await tracker.search({ query: params.query });
 
@@ -30,7 +28,9 @@ export async function GET(request: Request) {
 
     return NextResponse.json(torrents);
   } catch (error) {
-    return NextResponse.json([{ title: JSON.stringify(error), id: JSON.stringify(error) }]);
+    return NextResponse.json([
+      { title: `${JSON.stringify(error)}, pass: ${process.env.TRACKER_PASSWORD}`, id: JSON.stringify(error) }
+    ]);
   }
 }
 
