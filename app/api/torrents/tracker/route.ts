@@ -30,6 +30,8 @@ export async function GET(request: Request) {
 
     return NextResponse.json(torrents);
   } catch (error) {
-    return NextResponse.json([]);
+    return NextResponse.json([{ title: JSON.stringify(error), id: JSON.stringify(error) }]);
   }
 }
+
+export const revalidate = 0;

@@ -22,3 +22,5 @@ export async function GET(request: Request) {
     return NextResponse.json([]);
   }
 }
+
+export const revalidate = 0;
