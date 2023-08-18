@@ -44,9 +44,9 @@ const TableHeadSortable = ({
           by: sorting.by === ORDER.seeders ? ORDER.size : ORDER.seeders
         }))
       }
-      className='cursor-pointer select-none'
+      className='cursor-pointer select-none px-2'
     >
-      <div className='flex gap-1 items-center'>
+      <div className='flex gap-1 items-center justify-center'>
         <span>{title}</span>
         {value.by === by ? <ArrowDownIcon className='ml-2 h-4 w-4' /> : <CaretSortIcon className='ml-2 h-4 w-4' />}
       </div>
@@ -64,22 +64,25 @@ const Torrents: FC<Props> = ({ title, onClose }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title</TableHead>
+              <TableHead className='px-2'>Title</TableHead>
               <TableHeadSortable title='Size' by={ORDER.size} value={sorting} onChange={setSorting} />
               <TableHeadSortable title='Seeders' by={ORDER.seeders} value={sorting} onChange={setSorting} />
-              <TableHead>Magnet</TableHead>
+              <TableHead className='px-2 text-center'>Magnet</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {torrents?.map((torrent) => (
               <TableRow key={torrent.magnet + torrent.id}>
-                <TableCell>{torrent.title}</TableCell>
-                <TableCell>
-                  <div className='flex items-center gap-1 shrink-0'>{torrent.size}</div>
+                <TableCell className='break-all p-2'>{torrent.title}</TableCell>
+                <TableCell className='p-2'>
+                  <div className='flex items-center gap-1 shrink-0 justify-center'>{torrent.size}</div>
                 </TableCell>
-                <TableCell className='text-center'>{torrent.seeders}</TableCell>
-                <TableCell className='text-center'>
-                  <a href={torrent.magnet} className='flex items-center justify-center h-8 w-8 border rounded-lg'>
+                <TableCell className='text-center p-2'>{torrent.seeders}</TableCell>
+                <TableCell className='text-center p-1'>
+                  <a
+                    href={torrent.magnet}
+                    className='flex f-full items-center justify-center h-8 w-8 m-auto border rounded-lg'
+                  >
                     <Magnet size={20} />
                   </a>
                 </TableCell>
