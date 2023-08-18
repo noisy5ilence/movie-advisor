@@ -15,19 +15,25 @@ const Card: FC<Props> = ({ movie, className }) => {
 
   return (
     <div
-      className={`${className} p-4 rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg`}
+      className={`${className} rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg`}
     >
-      <div className='max-w-[300px] w-full mx-auto'>
-        <div className='grid items-center grid-cols-[1fr_50px]'>
-          <Title title={movie.title} />
-          {movie.release_date && (
-            <span className='flex justify-end text-lg font-semibold'>{new Date(movie.release_date).getFullYear()}</span>
-          )}
-        </div>
-        <Rating movie={movie} />
-      </div>
-      <div className='flex justify-center relative mt-1 grow'>
+      <div className='flex justify-center relative grow overflow-hidden rounded-lg'>
         <Poster title={movie.title} width={300} height={450} size={100} poster={movie.poster_path} />
+        <div className='absolute left-0 top-0 w-full h-20 bg-gradient-to-t from-transparent to-black opacity-80'>
+          <div className='max-w-[300px] w-full mx-auto pt-1 px-3 text-white'>
+            <div className='grid items-center grid-cols-[1fr_50px]'>
+              <Title hideGradient title={movie.title} />
+              {movie.release_date && (
+                <span className='flex justify-end text-lg font-semibold'>
+                  {new Date(movie.release_date).getFullYear()}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className='absolute left-0 bottom-0 w-full bg-gradient-to-t from-black to-transparent h-20 text-white p-3 pb-2 flex flex-col justify-end opacity-80'>
+          <Rating movie={movie} iconsFillColor='fill-white' />
+        </div>
       </div>
     </div>
   );

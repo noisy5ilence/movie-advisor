@@ -37,13 +37,13 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
 
   return (
     <>
-      <ul className='flex gap-3 flex-wrap justify-between grow'>
+      <ul className='flex gap-3 flex-wrap justify-center grow'>
         {pages.map((page) => (
           <Fragment key={page.page}>
             {filterUnknownMovies(page.results)?.map((movie, index, array) => (
               <li
                 key={movie.id}
-                className='flex grow basis-[300px] cursor-pointer'
+                className='flex basis-[300px] cursor-pointer'
                 onClick={() => setMovie(movie)}
                 ref={array.length / 2 !== index ? undefined : (element) => setLoader(element!)}
               >

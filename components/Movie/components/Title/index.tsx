@@ -5,18 +5,20 @@ import { useTheme } from '@/hooks/useTheme';
 
 interface Props {
   title: string;
+  hideGradient?: boolean;
+  className?: string;
 }
 
-const Title: FC<Props> = ({ title }) => {
+const Title: FC<Props> = ({ title, hideGradient, className }) => {
   const [isScrollableTitle, setIsScrollableTitle] = useState(false);
   const [theme] = useTheme();
   return (
     <Marquee
       play={isScrollableTitle}
-      gradient={isScrollableTitle}
+      gradient={!hideGradient && isScrollableTitle}
       gradientWidth={10}
       gradientColor={theme === 'light' ? [255, 255, 255] : [2, 8, 23]}
-      className='movie-title overflow-hidden h-[30px] text-lg font-semibold'
+      className={`movie-title overflow-hidden h-[30px] text-lg font-semibold ${className}`}
     >
       <div
         ref={(element) => {

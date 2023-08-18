@@ -5,9 +5,10 @@ import useFavorites, { useFavoritesMutation } from '@/app/(site)/favorites/useFa
 
 interface Props {
   movie: Movie;
+  iconsFillColor?: string;
 }
 
-const Rating: FC<Props> = ({ movie }) => {
+const Rating: FC<Props> = ({ movie, iconsFillColor = 'fill-accent-foreground' }) => {
   const { map } = useFavorites();
   const { add, remove } = useFavoritesMutation();
 
@@ -24,10 +25,10 @@ const Rating: FC<Props> = ({ movie }) => {
         className='z-[2] cursor-pointer'
         title={isFavorite ? 'Remove from favorites' : 'Add to favorite'}
       >
-        <Heart className={isFavorite ? 'fill-accent-foreground' : ''} size={18} />
+        <Heart className={isFavorite ? iconsFillColor : ''} size={20} />
       </span>
       <span className='flex items-center'>
-        <Star size={18} className='fill-accent-foreground mr-1' />
+        <Star size={18} className={`mr-1 ${iconsFillColor}`} />
         <span className='font-semibold'>{movie.vote_average?.toFixed(1)}</span>
       </span>
     </span>
