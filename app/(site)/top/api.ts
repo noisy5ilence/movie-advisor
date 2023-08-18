@@ -14,10 +14,11 @@ const API = {
       }
     });
   },
-  person({ id }: { id: string }): Promise<Person> {
-    return client.get('/person', {
+  similar({ page, movieId }: { page: string; movieId: string }): Promise<MovieDBResponse> {
+    return client.get('/discover/similar', {
       params: {
-        id
+        page,
+        movieId
       }
     });
   }

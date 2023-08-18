@@ -1,8 +1,9 @@
-import { Dispatch, FC, SetStateAction, useMemo, useState } from 'react';
-import { ArrowDownIcon, ArrowUpIcon, CaretSortIcon } from '@radix-ui/react-icons';
+import { Dispatch, FC, SetStateAction, useState } from 'react';
+import { ArrowDownIcon, CaretSortIcon } from '@radix-ui/react-icons';
 import { Loader, Magnet } from 'lucide-react';
 
 import useTorrents from '@/app/(site)/useTorrents';
+import { ORDER } from '@/app/api/torrents/parsers/pirate-bay';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
@@ -12,8 +13,7 @@ interface Props {
 }
 
 type Sorting = {
-  by: 'seeders' | 'size';
-  direction: 'asc' | 'desc';
+  by: ORDER;
 };
 
 function convertToBytes(size: string) {
@@ -29,8 +29,8 @@ function compareSizes(size1: string, size2: string) {
 const TableHeadSortable = ({
   title,
   by,
-  onChange,
-  value
+  value,
+  onChange
 }: {
   title: string;
   by: Sorting['by'];
@@ -41,39 +41,22 @@ const TableHeadSortable = ({
     <TableHead
       onClick={() =>
         onChange((sorting) => ({
-          ...sorting,
-          by,
-          direction: sorting.by !== by ? 'desc' : sorting.direction === 'asc' ? 'desc' : 'asc'
+          by: sorting.by === ORDER.seeders ? ORDER.size : ORDER.seeders
         }))
       }
       className='cursor-pointer select-none'
     >
       <div className='flex gap-1 items-center'>
         <span>{title}</span>
-        {value.by === by &&
-          (value.direction === 'desc' ? (
-            <ArrowDownIcon className='ml-2 h-4 w-4' />
-          ) : (
-            <ArrowUpIcon className='ml-2 h-4 w-4' />
-          ))}
-        {value.by !== by && <CaretSortIcon className='ml-2 h-4 w-4' />}
+        {value.by === by ? <ArrowDownIcon className='ml-2 h-4 w-4' /> : <CaretSortIcon className='ml-2 h-4 w-4' />}
       </div>
     </TableHead>
   );
 };
 
 const Torrents: FC<Props> = ({ title, onClose }) => {
-  const { torrents, isLoading, isFetched } = useTorrents({ query: title });
-  const [sorting, setSorting] = useState<Sorting>({ by: 'seeders', direction: 'desc' });
-
-  const sortedTorrents = useMemo(() => {
-    return [...torrents].sort((a, b) => {
-      if (sorting.by === 'size')
-        return sorting.direction === 'asc' ? compareSizes(a.size, b.size) : compareSizes(b.size, a.size);
-
-      return sorting.direction === 'asc' ? a.seeders - b.seeders : b.seeders - a.seeders;
-    });
-  }, [torrents, sorting]);
+  const [sorting, setSorting] = useState<Sorting>({ by: ORDER.seeders });
+  const { data: torrents, isLoading, isFetched } = useTorrents({ query: title, order: sorting.by });
 
   return (
     <Dialog defaultOpen={true} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -82,21 +65,21 @@ const Torrents: FC<Props> = ({ title, onClose }) => {
           <TableHeader>
             <TableRow>
               <TableHead>Title</TableHead>
-              <TableHeadSortable title='Size' by='size' value={sorting} onChange={setSorting} />
-              <TableHeadSortable title='Seeders' by='seeders' value={sorting} onChange={setSorting} />
+              <TableHeadSortable title='Size' by={ORDER.size} value={sorting} onChange={setSorting} />
+              <TableHeadSortable title='Seeders' by={ORDER.seeders} value={sorting} onChange={setSorting} />
               <TableHead>Magnet</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedTorrents.map((torrent) => (
-              <TableRow key={torrent.id}>
+            {torrents?.map((torrent) => (
+              <TableRow key={torrent.magnet + torrent.id}>
                 <TableCell>{torrent.title}</TableCell>
                 <TableCell>
                   <div className='flex items-center gap-1 shrink-0'>{torrent.size}</div>
                 </TableCell>
                 <TableCell className='text-center'>{torrent.seeders}</TableCell>
                 <TableCell className='text-center'>
-                  <a href={torrent.magnetLink} className='flex items-center justify-center h-8 w-8 border rounded-lg'>
+                  <a href={torrent.magnet} className='flex items-center justify-center h-8 w-8 border rounded-lg'>
                     <Magnet size={20} />
                   </a>
                 </TableCell>
@@ -111,7 +94,7 @@ const Torrents: FC<Props> = ({ title, onClose }) => {
                 </TableCell>
               </TableRow>
             )}
-            {isFetched && !torrents.length && (
+            {isFetched && !torrents?.length && (
               <TableRow>
                 <TableCell colSpan={4}>
                   <div className='h-40 w-full flex items-center justify-center text-xl text-muted-foreground'>

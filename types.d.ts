@@ -109,13 +109,10 @@ interface Torrent {
   title: string;
   seeders: number;
   size: string;
-  magnetLink: string;
+  magnet: string;
 }
 
 interface Category {
   id: string;
   name: string;
 }
-
-declare module 'rutracker-api-with-proxy';
-declare module 'thepiratebayfixed';

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { parse } from 'node-html-parser';
 
-enum ORDER {
+export enum ORDER {
   size = 5,
   seeders = 7
 }

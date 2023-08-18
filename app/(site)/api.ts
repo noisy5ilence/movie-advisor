@@ -1,6 +1,8 @@
 import { Filters } from '@/app/(site)/useFilters';
 import client from '@/network';
 
+import { ORDER } from '../api/torrents/parsers/pirate-bay';
+
 const API = {
   genres(): Promise<IDName[]> {
     return client.get('/genres');
@@ -31,17 +33,11 @@ const API = {
     });
   },
   torrents: {
-    tracker({ query }: { query: string }): Promise<Torrent[]> {
-      return client.get('/torrents/tracker', {
-        params: {
-          query
-        }
-      });
-    },
-    pirateBay({ query }: { query: string }): Promise<Torrent[]> {
+    pirateBay({ query, order = ORDER.seeders }: { query: string; order?: ORDER }): Promise<Torrent[]> {
       return client.get('/torrents/pirate-bay', {
         params: {
-          query
+          query,
+          order
         }
       });
     }

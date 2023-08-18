@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { Play } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import useTrailer from '@/app/(site)/useTrailer';
 import Credits from '@/components/Movie/components/Credits';
@@ -9,15 +10,21 @@ import Title from '@/components/Movie/components/Title';
 import Trailer from '@/components/Movie/components/Trailer';
 import { Separator } from '@/components/ui/separator';
 
+import { Button } from '../ui/button';
+
+import Torrents from './components/Torrents';
+
 interface Props {
   movie?: Movie;
   className?: string;
-  onPersonClick?: (id: string) => void;
+  onClose?: () => void;
 }
 
-const Preview: FC<Props> = ({ movie, className, onPersonClick }) => {
+const Preview: FC<Props> = ({ movie, className, onClose }) => {
   const [isShowTrailer, setIsShowTrailer] = useState(false);
+  const [isShowTorrents, setIsShowTorrents] = useState(false);
   const { data: trailer } = useTrailer({ movieId: movie?.id });
+  const router = useRouter();
 
   if (!movie) return null;
 
@@ -59,11 +66,26 @@ const Preview: FC<Props> = ({ movie, className, onPersonClick }) => {
             <div className='flex flex-col items-start grow justify-between'>
               <p className='leading-7'>{movie.overview}</p>
             </div>
+            <div className='flex w-full mt-2 gap-2'>
+              <Button className='h-8 grow' onClick={() => setIsShowTorrents(true)}>
+                Torrents
+              </Button>
+              <Button
+                className='h-8 grow'
+                onClick={() => {
+                  router.push(`/top?similar=${movie.id}&title=${encodeURIComponent(movie.title)}`);
+                  onClose?.();
+                }}
+              >
+                Similar
+              </Button>
+            </div>
           </div>
         </div>
-        <Credits movieId={movie.id} onPersonClick={onPersonClick} />
+        <Credits movieId={movie.id} onPersonClick={() => onClose?.()} />
       </div>
       {isShowTrailer && <Trailer trailerKey={trailer?.key} onClose={() => setIsShowTrailer(false)} />}
+      {isShowTorrents && <Torrents title={movie.title} onClose={() => setIsShowTorrents(false)} />}
     </>
   );
 };

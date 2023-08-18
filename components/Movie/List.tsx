@@ -61,7 +61,7 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
               key={movie.id}
               movie={movie}
               className='border-none'
-              onPersonClick={() => {
+              onClose={() => {
                 setMovie(null);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}

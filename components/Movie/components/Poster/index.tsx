@@ -14,7 +14,10 @@ interface Props {
 
 const Poster: FC<Props> = ({ title, poster, width, height, size = 250, className, children }) => {
   return (
-    <div className={`w-full flex flex-col rounded-lg overflow-hidden shrink-0 lg:m-0 mx-auto relative ${className}`}>
+    <div
+      className={`w-full flex flex-col rounded-lg overflow-hidden shrink-0 lg:m-0 mx-auto relative ${className}`}
+      style={{ minHeight: poster ? '' : height }}
+    >
       {poster ? (
         <Image
           className='rounded-lg mx-auto'

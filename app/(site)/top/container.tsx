@@ -2,24 +2,32 @@
 
 import { useSearchParams } from 'next/navigation';
 
-import usePerson from '@/app/(site)/top/usePerson';
 import List from '@/components/Movie/List';
 
 import useTop from './useTop';
 
 export default function Container() {
-  const starring = useSearchParams().get('starring');
-  const { data: person } = usePerson({ id: starring });
-  const { data: top, hasNextPage, fetchNextPage } = useTop({ starring });
+  const params = useSearchParams();
+
+  const starring = params.get('starring');
+  const similar = params.get('similar');
+  const title = params.get('title');
+
+  const { data: top, hasNextPage, fetchNextPage, isFetched, isFetching } = useTop({ starring, similar });
 
   return (
     <>
-      {Boolean(person) && (
+      {Boolean(title && (starring || similar)) && (
         <span className='inline-flex w-full h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground mb-2'>
-          Starring: {person?.name}
+          {starring ? 'Starring' : 'Similar'}: {decodeURIComponent(title || '')}
         </span>
       )}
       <List pages={top?.pages || []} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />
+      {isFetched && !top?.pages?.[0]?.results?.length && (
+        <div className='h-40 w-full flex items-center justify-center text-xl text-muted-foreground'>
+          Nothing was found
+        </div>
+      )}
     </>
   );
 }
