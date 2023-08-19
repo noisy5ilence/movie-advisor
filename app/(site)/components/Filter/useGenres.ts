@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import API from '@/app/(site)/api';
 const useGenres = () => {
   return useQuery({
-    suspense: true,
+    suspense: false,
     queryKey: ['genres'],
     queryFn: API.genres
   });

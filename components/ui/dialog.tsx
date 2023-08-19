@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useState } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 import { cn } from '@/lib/utils';
@@ -21,7 +22,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      'fixed inset-0 z-50 bg-black/70 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className
     )}
     {...props}
@@ -31,24 +32,26 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay className='overflow-auto flex justify-center'>
-      <DialogPrimitive.Content
-        ref={ref}
-        className={cn(
-          'absolute top-[20vh] max-w-[1000px] w-[calc(100%-24px)] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 rounded-lg',
-          className
-        )}
-        {...props}
-      >
-        {children}
-        <div className='absolute w-full block h-[20vh] pointer-events-none' />
-      </DialogPrimitive.Content>
-    </DialogOverlay>
-  </DialogPortal>
-));
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { onClose?: () => void }
+>(({ className, children, ...props }, ref) => {
+  return (
+    <DialogPortal>
+      <DialogOverlay className='overflow-auto flex justify-center'>
+        <DialogPrimitive.Content
+          ref={ref}
+          className={cn(
+            'absolute top-[20vh] max-w-[1000px] w-[calc(100%-24px)] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 rounded-xl',
+            className
+          )}
+          {...props}
+        >
+          {children}
+          <div className='absolute w-full block h-[20vh] pointer-events-none' />
+        </DialogPrimitive.Content>
+      </DialogOverlay>
+    </DialogPortal>
+  );
+});
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (

@@ -1,5 +1,4 @@
-import { FC } from 'react';
-import { Star } from 'lucide-react';
+import { FC, ReactNode } from 'react';
 
 import Poster from '@/components/Movie/components/Poster';
 import Rating from '@/components/Movie/components/Rating';
@@ -8,17 +7,17 @@ import Title from '@/components/Movie/components/Title';
 interface Props {
   movie?: Movie;
   className?: string;
+  children?: ReactNode;
 }
 
-const Card: FC<Props> = ({ movie, className }) => {
+const Card: FC<Props> = ({ movie, className, children }) => {
   if (!movie) return null;
 
   return (
-    <div
-      className={`${className} rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg`}
-    >
+    <div className={`${className} rounded-lg bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg`}>
       <div className='flex justify-center relative grow overflow-hidden rounded-lg'>
         <Poster title={movie.title} width={300} height={450} size={100} poster={movie.poster_path} />
+        {children}
         <div className='absolute left-0 top-0 w-full h-20 bg-gradient-to-t from-transparent to-black opacity-80'>
           <div className='max-w-[300px] w-full mx-auto pt-1 px-3 text-white'>
             <div className='grid items-center grid-cols-[1fr_50px]'>

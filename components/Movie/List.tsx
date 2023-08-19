@@ -1,5 +1,4 @@
 import { FC, Fragment, useLayoutEffect, useState } from 'react';
-import { InfiniteData, useInfiniteQuery, UseInfiniteQueryResult } from '@tanstack/react-query';
 
 import Card from '@/components/Movie/Card';
 import Preview from '@/components/Movie/Preview';
@@ -56,7 +55,7 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
       <div className='h-4 w-full' />
       {movie && (
         <Dialog defaultOpen={true} onOpenChange={(isOpen) => !isOpen && setMovie(null)}>
-          <DialogContent className='block p-0'>
+          <DialogContent className='block p-0' onClose={() => setMovie(null)}>
             <Preview
               key={movie.id}
               movie={movie}

@@ -32,7 +32,7 @@ const Header: FC = () => {
             ['/search', 'Search'],
             ['/favorites', 'Favorites']
           ].map(([path, label]) => (
-            <Link href={path} className='w-full' key={path}>
+            <Link href={path} className='w-full' key={path} prefetch>
               <TabsTrigger className='w-full' value={path}>
                 {label}
               </TabsTrigger>

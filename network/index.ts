@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 
 const client = axios.create({
-  baseURL: `${process.env.NODE_ENV === 'development' ? 'http://' : 'https://'}${
+  baseURL: `${process.env.NODE_ENV === 'development' ? 'http://' : 'http://'}${
     process.env.NEXT_PUBLIC_MOVIE_ADVISOR_BASE
   }/api`,
   withCredentials: true

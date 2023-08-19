@@ -16,16 +16,6 @@ type Sorting = {
   by: ORDER;
 };
 
-function convertToBytes(size: string) {
-  const units: Record<string, number> = { B: 1, KiB: 1024, MiB: 1024 * 1024, GiB: 1024 * 1024 * 1024 };
-  const [value, unit] = size.split(' ');
-  return parseFloat(value) * units[unit];
-}
-
-function compareSizes(size1: string, size2: string) {
-  return convertToBytes(size1) - convertToBytes(size2);
-}
-
 const TableHeadSortable = ({
   title,
   by,
@@ -60,8 +50,8 @@ const Torrents: FC<Props> = ({ title, onClose }) => {
 
   return (
     <Dialog defaultOpen={true} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className='p-0'>
-        <Table>
+      <DialogContent className='p-0' onClose={onClose}>
+        <Table className='rounded-xl overflow-hidden'>
           <TableHeader>
             <TableRow>
               <TableHead className='px-2'>Title</TableHead>

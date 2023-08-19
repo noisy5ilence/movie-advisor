@@ -12,7 +12,7 @@ import useGenres from './useGenres';
 
 export default function Filter() {
   const { filters, setFilters } = useFilters();
-  const { data: genres } = useGenres();
+  const { data: genres, isFetched } = useGenres();
 
   const [years, setYears] = useState(filters.year || ['1990', new Date().getFullYear().toString()]);
   const [scores, setScores] = useState(filters.score || ['0', '10']);
@@ -38,6 +38,8 @@ export default function Filter() {
 
       setter(value.map((value) => value.toString()));
     };
+
+  if (!isFetched) return;
 
   return (
     <>
