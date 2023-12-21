@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTheme } from '@/hooks/useTheme';
 
+import Search from './components/Search';
+
 const Header: FC = () => {
   const path = usePathname();
   const [theme, setTheme] = useTheme();
@@ -20,16 +22,18 @@ const Header: FC = () => {
         <Link href='/'>
           <Badge className='whitespace-nowrap'>Movie advisor</Badge>
         </Link>
-        <Button variant='outline' size='icon' onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-          {theme === 'light' ? <Moon /> : <Sun />}
-        </Button>
+        <div className='flex items-center gap-2'>
+          <Button variant='outline' size='icon' onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+            {theme === 'light' ? <Moon /> : <Sun />}
+          </Button>
+          <Search />
+        </div>
       </div>
       <Tabs value={path} className='flex-grow mt-2'>
-        <TabsList className='grid w-full grid-cols-4'>
+        <TabsList className='grid w-full grid-cols-3'>
           {[
             ['/', 'Random'],
             ['/top', 'Top'],
-            ['/search', 'Search'],
             ['/favorites', 'Favorites']
           ].map(([path, label]) => (
             <Link href={path} className='w-full' key={path} prefetch>

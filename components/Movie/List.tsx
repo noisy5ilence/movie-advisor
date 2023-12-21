@@ -9,9 +9,11 @@ interface Props {
   pages: Array<MovieDBResponse>;
   hasNextPage?: boolean;
   fetchNextPage?: () => void;
+  withBottomGap?: boolean;
+  onPreviewClose?: () => void;
 }
 
-const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
+const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = true, onPreviewClose }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [loader, setLoader] = useState<HTMLLIElement>();
 
@@ -52,7 +54,7 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
           </Fragment>
         ))}
       </ul>
-      <div className='h-4 w-full' />
+      {withBottomGap && <div className='h-4 w-full' />}
       {movie && (
         <Dialog defaultOpen={true} onOpenChange={(isOpen) => !isOpen && setMovie(null)}>
           <DialogContent className='block p-0' onClose={() => setMovie(null)}>
@@ -63,6 +65,7 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage }) => {
               onClose={() => {
                 setMovie(null);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                onPreviewClose?.();
               }}
             />
           </DialogContent>

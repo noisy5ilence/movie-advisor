@@ -1,10 +1,13 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { ArrowDownIcon, CaretSortIcon } from '@radix-ui/react-icons';
-import { Loader, Magnet } from 'lucide-react';
+import { useAtom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
+import { Cast, Loader, Magnet } from 'lucide-react';
 
 import useTorrents from '@/app/(site)/useTorrents';
 import { ORDER } from '@/app/api/torrents/parsers/pirate-bay';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface Props {
@@ -44,9 +47,21 @@ const TableHeadSortable = ({
   );
 };
 
+const hostAtom = atomWithStorage<string>('magnet-host', '');
+
 const Torrents: FC<Props> = ({ title, onClose }) => {
+  const [host, setHost] = useAtom(hostAtom);
+  const [isShowHostInput, setIsShowHostInput] = useState(false);
   const [sorting, setSorting] = useState<Sorting>({ by: ORDER.seeders });
+
   const { data: torrents, isLoading, isFetched } = useTorrents({ query: title, order: sorting.by });
+
+  const handleCast = (magnet: string) => (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+
+    const link = window.open(`http://${host}:65220/playuri?uri=${magnet}`, '_blank');
+    setTimeout(() => link?.close(), 100);
+  };
 
   return (
     <Dialog defaultOpen={true} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -57,7 +72,9 @@ const Torrents: FC<Props> = ({ title, onClose }) => {
               <TableHead className='px-2'>Title</TableHead>
               <TableHeadSortable title='Size' by={ORDER.size} value={sorting} onChange={setSorting} />
               <TableHeadSortable title='Seeders' by={ORDER.seeders} value={sorting} onChange={setSorting} />
-              <TableHead className='px-2 text-center'>Magnet</TableHead>
+              <TableHead className='px-2 text-center' onClick={() => setIsShowHostInput(true)}>
+                Magnet
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -69,12 +86,20 @@ const Torrents: FC<Props> = ({ title, onClose }) => {
                 </TableCell>
                 <TableCell className='text-center p-2'>{torrent.seeders}</TableCell>
                 <TableCell className='text-center p-1'>
-                  <a
-                    href={torrent.magnet}
-                    className='flex f-full items-center justify-center h-8 w-8 m-auto border rounded-lg'
-                  >
-                    <Magnet size={20} />
-                  </a>
+                  <div className='flex gap-2 m-auto justify-center'>
+                    {host ? (
+                      <a
+                        onClick={handleCast(torrent.magnet)}
+                        className='flex items-center justify-center h-8 w-8 border rounded-lg'
+                      >
+                        <Cast size={20} />
+                      </a>
+                    ) : (
+                      <a href={torrent.magnet} className='flex items-center justify-center h-8 w-8 border rounded-lg'>
+                        <Magnet size={20} />
+                      </a>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
@@ -98,6 +123,19 @@ const Torrents: FC<Props> = ({ title, onClose }) => {
             )}
           </TableBody>
         </Table>
+        {isShowHostInput && (
+          <Dialog defaultOpen={true} onOpenChange={() => setIsShowHostInput(false)}>
+            <DialogContent className='flex p-3 max-w-[300px] gap-2' onClose={() => setIsShowHostInput(false)}>
+              <Input
+                autoFocus
+                placeholder='Enter host of Elementum'
+                value={host}
+                onChange={({ target: { value } }) => setHost(value)}
+                onKeyDown={({ key }) => key === 'Enter' && setIsShowHostInput(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
       </DialogContent>
     </Dialog>
   );
