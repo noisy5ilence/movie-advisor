@@ -48,11 +48,11 @@ const DialogContent = React.forwardRef<
           animate={{ top: '20vh' }}
           exit={{ top: '100vh' }}
           drag='y'
-          dragConstraints={{ top: 0, bottom: 300 }}
+          dragConstraints={{ top: 0, bottom: 0 }}
           onDragEnd={(_, info) => info.offset.y > 100 && props.onClose?.()}
           dragListener={false}
           dragControls={controls}
-          dragElastic={0.5}
+          dragElastic={0.8}
         >
           <DialogPrimitive.Content
             ref={ref}

@@ -59,9 +59,8 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = tr
       <motion.ul
         className='flex gap-3 flex-wrap justify-center grow'
         variants={container}
-        initial='hidden'
+        initial={pages.length === 1 ? 'hidden' : false}
         animate='visible'
-        layout
       >
         {pages.map((page) => (
           <Fragment key={page.page}>
@@ -70,10 +69,9 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = tr
                 key={movie.id}
                 variants={item}
                 className='flex basis-[300px] cursor-pointer'
-                onTap={() => setMovie(movie)}
                 ref={array.length / 2 !== index ? undefined : (element) => setLoader(element!)}
               >
-                <Card movie={movie} className='grow flex flex-col' />
+                <Card movie={movie} className='grow flex flex-col' onClick={() => setMovie(movie)} />
               </motion.li>
             ))}
           </Fragment>
