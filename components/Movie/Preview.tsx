@@ -24,10 +24,10 @@ const variants = {
   enter: (direction: number) => ({
     scale: 0.8,
     opacity: 0,
-    [direction === 0 ? 'y' : 'x']: direction ? direction * -320 : -100
+    [direction === 0 ? 'y' : 'x']: direction === 0 ? -100 : direction * -320
   }),
   center: { x: 0, opacity: 1, y: 0, scale: 1 },
-  exit: (direction: number) => ({ scale: 0.8, opacity: 1, [direction === 0 ? 'y' : 'x']: (direction || -1) * 320 })
+  exit: (direction: number) => ({ scale: 0.8, opacity: 1, x: direction * 320 })
 };
 
 const Preview: FC<Props> = ({ movie, className, onClose, direction }) => {
