@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { motion } from 'framer-motion';
 import { Heart, Star } from 'lucide-react';
 
 import useFavorites, { useFavoritesMutation } from '@/app/(site)/favorites/useFavorites';
@@ -16,8 +17,8 @@ const Rating: FC<Props> = ({ movie, iconsFillColor = 'fill-accent-foreground' })
 
   return (
     <span className='select-none flex w-full items-center ml-auto gap-1 mt-[-8px] justify-between'>
-      <span
-        onClick={(event) => {
+      <motion.span
+        onTap={(event) => {
           event.stopPropagation();
 
           isFavorite ? remove(movie.id) : add(movie);
@@ -26,7 +27,7 @@ const Rating: FC<Props> = ({ movie, iconsFillColor = 'fill-accent-foreground' })
         title={isFavorite ? 'Remove from favorites' : 'Add to favorite'}
       >
         <Heart className={isFavorite ? iconsFillColor : ''} size={20} />
-      </span>
+      </motion.span>
       <span className='flex items-center'>
         <Star size={18} className={`mr-1 ${iconsFillColor}`} />
         <span className='font-semibold'>{movie.vote_average?.toFixed(1)}</span>

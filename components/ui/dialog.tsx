@@ -1,32 +1,35 @@
 'use client';
 
 import * as React from 'react';
-import { useState } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { AnimatePresence, motion, useDragControls } from 'framer-motion';
+import { GripHorizontal } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
 const Dialog = DialogPrimitive.Root;
 
-const DialogTrigger = DialogPrimitive.Trigger;
-
-const DialogPortal = ({ className, ...props }: DialogPrimitive.DialogPortalProps) => (
-  <DialogPrimitive.Portal className={cn(className)} {...props} />
-);
+const DialogPortal = ({ ...props }: DialogPrimitive.DialogPortalProps) => <DialogPrimitive.Portal {...props} />;
 DialogPortal.displayName = DialogPrimitive.Portal.displayName;
+
+const transition = { duration: 0.35, type: 'spring', bounce: 0 };
 
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Overlay
-    ref={ref}
-    className={cn(
-      'fixed inset-0 z-50 bg-black/70 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-      className
-    )}
-    {...props}
-  />
+  <DialogPrimitive.Overlay ref={ref} {...props}>
+    <motion.div
+      onScroll={props.onScroll}
+      className={cn('fixed inset-0 z-50 transform-gpu backdrop-brightness-50 select-none', className)}
+      transition={transition}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      {props?.children}
+    </motion.div>
+  </DialogPrimitive.Overlay>
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
@@ -34,54 +37,61 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { onClose?: () => void }
 >(({ className, children, ...props }, ref) => {
+  const controls = useDragControls();
   return (
     <DialogPortal>
-      <DialogOverlay className='overflow-auto flex justify-center'>
-        <DialogPrimitive.Content
-          ref={ref}
-          className={cn(
-            'absolute top-[20vh] max-w-[1000px] w-[calc(100%-24px)] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 rounded-xl',
-            className
-          )}
-          {...props}
+      <DialogOverlay className='overflow-auto flex justify-center select-none'>
+        <motion.div
+          className='absolute top-[20vh] max-w-[1000px] w-[calc(100%-24px)] select-none'
+          transition={transition}
+          initial={{ top: '100vh' }}
+          animate={{ top: '20vh' }}
+          exit={{ top: '100vh' }}
+          drag='y'
+          dragConstraints={{ top: 0, bottom: 300 }}
+          onDragEnd={(_, info) => info.offset.y > 100 && props.onClose?.()}
+          dragListener={false}
+          dragControls={controls}
+          dragElastic={0.5}
         >
-          {children}
-          <div className='absolute w-full block h-[20vh] pointer-events-none' />
-        </DialogPrimitive.Content>
+          <DialogPrimitive.Content
+            ref={ref}
+            className={cn('gap-4 border bg-background p-6 shadow-lg rounded-xl relative', className)}
+            {...props}
+          >
+            <motion.div
+              className='w-full h-10 flex p-2 justify-center cursor-grab absolute top-[-36px] z-10'
+              onPointerDown={(e) => controls.start(e)}
+            >
+              <GripHorizontal color='white' />
+            </motion.div>
+            {children}
+            <div className='absolute w-full block h-[20vh] pointer-events-none' />
+          </DialogPrimitive.Content>
+        </motion.div>
       </DialogOverlay>
     </DialogPortal>
   );
 });
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
-const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)} {...props} />
-);
-DialogHeader.displayName = 'DialogHeader';
+const Modal: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  isOpen: boolean;
+  onClose: () => void;
+}> = ({ children, onClose, isOpen, className }) => {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <Dialog defaultOpen={true} onOpenChange={onClose}>
+          <DialogContent forceMount className={className} onClose={onClose}>
+            {children}
+          </DialogContent>
+        </Dialog>
+      )}
+    </AnimatePresence>
+  );
+};
 
-const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)} {...props} />
-);
-DialogFooter.displayName = 'DialogFooter';
-
-const DialogTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
-    ref={ref}
-    className={cn('text-lg font-semibold leading-none tracking-tight', className)}
-    {...props}
-  />
-));
-DialogTitle.displayName = DialogPrimitive.Title.displayName;
-
-const DialogDescription = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description ref={ref} className={cn('text-sm text-muted-foreground', className)} {...props} />
-));
-DialogDescription.displayName = DialogPrimitive.Description.displayName;
-
-export { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger };
+export { Dialog, DialogContent, Modal };

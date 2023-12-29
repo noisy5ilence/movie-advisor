@@ -1,7 +1,7 @@
 'use client';
 
 import { FC } from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Search as SearchIcon, Sun } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTheme } from '@/hooks/useTheme';
 
-import Search from './components/Search';
+import { showSearchModal } from './components/Search';
 
 const Header: FC = () => {
   const path = usePathname();
@@ -26,7 +26,9 @@ const Header: FC = () => {
           <Button variant='outline' size='icon' onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
             {theme === 'light' ? <Moon /> : <Sun />}
           </Button>
-          <Search />
+          <Button variant='outline' size='icon' onClick={() => showSearchModal()}>
+            <SearchIcon />
+          </Button>
         </div>
       </div>
       <Tabs value={path} className='flex-grow mt-2'>
@@ -36,7 +38,7 @@ const Header: FC = () => {
             ['/top', 'Top'],
             ['/favorites', 'Favorites']
           ].map(([path, label]) => (
-            <Link href={path} className='w-full' key={path} prefetch>
+            <Link href={path} className='w-full' key={path}>
               <TabsTrigger className='w-full' value={path}>
                 {label}
               </TabsTrigger>

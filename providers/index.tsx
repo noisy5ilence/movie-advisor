@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useState } from 'react';
+import ModalContainer from 'react-modal-promise';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
 
@@ -22,6 +23,7 @@ const Providers = ({ children, theme }: { children: ReactNode; theme?: Theme }) 
     <QueryClientProvider client={queryClient}>
       <ReactQueryStreamedHydration>
         <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        <ModalContainer />
       </ReactQueryStreamedHydration>
     </QueryClientProvider>
   );

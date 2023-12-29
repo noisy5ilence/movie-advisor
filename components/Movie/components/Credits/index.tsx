@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { motion } from 'framer-motion';
 import { User2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -10,6 +11,23 @@ interface Props {
   onPersonClick?: (id: string) => void;
 }
 
+const container = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15
+    }
+  }
+};
+
+const item = {
+  hidden: { x: -20, opacity: 0 },
+  visible: {
+    x: 0,
+    opacity: 1
+  }
+};
+
 const Credits: FC<Props> = ({ movieId, onPersonClick }) => {
   const router = useRouter();
   const { data: credits } = useCredits({ movieId });
@@ -17,12 +35,13 @@ const Credits: FC<Props> = ({ movieId, onPersonClick }) => {
   return (
     Boolean(credits?.length) && (
       <div className='overflow-auto max-w-[100%] py-3 mb-[-0.75rem]'>
-        <ul className='flex gap-3'>
+        <motion.ul className='flex gap-3' variants={container} initial='hidden' animate='visible' layout>
           {credits?.map((actor) => (
-            <li
+            <motion.li
+              variants={item}
               key={`${actor.id}_${actor.cast_id}`}
               title={actor.name}
-              onClick={() => {
+              onTap={() => {
                 router.push(`/top?starring=${actor.id}&title=${encodeURIComponent(actor.name)}`);
                 onPersonClick?.(actor.id.toString());
               }}
@@ -47,9 +66,9 @@ const Credits: FC<Props> = ({ movieId, onPersonClick }) => {
                 )}
               </div>
               <p className='pt-2 overflow-ellipsis whitespace-nowrap overflow-hidden'>{actor.name}</p>
-            </li>
+            </motion.li>
           ))}
-        </ul>
+        </motion.ul>
       </div>
     )
   );

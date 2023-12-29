@@ -1,8 +1,9 @@
 import { FC, Fragment, useLayoutEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 
 import Card from '@/components/Movie/Card';
 import Preview from '@/components/Movie/Preview';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Modal } from '@/components/ui/dialog';
 import filterUnknownMovies from '@/lib/filterUnknownMovies';
 
 interface Props {
@@ -12,6 +13,23 @@ interface Props {
   withBottomGap?: boolean;
   onPreviewClose?: () => void;
 }
+
+const container = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15
+    }
+  }
+};
+
+const item = {
+  hidden: { y: -20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1
+  }
+};
 
 const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = true, onPreviewClose }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -38,39 +56,44 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = tr
 
   return (
     <>
-      <ul className='flex gap-3 flex-wrap justify-center grow'>
+      <motion.ul
+        className='flex gap-3 flex-wrap justify-center grow'
+        variants={container}
+        initial='hidden'
+        animate='visible'
+        layout
+      >
         {pages.map((page) => (
           <Fragment key={page.page}>
             {filterUnknownMovies(page.results)?.map((movie, index, array) => (
-              <li
+              <motion.li
                 key={movie.id}
+                variants={item}
                 className='flex basis-[300px] cursor-pointer'
-                onClick={() => setMovie(movie)}
+                onTap={() => setMovie(movie)}
                 ref={array.length / 2 !== index ? undefined : (element) => setLoader(element!)}
               >
                 <Card movie={movie} className='grow flex flex-col' />
-              </li>
+              </motion.li>
             ))}
           </Fragment>
         ))}
-      </ul>
+      </motion.ul>
       {withBottomGap && <div className='h-4 w-full' />}
-      {movie && (
-        <Dialog defaultOpen={true} onOpenChange={(isOpen) => !isOpen && setMovie(null)}>
-          <DialogContent className='block p-0' onClose={() => setMovie(null)}>
-            <Preview
-              key={movie.id}
-              movie={movie}
-              className='border-none'
-              onClose={() => {
-                setMovie(null);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                onPreviewClose?.();
-              }}
-            />
-          </DialogContent>
-        </Dialog>
-      )}
+      <Modal isOpen={Boolean(movie)} onClose={() => setMovie(null)} className='block p-0'>
+        {movie && (
+          <Preview
+            key={movie.id}
+            movie={movie}
+            className='border-none'
+            onClose={() => {
+              setMovie(null);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              onPreviewClose?.();
+            }}
+          />
+        )}
+      </Modal>
     </>
   );
 };
