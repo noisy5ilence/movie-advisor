@@ -1,6 +1,8 @@
+'use client';
+
 import { ChangeEvent, FC, useRef, useState } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
-import { XCircle } from 'lucide-react';
+import { Search as SearchIcon, XCircle } from 'lucide-react';
 
 import List from '@/components/Movie/List';
 import { Button } from '@/components/ui/button';
@@ -72,4 +74,10 @@ const Search: FC<InstanceProps<void>> = ({ isOpen, onResolve }) => {
 
 export const showSearchModal = create(Search);
 
-export default Search;
+export default function ToggleSearch() {
+  return (
+    <Button variant='outline' size='icon' onClick={() => showSearchModal()}>
+      <SearchIcon />
+    </Button>
+  );
+}

@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { motion } from 'framer-motion';
+import { FC, useEffect, useRef } from 'react';
+import { motion, useAnimation, useInView } from 'framer-motion';
 import { User2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -35,7 +35,7 @@ const Credits: FC<Props> = ({ movieId, onPersonClick }) => {
   return (
     Boolean(credits?.length) && (
       <div className='overflow-auto max-w-[100%] py-3 mb-[-0.75rem]'>
-        <motion.ul className='flex gap-3' variants={container} initial='hidden' animate='visible' layout>
+        <motion.ul className='flex gap-3' variants={container} initial='hidden' animate='visible' whileInView='visible'>
           {credits?.map((actor) => (
             <motion.li
               variants={item}

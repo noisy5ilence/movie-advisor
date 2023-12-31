@@ -18,19 +18,16 @@ export default function Container() {
   const { movie, next, previous, hasPrevious } = useRandomMovie();
   const [direction, setDirection] = useState(0);
 
+  const handleChangeMovie = (direction: 1 | -1) => () => {
+    direction === 1 ? next() : previous();
+    setDirection(direction);
+  };
+
   return (
     <>
       {isShowFilter && <Filter />}
       <div className='gap-2 flex bg-background mb-2 lg:static max-sm:z-10 max-sm:fixed max-sm:bottom-0 max-sm:left-0 max-sm:w-full max-sm:p-2 max-sm:px-[12px] max-sm:mb-0'>
-        <Button
-          className='p-2'
-          onClick={() => {
-            previous();
-            setDirection(-1);
-          }}
-          disabled={!hasPrevious}
-          title='Previous movie'
-        >
+        <Button className='p-2' onClick={handleChangeMovie(-1)} disabled={!hasPrevious} title='Previous movie'>
           <ArrowLeft size={24} strokeWidth={1} />
         </Button>
         <Button
@@ -41,15 +38,7 @@ export default function Container() {
         >
           <SlidersHorizontal size={24} strokeWidth={1} />
         </Button>
-        <Button
-          className='w-full p-2 grow'
-          variant='default'
-          onClick={() => {
-            next();
-            setDirection(1);
-          }}
-          title='Next movie'
-        >
+        <Button className='w-full p-2 grow' onClick={handleChangeMovie(1)} title='Next movie'>
           <ArrowRight size={24} strokeWidth={1} />
         </Button>
       </div>

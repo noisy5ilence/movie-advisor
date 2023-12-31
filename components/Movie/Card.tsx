@@ -17,7 +17,7 @@ const Card: FC<Props> = ({ movie, className, children, onClick }) => {
 
   return (
     <div
-      className={`${className} rounded-lg relative bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg overflow-hidden rounded-lg`}
+      className={`${className} relative bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg overflow-hidden rounded-lg`}
     >
       <motion.div className='flex justify-center grow' onTap={onClick}>
         <Poster title={movie.title} width={300} height={450} size={100} poster={movie.poster_path} />
