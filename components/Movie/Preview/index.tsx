@@ -53,7 +53,7 @@ const Preview: FC<Props> = ({ movie, className, direction, onClose }) => {
         </div>
         <div className='flex flex-col grow'>
           <div className='flex w-full gap-2'>
-            <Actions movie={movie} />
+            <Actions movie={movie} onClose={onClose} />
           </div>
           <Separator className='my-2' />
           <motion.p
