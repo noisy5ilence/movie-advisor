@@ -2,12 +2,12 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-import API from '@/app/(site)/api';
+import { genres } from '@/lib/api';
+
 const useGenres = () => {
   return useQuery({
-    suspense: false,
     queryKey: ['genres'],
-    queryFn: API.genres
+    queryFn: () => genres()
   });
 };
 

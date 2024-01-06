@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export interface Filters {
-  genres: Array<string>;
-  year: Array<string>;
-  score: Array<string>;
-}
+export const mapFilters = (filters: Record<string, string>) =>
+  Object.entries(filters).reduce((filters, [key, value]) => {
+    filters[key as keyof Filters] = value.split(',');
+    return filters;
+  }, {} as Partial<Filters>);
 
 const useFilters = () => {
   const router = useRouter();
@@ -22,12 +22,7 @@ const useFilters = () => {
   };
 
   return {
-    filters: useMemo(() => {
-      return Object.entries(filters).reduce((filters, [key, value]) => {
-        filters[key as keyof Filters] = value.split(',');
-        return filters;
-      }, {} as Partial<Filters>);
-    }, [filters]),
+    filters: useMemo(() => mapFilters(filters), [filters]),
     setFilters
   };
 };

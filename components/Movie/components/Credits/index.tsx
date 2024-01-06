@@ -1,5 +1,7 @@
-import { FC, useEffect, useRef } from 'react';
-import { motion, useAnimation, useInView } from 'framer-motion';
+'use client';
+
+import { FC } from 'react';
+import { motion } from 'framer-motion';
 import { User2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';

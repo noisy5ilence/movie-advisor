@@ -20,7 +20,7 @@ const Poster: FC<Props> = ({ title, poster, width, height, size = 250, className
     >
       {poster ? (
         <Image
-          className='rounded-lg mx-auto'
+          className='rounded-lg mx-auto w-auto'
           unoptimized
           height={height}
           width={width}

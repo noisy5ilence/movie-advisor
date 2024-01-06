@@ -25,7 +25,7 @@ const Card: FC<Props> = ({ movie, className, children, onClick }) => {
         <div className='absolute left-0 top-0 w-full h-20 bg-gradient-to-t from-transparent to-black opacity-80'>
           <div className='max-w-[300px] w-full mx-auto pt-1 px-3 text-white'>
             <div className='grid items-center grid-cols-[1fr_50px]'>
-              <Title hideGradient title={movie.title} />
+              <Title title={movie.title} />
               {movie.release_date && (
                 <span className='flex justify-end text-lg font-semibold'>
                   {new Date(movie.release_date).getFullYear()}

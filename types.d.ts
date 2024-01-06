@@ -126,3 +126,9 @@ interface Poster {
   vote_count: number;
   width: number;
 }
+
+interface Filters {
+  genres: Array<string>;
+  year: Array<string>;
+  score: Array<string>;
+}

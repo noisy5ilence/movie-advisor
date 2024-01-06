@@ -60,7 +60,7 @@ const Search: FC<InstanceProps<void>> = ({ isOpen, onResolve }) => {
       {Boolean(results?.pages.length) && (
         <div className='mt-3'>
           <List
-            pages={results!.pages}
+            pages={results!.pages as unknown as MovieDBResponse[]}
             fetchNextPage={fetchNextPage}
             hasNextPage={hasNextPage}
             withBottomGap={false}

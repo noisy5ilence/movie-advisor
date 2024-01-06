@@ -9,11 +9,11 @@ import useTop from './useTop';
 export default function Container() {
   const params = useSearchParams();
 
-  const starring = params.get('starring');
-  const similar = params.get('similar');
+  const starring = params.get('starring')!;
+  const similar = params.get('similar')!;
   const title = params.get('title');
 
-  const { data: top, hasNextPage, fetchNextPage, isFetched, isFetching } = useTop({ starring, similar });
+  const { data: top, hasNextPage, fetchNextPage, isFetched } = useTop({ starring, similar });
 
   return (
     <>

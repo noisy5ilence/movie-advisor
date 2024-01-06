@@ -6,10 +6,10 @@ import { atomWithStorage } from 'jotai/utils';
 import { Cast, Loader, Magnet } from 'lucide-react';
 
 import useTorrents from '@/app/(site)/useTorrents';
-import { ORDER } from '@/app/api/torrents/parsers/pirate-bay';
 import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ORDER } from '@/lib/api/parsers/pirate-bay';
 
 interface Props extends InstanceProps<void> {
   title: string;
@@ -102,7 +102,7 @@ const Torrents: FC<Props> = ({ title, isOpen, onResolve }) => {
                 <div className='flex gap-2 m-auto justify-center'>
                   {host ? (
                     <a
-                      onClick={handleCast(torrent.magnet)}
+                      onClick={handleCast(torrent.magnet!)}
                       className='flex items-center justify-center h-8 w-8 border rounded-lg'
                     >
                       <Cast size={20} />

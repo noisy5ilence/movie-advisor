@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { ArrowLeft, ArrowRight, SlidersHorizontal } from 'lucide-react';
 
 import Movie from '@/components/Movie/Preview';
 import { Button } from '@/components/ui/button';
+import { genres } from '@/lib/api';
+import getQueryClient from '@/lib/queryClient';
 
 import Filter from './components/Filter';
 import useRandomMovie from './useRandomMovie';
@@ -17,6 +19,12 @@ export default function Container() {
   const [isShowFilter, setIsShowFilter] = useAtom(isShowFilterAtom);
   const { movie, next, previous, hasPrevious } = useRandomMovie();
   const [direction, setDirection] = useState(0);
+
+  useEffect(() => {
+    const queryClient = getQueryClient();
+
+    queryClient.prefetchQuery({ queryKey: ['genres'], queryFn: () => genres() });
+  }, []);
 
   const handleChangeMovie = (direction: 1 | -1) => () => {
     direction === 1 ? next() : previous();

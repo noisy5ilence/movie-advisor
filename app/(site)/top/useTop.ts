@@ -2,19 +2,23 @@
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-import API from './api';
+import { similarMovies, topMovies } from '@/lib/api';
 
-const useTop = ({ starring, similar }: { starring: string | null; similar: string | null }) => {
+const useTop = ({ starring, similar }: { starring?: string; similar?: string }) => {
   return useInfiniteQuery({
     queryKey: ['top', starring, similar],
-    queryFn: ({ pageParam: page }) => (similar ? API.similar({ page, movieId: similar }) : API.top({ page, starring })),
-    suspense: true,
-    getNextPageParam({ page, total_pages }) {
+    queryFn: ({ pageParam }) => {
+      return similar
+        ? similarMovies({ page: pageParam as string, movieId: similar })
+        : topMovies({ page: pageParam as string, starring: starring! });
+    },
+    getNextPageParam(lastPage) {
+      const { page, total_pages } = lastPage as { page: number; total_pages: number };
       if (page === total_pages) return undefined;
 
       return `${page + 1}`;
     },
-    defaultPageParam: '1'
+    initialPageParam: '1'
   });
 };
 

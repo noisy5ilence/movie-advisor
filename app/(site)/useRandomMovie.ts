@@ -4,9 +4,8 @@ import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import useFilters from '@/app/(site)/useFilters';
+import { randomMovies } from '@/lib/api';
 import filterUnknownMovies from '@/lib/filterUnknownMovies';
-
-import API from './api';
 
 const UPDATE_RATE = 10;
 
@@ -20,16 +19,16 @@ const useRandomMovie = () => {
 
   const { data: movies, refetch } = useQuery({
     queryKey: ['random-movie', filters],
-    queryFn: () => API.random({ filters }),
-    suspense: true,
+    queryFn: () => randomMovies({ filters }),
     select(movies) {
       return filterUnknownMovies(movies);
     },
-    structuralSharing(_, next) {
+    structuralSharing(_, newData) {
       const uniqueIds: Record<string, number> = {};
-      const current = queryClient.getQueryData<Movie[]>(['random-movie', filters]);
+      const current = queryClient.getQueryData<Movie[]>(['random-movie', filters]) || [];
+      const next = Array.isArray(newData) ? newData : [newData];
 
-      return (current || []).concat(next).reduce((unique, movie) => {
+      return [...current, ...next].reduce((unique, movie) => {
         if (uniqueIds[movie.id]) return unique;
 
         uniqueIds[movie.id] = movie.id;

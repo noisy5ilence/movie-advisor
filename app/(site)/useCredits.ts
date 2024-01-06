@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 
-import API from './api';
+import { credits } from '@/lib/api';
 
 const useCredits = ({ movieId }: { movieId?: Movie['id'] }) => {
   return useQuery({
     queryKey: ['credits', movieId],
-    queryFn: () => API.credits({ movieId: movieId! }),
+    queryFn: () => credits({ movieId: movieId! }),
     enabled: Boolean(movieId)
   });
 };

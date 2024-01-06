@@ -2,7 +2,7 @@
 
 import { Dispatch, SetStateAction, useRef, useState } from 'react';
 
-import useFilters, { Filters } from '@/app/(site)/useFilters';
+import useFilters from '@/app/(site)/useFilters';
 import { Card } from '@/components/ui/card';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
