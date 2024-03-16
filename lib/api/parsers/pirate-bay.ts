@@ -31,7 +31,7 @@ export class PirateBay {
       const html = parse(data);
       const table = html?.getElementById('searchResult');
 
-      const titles = table?.querySelectorAll('.detLink').map((link) => link.innerText);
+      const titles = table?.querySelectorAll('.vertTh + td > a').map((link) => link.innerText);
       const seeders = table
         ?.querySelectorAll('td[align="right"]')
         .filter((_, index) => index % 2 === 0)
