@@ -29,7 +29,19 @@ export const randomMovies = async ({ filters }: { filters: Partial<Filters> }): 
     .then((data: unknown) => (data as MovieDBResponse).results);
 };
 
-export const topMovies = async ({ page, starring }: { page?: string; starring: string }): Promise<MovieDBResponse> => {
+export const popularMovies = async ({ page }: { page?: string }): Promise<MovieDBResponse> => {
+  return server.get('/discover/movie', {
+    params: {
+      page,
+      sort_by: 'popularity.desc',
+      'vote_count.gte': 0,
+      'vote_average.lte': 10,
+      'vote_average.gte': 0
+    }
+  });
+};
+
+export const topMovies = async ({ page, starring }: { page?: string; starring?: string }): Promise<MovieDBResponse> => {
   return server.get('/discover/movie', {
     params: {
       page,
@@ -48,7 +60,7 @@ export const similarMovies = async ({
   movieId
 }: {
   page?: string;
-  movieId: string;
+  movieId?: string;
 }): Promise<MovieDBResponse> => {
   return server.get(`/movie/${movieId}/recommendations`, {
     params: {

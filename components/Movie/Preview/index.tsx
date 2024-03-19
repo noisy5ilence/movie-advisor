@@ -21,9 +21,9 @@ interface Props {
 
 const variants = {
   enter: (direction: number) => ({
-    scale: 0.8,
-    opacity: 0,
-    [direction === 0 ? 'y' : 'x']: direction === 0 ? -100 : direction * 300
+    scale: direction === 0 ? 1 : 0.8,
+    opacity: direction === 0 ? 1 : 0,
+    x: direction === 0 ? 0 : direction * 300
   }),
   center: { x: 0, opacity: 1, y: 0, scale: 1 },
   exit: (direction: number) => ({ scale: 0.8, opacity: 1, x: direction * -300 })

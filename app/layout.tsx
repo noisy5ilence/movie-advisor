@@ -9,7 +9,7 @@ import '@/styles/index.css';
 
 export const metadata: Metadata = {
   title: 'Movie advisor',
-  description: 'It will help you find a movie for evening'
+  description: 'It is going to help you find a movie for evening'
 };
 
 export const viewport: Viewport = {

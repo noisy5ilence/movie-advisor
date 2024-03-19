@@ -1,16 +1,18 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
-import { topMovies } from '@/lib/api';
+import { similarMovies } from '@/lib/api';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-export default async function Top() {
+export default async function Similar({ searchParams }: { searchParams: Record<string, string> }) {
   const queryClient = getQueryClient();
 
+  const { movieId } = searchParams || {};
+
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ['top'],
-    queryFn: () => topMovies({}),
+    queryKey: ['similar', movieId],
+    queryFn: () => similarMovies({ movieId }),
     initialPageParam: '1'
   });
 

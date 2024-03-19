@@ -5,12 +5,14 @@ import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-export default async function Top() {
+export default async function Starring({ searchParams }: { searchParams: Record<string, string> }) {
   const queryClient = getQueryClient();
 
+  const { actorId } = searchParams || {};
+
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ['top'],
-    queryFn: () => topMovies({}),
+    queryKey: ['starring', actorId],
+    queryFn: () => topMovies({ starring: actorId }),
     initialPageParam: '1'
   });
 

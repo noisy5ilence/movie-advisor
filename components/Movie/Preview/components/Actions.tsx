@@ -22,7 +22,7 @@ export default function Actions({ onClose, movie }: Props) {
       <Button
         className='h-8 grow'
         onClick={() => {
-          router.push(`/top?similar=${movie.id}&title=${encodeURIComponent(movie.title)}`);
+          router.push(`/similar?movieId=${movie.id}&title=${encodeURIComponent(movie.title)}`);
           onClose?.();
         }}
       >

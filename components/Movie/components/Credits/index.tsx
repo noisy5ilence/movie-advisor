@@ -17,7 +17,7 @@ const container = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.15
+      staggerChildren: 0.03
     }
   }
 };
@@ -44,7 +44,7 @@ const Credits: FC<Props> = ({ movieId, onPersonClick }) => {
               key={`${actor.id}_${actor.cast_id}`}
               title={actor.name}
               onTap={() => {
-                router.push(`/top?starring=${actor.id}&title=${encodeURIComponent(actor.name)}`);
+                router.push(`/starring?actorId=${actor.id}&title=${encodeURIComponent(actor.name)}`);
                 onPersonClick?.(actor.id.toString());
               }}
               className='p-2 rounded-lg border bg-card text-card-foreground self-end max-w-[150px] w-full shrink-0 cursor-pointer transition-shadow hover:shadow-lg'

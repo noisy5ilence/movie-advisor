@@ -1,16 +1,16 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
-import { topMovies } from '@/lib/api';
+import { popularMovies } from '@/lib/api';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-export default async function Top() {
+export default async function Popular() {
   const queryClient = getQueryClient();
 
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ['top'],
-    queryFn: () => topMovies({}),
+    queryKey: ['popular'],
+    queryFn: () => popularMovies({}),
     initialPageParam: '1'
   });
 

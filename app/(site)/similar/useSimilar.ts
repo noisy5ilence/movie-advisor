@@ -2,13 +2,14 @@
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-import { topMovies } from '@/lib/api';
+import { similarMovies } from '@/lib/api';
 
-const useTop = () => {
+const useSimilar = ({ movieId }: { movieId?: string }) => {
   return useInfiniteQuery({
-    queryKey: ['top'],
+    queryKey: ['similar', movieId],
+    enabled: Boolean(movieId),
     queryFn: ({ pageParam }) => {
-      return topMovies({ page: pageParam as string });
+      return similarMovies({ page: pageParam as string, movieId });
     },
     getNextPageParam(lastPage) {
       const { page, total_pages } = lastPage as { page: number; total_pages: number };
@@ -20,4 +21,4 @@ const useTop = () => {
   });
 };
 
-export default useTop;
+export default useSimilar;

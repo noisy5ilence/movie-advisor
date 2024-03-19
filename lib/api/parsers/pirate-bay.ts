@@ -30,19 +30,20 @@ export class PirateBay {
     return this.client.post(`/search/${query}/${page}/${order}/${category}`, null).then(({ data }) => {
       const html = parse(data);
       const table = html?.getElementById('searchResult');
+      const rows = table?.querySelectorAll('tr:not(.header)');
 
-      const titles = table?.querySelectorAll('.vertTh + td > a').map((link) => link.innerText);
-      const seeders = table
-        ?.querySelectorAll('td[align="right"]')
-        .filter((_, index) => index % 2 === 0)
-        .map((cell) => cell.innerText);
-      const sizes = table?.querySelectorAll('.detDesc').reduce((sizes, description) => {
-        const list = description.innerText?.split(', ');
-        if (list.length === 1) return sizes;
-        const [, size] = list;
+      const titles = rows?.map((row) => row.querySelector('td:nth-child(2) a')?.innerText).filter(Boolean);
+      const seeders = rows?.map((row) => row.querySelector('td:nth-child(6)')?.innerText);
+
+      const sizes = rows?.reduce((sizes, row) => {
+        const size = row.querySelector('td:nth-child(5)')?.innerText;
+
+        if (!size) return sizes;
+
         sizes.push(size.replace('&nbsp;', ' ').replace('Size ', ''));
         return sizes;
       }, [] as string[]);
+
       const magnets = table?.querySelectorAll('a[href^="magnet:"]').map((link) => link.getAttribute('href'));
 
       return titles.map((title, index) => {
@@ -50,8 +51,8 @@ export class PirateBay {
           title,
           id: title,
           size: sizes[index],
-          seeders: parseInt(seeders[index]),
-          magnet: magnets[index]
+          seeders: parseInt(seeders[index]!),
+          magnet: magnets[index]!
         };
       });
     });

@@ -2,13 +2,13 @@
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-import { topMovies } from '@/lib/api';
+import { popularMovies } from '@/lib/api';
 
-const useTop = () => {
+const usePopular = () => {
   return useInfiniteQuery({
-    queryKey: ['top'],
+    queryKey: ['popular'],
     queryFn: ({ pageParam }) => {
-      return topMovies({ page: pageParam as string });
+      return popularMovies({ page: pageParam as string });
     },
     getNextPageParam(lastPage) {
       const { page, total_pages } = lastPage as { page: number; total_pages: number };
@@ -20,4 +20,4 @@ const useTop = () => {
   });
 };
 
-export default useTop;
+export default usePopular;

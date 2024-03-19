@@ -2,10 +2,10 @@
 
 import List from '@/components/Movie/List';
 
-import useTop from './useTop';
+import usePopular from './usePopular';
 
 export default function Container() {
-  const { data: top, hasNextPage, fetchNextPage, isFetched } = useTop();
+  const { data: top, hasNextPage, fetchNextPage, isFetched } = usePopular();
 
   return (
     <>
