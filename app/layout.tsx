@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 
@@ -18,16 +19,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang='en' className={theme}>
       <head>
-        <meta
-          name='viewport'
-          content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
-        ></meta>
-        <meta name='theme-color' content='black'></meta>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+        <meta name='theme-color' content='black' />
       </head>
       <body>
         <Providers theme={theme}>
           <Header />
           <main>{children}</main>
+          <ReactQueryDevtools initialIsOpen={false} />
         </Providers>
       </body>
     </html>

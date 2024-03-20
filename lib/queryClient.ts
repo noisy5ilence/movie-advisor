@@ -1,5 +1,16 @@
 import { cache } from 'react';
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient, QueryClientConfig } from '@tanstack/react-query';
 
-const getQueryClient = cache(() => new QueryClient());
+export const queryClientOptions: QueryClientConfig = {
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+      refetchOnReconnect: false,
+      refetchOnMount: false
+    }
+  }
+};
+
+const getQueryClient = cache(() => new QueryClient(queryClientOptions));
 export default getQueryClient;

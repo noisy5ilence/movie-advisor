@@ -4,20 +4,12 @@ import { ReactNode, useState } from 'react';
 import ModalContainer from 'react-modal-promise';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+import { queryClientOptions } from '@/lib/queryClient';
 import ThemeProvider from '@/providers/Theme';
 
 const Providers = ({ children, theme }: { children: ReactNode; theme?: Theme }) => {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            refetchOnWindowFocus: false,
-            staleTime: Number.POSITIVE_INFINITY
-          }
-        }
-      })
-  );
+  const [queryClient] = useState(() => new QueryClient(queryClientOptions));
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>{children}</ThemeProvider>
