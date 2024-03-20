@@ -9,7 +9,7 @@ export default function Navigation() {
   const path = usePathname();
 
   return (
-    <Tabs value={path} className='flex-grow mt-2'>
+    <Tabs value={path} className='flex-grow'>
       <TabsList className='flex w-full'>
         {[
           { path: '/', title: 'Random' },

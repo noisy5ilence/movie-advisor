@@ -16,7 +16,10 @@ export default function Actions({ onClose, movie }: Props) {
 
   return (
     <>
-      <Button className='h-8 grow' onClick={() => showTorrentsModal({ title: movie.title })}>
+      <Button
+        className='h-8 grow'
+        onClick={() => showTorrentsModal({ title: movie.title, year: new Date(movie.release_date).getFullYear() })}
+      >
         Torrents
       </Button>
       <Button

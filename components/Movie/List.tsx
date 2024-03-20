@@ -64,16 +64,20 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = tr
       >
         {pages.map((page) => (
           <Fragment key={page.page}>
-            {filterUnknownMovies(page.results)?.map((movie, index, array) => (
-              <motion.li
-                key={movie.id}
-                variants={item}
-                className='flex basis-[300px] cursor-pointer'
-                ref={array.length / 2 !== index ? undefined : (element) => setLoader(element!)}
-              >
-                <Card movie={movie} className='grow flex flex-col' onClick={() => setMovie(movie)} />
-              </motion.li>
-            ))}
+            {filterUnknownMovies(page.results)?.map((movie, index, array) => {
+              const isAnchor = Math.round(array.length / 2) === index;
+
+              return (
+                <motion.li
+                  key={movie.id}
+                  variants={item}
+                  className='flex basis-[300px] cursor-pointer'
+                  ref={isAnchor ? (element) => setLoader(element!) : undefined}
+                >
+                  <Card movie={movie} className='grow flex flex-col' onClick={() => setMovie(movie)} />
+                </motion.li>
+              );
+            })}
           </Fragment>
         ))}
       </motion.ul>

@@ -9,10 +9,12 @@ import useTorrents from '@/app/(site)/useTorrents';
 import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Toggle } from '@/components/ui/toggle';
 import { ORDER } from '@/lib/api/parsers/pirate-bay';
 
 interface Props extends InstanceProps<void> {
   title: string;
+  year: number;
 }
 
 type Sorting = {
@@ -64,11 +66,16 @@ const showHostManagerModal = create(({ onResolve, isOpen }) => {
   );
 });
 
-const Torrents: FC<Props> = ({ title, isOpen, onResolve }) => {
+const Torrents: FC<Props> = ({ title, year, isOpen, onResolve }) => {
   const host = useAtomValue(hostAtom);
   const [sorting, setSorting] = useState<Sorting>({ by: ORDER.seeders });
+  const [withYear, setWithYear] = useState(true);
 
-  const { data: torrents, isLoading, isFetched } = useTorrents({ query: title, order: sorting.by });
+  const {
+    data: torrents,
+    isLoading,
+    isFetched
+  } = useTorrents({ query: withYear ? `${title} ${year || ''}` : title, order: sorting.by });
 
   const handleCast = (magnet: string) => (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
@@ -82,7 +89,17 @@ const Torrents: FC<Props> = ({ title, isOpen, onResolve }) => {
       <Table className='rounded-xl overflow-hidden'>
         <TableHeader>
           <TableRow>
-            <TableHead className='px-2'>Title</TableHead>
+            <TableHead className='px-2'>
+              Title: {title}{' '}
+              <Toggle
+                size='sm'
+                className='p-2 h-7'
+                pressed={withYear}
+                onClick={() => setWithYear((withYear) => !withYear)}
+              >
+                {year}
+              </Toggle>
+            </TableHead>
             <TableHeadSortable title='Size' by={ORDER.size} value={sorting} onChange={setSorting} />
             <TableHeadSortable title='Seeders' by={ORDER.seeders} value={sorting} onChange={setSorting} />
             <TableHead className='px-2 text-center cursor-pointer select-none' onClick={() => showHostManagerModal()}>

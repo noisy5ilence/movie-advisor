@@ -33,7 +33,7 @@ const Preview: FC<Props> = ({ movie, className, direction, onClose }) => {
   if (!movie) return null;
 
   return (
-    <div className={cn('rounded-xl bg-card text-card-foreground', { 'p-2': Boolean(onClose) }, className)}>
+    <div className={cn('rounded-xl text-card-foreground', { 'p-2': Boolean(onClose) }, className)}>
       <div className='flex flex-col lg:flex-row max-w-[100%] gap-3'>
         <div className='max-w-[300px] min-w-[300px] h-[450px] mx-auto w-[100%] relative overflow-hidden rounded-lg'>
           <AnimatePresence custom={direction}>

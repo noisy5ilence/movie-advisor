@@ -36,7 +36,9 @@ export const popularMovies = async ({ page }: { page?: string }): Promise<MovieD
       sort_by: 'popularity.desc',
       'vote_count.gte': 0,
       'vote_average.lte': 10,
-      'vote_average.gte': 0
+      'vote_average.gte': 0,
+      'with_runtime.gte': 0,
+      'with_runtime.lte': 400
     }
   });
 };
