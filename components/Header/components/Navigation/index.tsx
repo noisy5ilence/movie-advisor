@@ -17,7 +17,7 @@ export default function Navigation() {
           { path: '/top', title: 'Top rated' },
           { path: '/favorites', title: 'Favorites' }
         ].map(({ path, title }) => (
-          <Link href={path} className='w-full' key={path}>
+          <Link href={path} className='w-full' key={path} shallow>
             <TabsTrigger className='w-full' value={path}>
               {title}
             </TabsTrigger>
