@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -31,11 +32,12 @@ interface Props {
 }
 
 export function NavigationSmall({ className }: Props) {
+  const [isOpen, setIsOpen] = useState(false);
   const currentPath = usePathname();
 
   return (
     <div className={className}>
-      <DropdownMenu>
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant='ghost' size='icon'>
             <Menu size={19} />
@@ -45,7 +47,9 @@ export function NavigationSmall({ className }: Props) {
           <DropdownMenuRadioGroup value={currentPath}>
             {paths.map(({ path, title }) => (
               <Link href={path} legacyBehavior shallow key={path}>
-                <DropdownMenuRadioItem value={path}>{title}</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value={path} onClick={() => setIsOpen(false)}>
+                  {title}
+                </DropdownMenuRadioItem>
               </Link>
             ))}
           </DropdownMenuRadioGroup>

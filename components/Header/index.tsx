@@ -18,6 +18,7 @@ const Header: FC = () => (
         <div className='flex items-center gap-2'>
           <ToggleTheme />
           <ToggleSearch />
+          <div id='actions' className='empty:hidden' />
           <NavigationSmall className='flex sm:hidden' />
         </div>
       </div>

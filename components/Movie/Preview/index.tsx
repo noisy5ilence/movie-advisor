@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import Credits from '@/components/Movie/components/Credits';
@@ -17,6 +17,7 @@ interface Props {
   className?: string;
   direction?: number;
   onClose?: () => void;
+  children?: ReactNode;
 }
 
 const variants = {
@@ -29,7 +30,7 @@ const variants = {
   exit: (direction: number) => ({ scale: 0.8, opacity: 1, x: direction * -300 })
 };
 
-const Preview: FC<Props> = ({ movie, className, direction, onClose }) => {
+const Preview: FC<Props> = ({ movie, className, direction, onClose, children }) => {
   if (!movie) return null;
 
   return (
@@ -54,6 +55,7 @@ const Preview: FC<Props> = ({ movie, className, direction, onClose }) => {
           </AnimatePresence>
         </div>
         <div className='flex flex-col grow'>
+          {children && <div className='flex w-full mb-2 gap-2'>{children}</div>}
           <div className='flex w-full gap-2'>
             <Actions movie={movie} onClose={onClose} />
           </div>

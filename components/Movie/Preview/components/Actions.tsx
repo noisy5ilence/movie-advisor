@@ -17,13 +17,13 @@ export default function Actions({ onClose, movie }: Props) {
   return (
     <>
       <Button
-        className='h-8 grow'
+        className='h-8 flex-grow w-[50%]'
         onClick={() => showTorrentsModal({ title: movie.title, year: new Date(movie.release_date).getFullYear() })}
       >
         Torrents
       </Button>
       <Button
-        className='h-8 grow'
+        className='h-8 flex-grow w-[50%]'
         onClick={() => {
           router.push(`/similar?movieId=${movie.id}&title=${encodeURIComponent(movie.title)}`);
           onClose?.();
