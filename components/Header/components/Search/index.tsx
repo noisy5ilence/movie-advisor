@@ -76,8 +76,8 @@ export const showSearchModal = create(Search);
 
 export default function ToggleSearch() {
   return (
-    <Button variant='outline' size='icon' onClick={() => showSearchModal()}>
-      <SearchIcon />
+    <Button variant='ghost' size='icon' onClick={() => showSearchModal()}>
+      <SearchIcon size={19} />
     </Button>
   );
 }

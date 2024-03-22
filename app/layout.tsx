@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 
 import Header from '@/components/Header';
@@ -13,19 +13,26 @@ export const metadata: Metadata = {
   description: 'It is going to help you find a movie for evening'
 };
 
+export const viewport: Viewport = {
+  themeColor: 'black',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false
+};
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   const theme = cookies().get('theme')?.value as Theme;
 
   return (
     <html lang='en' className={theme}>
       <head>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
         <meta name='theme-color' content='black' />
       </head>
       <body>
         <Providers theme={theme}>
           <Header />
-          <main>{children}</main>
+          <main className='px-2 max-w-[1260px] mx-auto'>{children}</main>
           <ReactQueryDevtools initialIsOpen={false} />
         </Providers>
       </body>

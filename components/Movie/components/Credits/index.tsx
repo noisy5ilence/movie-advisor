@@ -36,7 +36,7 @@ const Credits: FC<Props> = ({ movieId, onPersonClick }) => {
 
   return (
     Boolean(credits?.length) && (
-      <div className='overflow-auto max-w-[100%] py-3 mb-[-0.75rem]'>
+      <div className='overflow-auto no-scrollbar max-w-[100%] py-2 pb-5 mb-[-0.75rem]'>
         <motion.ul className='flex gap-3' variants={container} initial='hidden' animate='visible' whileInView='visible'>
           {credits?.map((actor) => (
             <motion.li

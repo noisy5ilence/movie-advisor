@@ -67,7 +67,7 @@ const showHostManagerModal = create(({ onResolve, isOpen }) => {
 });
 
 const Torrents: FC<Props> = ({ title, year, isOpen, onResolve }) => {
-  const host = useAtomValue(hostAtom);
+  const hosts = useAtomValue(hostAtom);
   const [sorting, setSorting] = useState<Sorting>({ by: ORDER.seeders });
   const [withYear, setWithYear] = useState(true);
 
@@ -80,8 +80,10 @@ const Torrents: FC<Props> = ({ title, year, isOpen, onResolve }) => {
   const handleCast = (magnet: string) => (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
 
-    const link = window.open(`http://${host}:65220/playuri?uri=${magnet}`, '_blank');
-    setTimeout(() => link?.close(), 100);
+    hosts.split(',').forEach((host) => {
+      const link = window.open(`http://${host}:65220/playuri?uri=${magnet}`, '_blank');
+      setTimeout(() => link?.close(), 100);
+    });
   };
 
   return (
@@ -89,8 +91,8 @@ const Torrents: FC<Props> = ({ title, year, isOpen, onResolve }) => {
       <Table className='rounded-xl overflow-hidden'>
         <TableHeader>
           <TableRow>
-            <TableHead className='px-2'>
-              Title: {title}{' '}
+            <TableHead className='px-2' colSpan={4}>
+              {title}{' '}
               <Toggle
                 size='sm'
                 className='p-2 h-7'
@@ -100,6 +102,9 @@ const Torrents: FC<Props> = ({ title, year, isOpen, onResolve }) => {
                 {year}
               </Toggle>
             </TableHead>
+          </TableRow>
+          <TableRow>
+            <TableHead className='px-2'>Title</TableHead>
             <TableHeadSortable title='Size' by={ORDER.size} value={sorting} onChange={setSorting} />
             <TableHeadSortable title='Seeders' by={ORDER.seeders} value={sorting} onChange={setSorting} />
             <TableHead className='px-2 text-center cursor-pointer select-none' onClick={() => showHostManagerModal()}>
@@ -117,7 +122,7 @@ const Torrents: FC<Props> = ({ title, year, isOpen, onResolve }) => {
               <TableCell className='text-center p-2'>{torrent.seeders}</TableCell>
               <TableCell className='text-center p-1'>
                 <div className='flex gap-2 m-auto justify-center'>
-                  {host ? (
+                  {hosts ? (
                     <a
                       onClick={handleCast(torrent.magnet!)}
                       className='flex items-center justify-center h-8 w-8 border rounded-lg'

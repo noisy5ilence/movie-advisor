@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -88,10 +98,4 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-
-main {
-  max-width: 1260px;
-  margin: 0 auto;
-  padding: 0 12px;
 }
