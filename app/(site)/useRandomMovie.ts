@@ -6,7 +6,6 @@ import { Swiper } from 'swiper/types';
 
 import useFilters from '@/app/(site)/useFilters';
 import { randomMovies } from '@/lib/api';
-import filterUnknownMovies from '@/lib/filterUnknownMovies';
 
 const UPDATE_RATE = 10;
 
@@ -22,9 +21,6 @@ const useRandomMovie = () => {
   const { data: movies, refetch } = useQuery({
     queryKey: ['random-movie', filters],
     queryFn: () => randomMovies({ filters }),
-    select(movies) {
-      return filterUnknownMovies(movies);
-    },
     structuralSharing(_, newData) {
       const uniqueIds: Record<string, number> = {};
       const current = queryClient.getQueryData<Movie[]>(['random-movie', filters]) || [];

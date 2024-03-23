@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { ArrowLeft, ArrowRight, SlidersHorizontal } from 'lucide-react';
-import { EffectCreative } from 'swiper/modules';
+import { EffectCoverflow, Virtual } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import Card from '@/components/Movie/Card';
@@ -21,17 +21,8 @@ import useRandomMovie from './useRandomMovie';
 const isShowFilterAtom = atomWithStorage('is-show-filters', false);
 
 const creativeEffectProps = {
-  creativeEffect: {
-    prev: {
-      shadow: true,
-      translate: ['-120%', 0, -500]
-    },
-    next: {
-      shadow: true,
-      translate: ['120%', 0, -500]
-    }
-  },
-  modules: [EffectCreative]
+  effect: 'coverflow',
+  modules: [EffectCoverflow, Virtual]
 };
 
 export default function Container() {
@@ -66,18 +57,18 @@ export default function Container() {
         renderCard={() => (
           <Swiper
             onSwiper={(instance) => (ref.current = instance)}
-            effect='creative'
-            lazyPreloadPrevNext={5}
+            lazyPreloadPrevNext={3}
             resistance={false}
-            longSwipesRatio={0.25}
-            speed={600}
+            longSwipesRatio={0.3}
+            speed={400}
+            virtual
             initialSlide={index}
             onActiveIndexChange={onIndexChange}
             className='w-[300px] shrink-0'
             {...creativeEffectProps}
           >
-            {movies?.map((movie) => (
-              <SwiperSlide key={movie.id}>
+            {movies?.map((movie, index) => (
+              <SwiperSlide key={movie.id} virtualIndex={index}>
                 <Card movie={movie} />
               </SwiperSlide>
             ))}
@@ -93,7 +84,7 @@ export default function Container() {
           </Button>
         </div>
       </Movie>
-      <div className='w-full h-2 max-sm:h-20' />
+      <div className='w-full h-2 max-sm:h-12' />
     </>
   );
 }

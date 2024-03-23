@@ -2,6 +2,8 @@
 
 import server from '@/network/server';
 
+import filterUnknownMovies from '../filterUnknownMovies';
+
 import pirateBay from './parsers/pirate-bay';
 
 export const search = async ({ query, page }: { query: string; page: number }): Promise<MovieDBResponse> => {
@@ -26,7 +28,7 @@ export const randomMovies = async ({ filters }: { filters: Partial<Filters> }): 
         'release_date.lte': filters.year?.[1]
       }
     })
-    .then((data: unknown) => (data as MovieDBResponse).results);
+    .then((data: unknown) => filterUnknownMovies((data as MovieDBResponse).results));
 };
 
 export const popularMovies = async ({ page }: { page?: string } = {}): Promise<MovieDBResponse> => {

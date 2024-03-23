@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import { ImageOff } from 'lucide-react';
-import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
 
@@ -13,9 +12,8 @@ interface Props {
 
 const Poster: FC<Props> = ({ title, poster, size = 250, className }) => {
   return poster ? (
-    <Image
+    <img
       className={cn('rounded-lg mx-auto w-auto h-full object-fill', className)}
-      unoptimized
       height={750}
       width={500}
       src={`https://image.tmdb.org/t/p/w500/${poster}`}

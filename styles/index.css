@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @import url('~swiper/css');
-@import url('~swiper/css/effect-creative');
+@import url('~swiper/css/virtual');
 @import url('~swiper/css/effect-coverflow');
 
 @layer utilities {

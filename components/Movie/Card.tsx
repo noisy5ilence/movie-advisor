@@ -24,22 +24,23 @@ const Card: FC<Props> = ({ movie, onClick, fit }) => {
   const handleToggleFavorite = () => (isFavorite ? remove(movie.id) : add(movie));
 
   return (
-    <motion.div
+    <div
       onDoubleClick={handleToggleFavorite}
-      onTap={onClick}
       className={cn(
         'w-[300px] h-[450px] min-w-[300px] shrink-0 mx-auto',
         fit ? 'w-full h-auto xs:w-[300px] xs:h-[450px]' : undefined
       )}
     >
-      <div className='flex flex-col w-full h-full mx-auto relative bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg overflow-hidden rounded-lg'>
-        <Poster
-          title={movie.title}
-          size={100}
-          poster={movie.poster_path}
-          className={fit ? 'h-auto xs:h-full' : undefined}
-        />
-        <div className='absolute left-0 top-0 w-full h-20 bg-gradient-to-t from-transparent to-black opacity-75'>
+      <motion.div className='flex flex-col w-full h-full mx-auto relative bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg overflow-hidden rounded-lg'>
+        <motion.div onTap={onClick} className='flex'>
+          <Poster
+            title={movie.title}
+            size={100}
+            poster={movie.poster_path}
+            className={fit ? 'h-auto xs:h-full' : undefined}
+          />
+        </motion.div>
+        <div className='absolute left-0 top-0 w-full h-20 bg-gradient-to-t from-transparent to-black opacity-75 rounded-t-lg'>
           <div className='h-full w-full mx-auto pt-1 px-3 text-white'>
             <div className='grid items-center grid-cols-[1fr_50px]'>
               <Title key={movie.title} title={movie.title} />
@@ -59,8 +60,8 @@ const Card: FC<Props> = ({ movie, onClick, fit }) => {
             iconsFillColor='fill-white'
           />
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 

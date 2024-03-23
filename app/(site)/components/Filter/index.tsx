@@ -59,7 +59,6 @@ export default function Filter() {
             ))}
           </ul>
         </Card>
-        <ScrollBar orientation='horizontal' className='opacity-0' />
       </ScrollArea>
       <div className='flex w-full my-4 gap-6 flex-wrap'>
         <div className='grow flex items-center basis-[250px]'>

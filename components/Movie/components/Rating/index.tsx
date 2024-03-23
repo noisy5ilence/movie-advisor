@@ -14,6 +14,7 @@ const Rating: FC<Props> = ({ isFavorite, rating, toggleFavorite, iconsFillColor 
     <span className='select-none flex w-full items-center ml-auto gap-1 mt-[-8px] justify-between'>
       <motion.span
         onTap={(event) => {
+          event.preventDefault();
           event.stopPropagation();
 
           toggleFavorite();
