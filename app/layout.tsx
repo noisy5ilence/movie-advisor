@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 
@@ -33,7 +32,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Providers theme={theme}>
           <Header />
           <main className='px-2 max-w-[1260px] mx-auto'>{children}</main>
-          <ReactQueryDevtools initialIsOpen={false} />
         </Providers>
       </body>
     </html>

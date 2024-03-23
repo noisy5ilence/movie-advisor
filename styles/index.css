@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('~swiper/css');
+@import url('~swiper/css/effect-creative');
+@import url('~swiper/css/effect-coverflow');
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;

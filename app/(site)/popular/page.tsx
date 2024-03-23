@@ -13,7 +13,7 @@ queryClient.prefetchInfiniteQuery({
   initialPageParam: '1'
 });
 
-export default async function Popular() {
+export default function Popular() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Container />

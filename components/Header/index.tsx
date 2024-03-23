@@ -8,7 +8,7 @@ import ToggleSearch from './components/Search';
 import ToggleTheme from './components/ThemeToggle';
 
 const Header: FC = () => (
-  <header className='flex justify-center bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky py-2 top-0 z-10'>
+  <header className='flex justify-center bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky py-2 top-0 z-20'>
     <div className='max-w-[1260px] w-full px-2'>
       <div className='flex items-center justify-between gap-2 md:flex-nowrap'>
         <Link href='/' shallow legacyBehavior>

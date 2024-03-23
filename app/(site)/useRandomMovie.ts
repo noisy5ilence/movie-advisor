@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Swiper } from 'swiper/types';
 
 import useFilters from '@/app/(site)/useFilters';
 import { randomMovies } from '@/lib/api';
@@ -15,7 +16,8 @@ const useRandomMovie = () => {
   const queryClient = useQueryClient();
   const { filters } = useFilters();
   const indexByFilter = previousIndexes[JSON.stringify(filters)];
-  const [index, setIndex] = useState(indexByFilter || 0);
+  const [index, setIndex] = useState(indexByFilter);
+  const ref = useRef<Swiper>();
 
   const { data: movies, refetch } = useQuery({
     queryKey: ['random-movie', filters],
@@ -43,28 +45,25 @@ const useRandomMovie = () => {
     setIndex(indexByFilter || 0);
   }, [indexByFilter]);
 
-  const previous = () => {
-    if (!index) return;
+  const previous = () => ref.current?.slidePrev();
 
-    setIndex((index) => index - 1);
-  };
-
-  const next = () => {
-    if ((index && index % UPDATE_RATE === 0) || movies!.length < UPDATE_RATE) {
-      refetch();
-    }
-
-    const nextIndex = index + 1;
-
-    previousIndexes[JSON.stringify(filters)] = nextIndex;
-    setIndex(nextIndex);
-  };
+  const next = () => ref.current?.slideNext();
 
   return {
+    movies,
     movie: movies?.[index],
     hasPrevious: index > 0,
+    onIndexChange: ({ activeIndex }: Swiper) => {
+      if ((activeIndex && activeIndex % UPDATE_RATE === 0) || movies!.length < UPDATE_RATE) {
+        refetch();
+      }
+      previousIndexes[JSON.stringify(filters)] = activeIndex;
+      setIndex(activeIndex);
+    },
     next,
-    previous
+    previous,
+    index,
+    ref
   };
 };
 

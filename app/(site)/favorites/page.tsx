@@ -1,5 +1,5 @@
 import Container from './container';
 
-export default async function Favorites() {
+export default function Favorites() {
   return <Container />;
 }

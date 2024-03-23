@@ -44,6 +44,7 @@
     "react-dom": "^18.2.0",
     "react-fast-marquee": "^1.6.0",
     "react-modal-promise": "^1.0.2",
+    "swiper": "^11.0.7",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.6",
     "typescript": "5.1.6",
@@ -59,6 +60,7 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "postcss": "^8.4.27",
     "prettier": "^3.0.0",
-    "tailwindcss": "^3.3.3"
+    "tailwindcss": "^3.3.3",
+    "tailwindcss-touch": "^1.0.1"
   }
 }

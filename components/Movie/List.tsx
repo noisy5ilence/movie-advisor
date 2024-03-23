@@ -71,10 +71,10 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = tr
                 <motion.li
                   key={movie.id}
                   variants={item}
-                  className='flex basis-[300px] cursor-pointer'
+                  className='flex cursor-pointer'
                   ref={isAnchor ? (element) => setLoader(element!) : undefined}
                 >
-                  <Card movie={movie} className='grow flex flex-col' onClick={() => setMovie(movie)} />
+                  <Card fit movie={movie} onClick={() => setMovie(movie)} />
                 </motion.li>
               );
             })}
@@ -85,6 +85,7 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = tr
       <Modal isOpen={Boolean(movie)} onClose={() => setMovie(null)} className='block p-0'>
         {movie && (
           <Preview
+            fit
             key={movie.id}
             movie={movie}
             className='border-none'
