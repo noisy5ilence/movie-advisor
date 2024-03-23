@@ -28,7 +28,7 @@ const Card: FC<Props> = ({ movie, onClick, fit }) => {
       onDoubleClick={handleToggleFavorite}
       onTap={onClick}
       className={cn(
-        'w-[300px] h-[450px] shrink-0 mx-auto',
+        'w-[300px] h-[450px] min-w-[300px] shrink-0 mx-auto',
         fit ? 'w-full h-auto xs:w-[300px] xs:h-[450px]' : undefined
       )}
     >

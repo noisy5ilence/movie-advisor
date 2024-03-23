@@ -82,7 +82,7 @@ const Torrents: FC<Props> = ({ title, year, isOpen, onResolve }) => {
 
     hosts.split(',').forEach((host) => {
       const link = window.open(`http://${host}:65220/playuri?uri=${magnet}`, '_blank');
-      setTimeout(() => link?.close(), 100);
+      setTimeout(() => link?.close(), 1000);
     });
   };
 
