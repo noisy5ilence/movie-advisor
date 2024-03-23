@@ -32,7 +32,7 @@ const Card: FC<Props> = ({ movie, onClick, fit }) => {
       )}
     >
       <motion.div className='flex flex-col w-full h-full mx-auto relative bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg overflow-hidden rounded-lg'>
-        <motion.div onTap={onClick} className='flex'>
+        <motion.div onTap={onClick} className='flex h-full'>
           <Poster
             title={movie.title}
             size={100}
