@@ -27,7 +27,11 @@ const Preview: FC<Props> = ({ movie, className, onClose, children, card, fit }) 
   return (
     <div className={cn('rounded-xl text-card-foreground', { 'p-2': Boolean(onClose) }, className)}>
       <div className='flex flex-col lg:flex-row max-w-[100%] gap-2'>
-        {card || <Card fit={fit} movie={movie} />}
+        {card || (
+          <div className='xs:w-[300px] w-full shrink-0 mx-auto'>
+            <Card fit={fit} movie={movie} />
+          </div>
+        )}
         <div className='flex flex-col grow'>
           {children && <div className='flex hover-none:hidden w-full max-sm:mb-0 mb-2 gap-2'>{children}</div>}
           <div className='flex w-full gap-2'>
