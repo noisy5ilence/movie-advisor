@@ -5,15 +5,15 @@ import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-const queryClient = getQueryClient();
+export default async function Popular() {
+  const queryClient = getQueryClient();
 
-queryClient.prefetchInfiniteQuery({
-  queryKey: ['popular'],
-  queryFn: () => popularMovies(),
-  initialPageParam: '1'
-});
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['popular'],
+    queryFn: () => popularMovies(),
+    initialPageParam: '1'
+  });
 
-export default function Popular() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Container />
