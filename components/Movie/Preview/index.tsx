@@ -29,7 +29,7 @@ const Preview: FC<Props> = ({ movie, className, onClose, children, card, fit }) 
       <div className='flex flex-col lg:flex-row max-w-[100%] gap-2'>
         {card || <Card fit={fit} movie={movie} />}
         <div className='flex flex-col grow'>
-          {children && <div className='flex hover-none:hidden w-full mb-2 gap-2'>{children}</div>}
+          {children && <div className='flex hover-none:hidden w-full max-sm:mb-0 mb-2 gap-2'>{children}</div>}
           <div className='flex w-full gap-2'>
             <Actions movie={movie} onClose={onClose} />
           </div>

@@ -69,7 +69,7 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = tr
                 <motion.li
                   key={movie.id}
                   variants={item}
-                  className='flex cursor-pointer'
+                  className='flex xs:w-auto w-full cursor-pointer'
                   ref={isAnchor ? (element) => setLoader(element!) : undefined}
                 >
                   <Card fit movie={movie} onClick={() => showPreviewModal({ movie, onClose: onPreviewClose })} />

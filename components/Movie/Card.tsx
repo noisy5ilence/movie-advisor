@@ -27,18 +27,13 @@ const Card: FC<Props> = ({ movie, onClick, fit }) => {
     <div
       onDoubleClick={handleToggleFavorite}
       className={cn(
-        'w-[300px] h-[450px] min-w-[300px] min-h-[450px] shrink-0 mx-auto',
-        fit ? 'w-full h-auto xs:w-[300px] xs:h-[450px]' : undefined
+        'w-[300px] h-[450px] shrink-0 mx-auto relative',
+        fit ? 'xs:w-[300px] xs:h-[450px] w-full h-full aspect-w-2 aspect-h-3' : undefined
       )}
     >
-      <motion.div className='flex flex-col w-full h-full mx-auto relative bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg overflow-hidden rounded-lg'>
-        <motion.div onTap={onClick} className='flex h-full'>
-          <Poster
-            title={movie.title}
-            size={100}
-            poster={movie.poster_path}
-            className={fit ? 'h-auto min-h-[450px] xs:h-full' : undefined}
-          />
+      <motion.div className='absolute top-0 left-0 flex flex-col w-full h-full mx-auto bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg overflow-hidden rounded-lg'>
+        <motion.div onTap={onClick} className='flex w-full h-full'>
+          <Poster title={movie.title} size={100} poster={movie.poster_path} />
         </motion.div>
         <div className='absolute left-0 top-0 w-full h-20 bg-gradient-to-t from-transparent to-black opacity-75 rounded-t-lg'>
           <div className='h-full w-full mx-auto pt-1 px-3 text-white'>

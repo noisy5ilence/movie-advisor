@@ -1,21 +1,16 @@
 import { FC } from 'react';
 import { ImageOff } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
-
 interface Props {
   title: string;
   poster: string;
   size: number;
-  className?: string;
 }
 
-const Poster: FC<Props> = ({ title, poster, size = 250, className }) => {
+const Poster: FC<Props> = ({ title, poster, size = 250 }) => {
   return poster ? (
     <img
-      className={cn('rounded-lg mx-auto w-auto h-full object-fill', className)}
-      height={750}
-      width={500}
+      className='rounded-lg w-full h-full object-fill'
       src={`https://image.tmdb.org/t/p/w500/${poster}`}
       alt={title}
     />

@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <Providers theme={theme}>
           <Header />
-          <main className='px-2 max-w-[1260px] mx-auto'>{children}</main>
+          <main className='px-2 max-w-[1252px] mx-auto'>{children}</main>
         </Providers>
       </body>
     </html>

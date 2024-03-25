@@ -59,7 +59,7 @@ export default function Container() {
         {...slideEffectProps}
       >
         {movies?.map((movie, index) => (
-          <SwiperSlide key={movie.id} virtualIndex={index}>
+          <SwiperSlide key={movie.id} virtualIndex={index} className='cursor-grab active:cursor-grabbing'>
             <Card fit movie={movie} />
           </SwiperSlide>
         ))}
