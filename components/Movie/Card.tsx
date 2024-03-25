@@ -27,7 +27,7 @@ const Card: FC<Props> = ({ movie, onClick, fit }) => {
     <div
       onDoubleClick={handleToggleFavorite}
       className={cn(
-        'w-[300px] h-[450px] min-w-[300px] shrink-0 mx-auto',
+        'w-[300px] h-[450px] min-w-[300px] min-h-[450px] shrink-0 mx-auto',
         fit ? 'w-full h-auto xs:w-[300px] xs:h-[450px]' : undefined
       )}
     >
@@ -37,7 +37,7 @@ const Card: FC<Props> = ({ movie, onClick, fit }) => {
             title={movie.title}
             size={100}
             poster={movie.poster_path}
-            className={fit ? 'h-auto xs:h-full' : undefined}
+            className={fit ? 'h-auto min-h-[450px] xs:h-full' : undefined}
           />
         </motion.div>
         <div className='absolute left-0 top-0 w-full h-20 bg-gradient-to-t from-transparent to-black opacity-75 rounded-t-lg'>

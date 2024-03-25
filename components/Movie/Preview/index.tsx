@@ -1,8 +1,10 @@
 'use client';
 
 import { FC, ReactNode } from 'react';
+import { create, InstanceProps } from 'react-modal-promise';
 
 import Credits from '@/components/Movie/components/Credits';
+import { Modal } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
@@ -16,16 +18,16 @@ interface Props {
   className?: string;
   onClose?: () => void;
   children?: ReactNode;
-  renderCard?: () => ReactNode;
+  card?: ReactNode;
 }
 
-const Preview: FC<Props> = ({ movie, className, onClose, children, renderCard, fit }) => {
+const Preview: FC<Props> = ({ movie, className, onClose, children, card, fit }) => {
   if (!movie) return null;
 
   return (
     <div className={cn('rounded-xl text-card-foreground', { 'p-2': Boolean(onClose) }, className)}>
       <div className='flex flex-col lg:flex-row max-w-[100%] gap-2'>
-        {renderCard?.() || <Card fit={fit} movie={movie} />}
+        {card || <Card fit={fit} movie={movie} />}
         <div className='flex flex-col grow'>
           {children && <div className='flex hover-none:hidden w-full mb-2 gap-2'>{children}</div>}
           <div className='flex w-full gap-2'>
@@ -41,5 +43,20 @@ const Preview: FC<Props> = ({ movie, className, onClose, children, renderCard, f
     </div>
   );
 };
+
+export const showPreviewModal = create(({ onResolve, onClose, movie }: Props & InstanceProps<void>) => (
+  <Modal className='block p-0' onClose={onResolve}>
+    <Preview
+      fit
+      movie={movie}
+      className='border-none'
+      onClose={() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        onClose?.();
+        onResolve();
+      }}
+    />
+  </Modal>
+));
 
 export default Preview;

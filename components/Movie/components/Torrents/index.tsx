@@ -51,10 +51,10 @@ const TableHeadSortable = ({
 
 const hostAtom = atomWithStorage<string>('magnet-host', '');
 
-const showHostManagerModal = create(({ onResolve, isOpen }) => {
+const showHostManagerModal = create(({ onResolve }) => {
   const [host, setHost] = useAtom(hostAtom);
   return (
-    <Modal className='p-3 max-w-[200px] m-auto' isOpen={isOpen} onClose={() => onResolve()}>
+    <Modal className='p-3 max-w-[200px] m-auto' onClose={onResolve}>
       <Input
         autoFocus
         placeholder='Enter host of Elementum'
@@ -66,7 +66,7 @@ const showHostManagerModal = create(({ onResolve, isOpen }) => {
   );
 });
 
-const Torrents: FC<Props> = ({ title, year, isOpen, onResolve }) => {
+const Torrents: FC<Props> = ({ title, year, onResolve }) => {
   const hosts = useAtomValue(hostAtom);
   const [sorting, setSorting] = useState<Sorting>({ by: ORDER.seeders });
   const [withYear, setWithYear] = useState(true);
@@ -87,7 +87,7 @@ const Torrents: FC<Props> = ({ title, year, isOpen, onResolve }) => {
   };
 
   return (
-    <Modal className='p-0' isOpen={isOpen} onClose={() => onResolve()}>
+    <Modal className='p-0' onClose={onResolve}>
       <Table className='rounded-xl overflow-hidden'>
         <TableHeader>
           <TableRow>

@@ -13,15 +13,11 @@ interface Props {
   children?: ({ onPlay, disabled }: { onPlay: () => void; disabled: boolean }) => ReactNode;
 }
 
-const Trailer: FC<{ trailerKey?: string } & InstanceProps<void>> = ({ trailerKey, onResolve, isOpen }) => {
+const Trailer: FC<{ trailerKey?: string } & InstanceProps<void>> = ({ trailerKey, onResolve }) => {
   if (!trailerKey) return;
 
   return (
-    <Modal
-      className='block p-0 min-h-[400px] border-none aspect-w-16 aspect-h-9'
-      onClose={() => onResolve()}
-      isOpen={isOpen}
-    >
+    <Modal className='block p-0 min-h-[400px] border-none aspect-w-16 aspect-h-9' onClose={onResolve}>
       <iframe
         allow='autoplay'
         className='border-none rounded-lg'

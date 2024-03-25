@@ -2,8 +2,7 @@ import { FC, Fragment, useLayoutEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 import Card from '@/components/Movie/Card';
-import Preview from '@/components/Movie/Preview';
-import { Modal } from '@/components/ui/dialog';
+import { showPreviewModal } from '@/components/Movie/Preview';
 import filterUnknownMovies from '@/lib/filterUnknownMovies';
 
 interface Props {
@@ -32,7 +31,6 @@ const item = {
 };
 
 const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = true, onPreviewClose }) => {
-  const [movie, setMovie] = useState<Movie | null>(null);
   const [loader, setLoader] = useState<HTMLLIElement>();
 
   useLayoutEffect(() => {
@@ -74,7 +72,7 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = tr
                   className='flex cursor-pointer'
                   ref={isAnchor ? (element) => setLoader(element!) : undefined}
                 >
-                  <Card fit movie={movie} onClick={() => setMovie(movie)} />
+                  <Card fit movie={movie} onClick={() => showPreviewModal({ movie, onClose: onPreviewClose })} />
                 </motion.li>
               );
             })}
@@ -82,21 +80,6 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = tr
         ))}
       </motion.ul>
       {withBottomGap && <div className='h-4 w-full' />}
-      <Modal isOpen={Boolean(movie)} onClose={() => setMovie(null)} className='block p-0'>
-        {movie && (
-          <Preview
-            fit
-            key={movie.id}
-            movie={movie}
-            className='border-none'
-            onClose={() => {
-              setMovie(null);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-              onPreviewClose?.();
-            }}
-          />
-        )}
-      </Modal>
     </>
   );
 };

@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 
 import useSearch from './useSearch';
 
-const Search: FC<InstanceProps<void>> = ({ isOpen, onResolve }) => {
+const Search: FC<InstanceProps<void>> = ({ onResolve }) => {
   const [title, setTitle] = useState('');
   const [query, setQuery] = useState('');
   const timeout = useRef<NodeJS.Timeout>();
@@ -34,10 +34,11 @@ const Search: FC<InstanceProps<void>> = ({ isOpen, onResolve }) => {
 
   const handleClose = () => {
     handleReset();
+    return onResolve();
   };
 
   return (
-    <Modal className='block p-3 max-w-[950px]' isOpen={isOpen} onClose={() => onResolve()}>
+    <Modal className='block p-3 max-w-[950px]' onClose={handleClose}>
       <div className='relative'>
         <Input
           ref={inputRef}
