@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, FC, useRef, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import { Search as SearchIcon, XCircle } from 'lucide-react';
 
@@ -42,7 +42,6 @@ const Search: FC<InstanceProps<void>> = ({ onResolve }) => {
       <div className='relative'>
         <Input
           ref={inputRef}
-          autoFocus
           placeholder='Start entering title...'
           value={title}
           onChange={handleChangeTitle}
@@ -50,6 +49,7 @@ const Search: FC<InstanceProps<void>> = ({ onResolve }) => {
         />
         <Button
           variant='outline'
+          type='button'
           size='icon'
           onClick={handleReset}
           disabled={!query.length}
@@ -58,7 +58,7 @@ const Search: FC<InstanceProps<void>> = ({ onResolve }) => {
           <XCircle />
         </Button>
       </div>
-      {Boolean(results?.pages.length) && (
+      {Boolean(results?.pages.length && results?.pages?.[0]?.results?.length) && (
         <div className='mt-3'>
           <List
             pages={results!.pages as unknown as MovieDBResponse[]}
