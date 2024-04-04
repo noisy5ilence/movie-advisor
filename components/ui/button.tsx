@@ -37,19 +37,28 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, HTMLMotionProps<'button'> & Pick<ButtonProps, 'size' | 'variant'>>(
-  ({ className, variant, size, ...props }, ref) => {
+const Button = React.forwardRef<
+  HTMLButtonElement,
+  HTMLMotionProps<'button'> & Pick<ButtonProps, 'size' | 'variant'> & { base?: boolean }
+>(({ className, variant, size, base, ...props }, ref) => {
+  if (base)
     return (
-      <motion.button
+      <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        {...props}
-        onClick={undefined}
-        onTap={(e) => props.onClick?.(e as unknown as React.MouseEvent<HTMLButtonElement, MouseEvent>)}
+        {...(props as unknown as ButtonProps)}
       />
     );
-  }
-);
+  return (
+    <motion.button
+      className={cn(buttonVariants({ variant, size, className }))}
+      ref={ref}
+      {...props}
+      onClick={undefined}
+      onTap={(e) => props.onClick?.(e as unknown as React.MouseEvent<HTMLButtonElement, MouseEvent>)}
+    />
+  );
+});
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };

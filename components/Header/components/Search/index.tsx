@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 
 import useSearch from './useSearch';
 
-const Search: FC<InstanceProps<void>> = ({ onResolve }) => {
+export const showSearchModal = create(({ onResolve }) => {
   const [title, setTitle] = useState('');
   const [query, setQuery] = useState('');
   const timeout = useRef<NodeJS.Timeout>();
@@ -38,28 +38,30 @@ const Search: FC<InstanceProps<void>> = ({ onResolve }) => {
   };
 
   return (
-    <Modal className='block p-3 max-w-[950px]' onClose={handleClose}>
-      <div className='relative'>
+    <Modal className='block p-0 max-w-[940px]' onClose={handleClose}>
+      <div className='relative p-2'>
         <Input
+          autoFocus
           ref={inputRef}
           placeholder='Start entering title...'
           value={title}
           onChange={handleChangeTitle}
-          className='pr-10'
+          className='pr-10 focus-visible:ring-0'
         />
         <Button
+          base
           variant='outline'
           type='button'
           size='icon'
           onClick={handleReset}
           disabled={!query.length}
-          className='absolute right-0 top-0'
+          className='absolute right-2 top-2'
         >
           <XCircle />
         </Button>
       </div>
       {Boolean(results?.pages.length && results?.pages?.[0]?.results?.length) && (
-        <div className='mt-3'>
+        <div className='px-2'>
           <List
             pages={results!.pages as unknown as MovieDBResponse[]}
             fetchNextPage={fetchNextPage}
@@ -71,13 +73,11 @@ const Search: FC<InstanceProps<void>> = ({ onResolve }) => {
       )}
     </Modal>
   );
-};
-
-export const showSearchModal = create(Search);
+});
 
 export default function ToggleSearch() {
   return (
-    <Button variant='ghost' size='icon' onClick={() => showSearchModal()}>
+    <Button base variant='ghost' size='icon' onClick={() => showSearchModal()}>
       <SearchIcon size={19} />
     </Button>
   );

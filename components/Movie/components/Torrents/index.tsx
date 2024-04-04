@@ -54,11 +54,12 @@ const hostAtom = atomWithStorage<string>('magnet-host', '');
 const showHostManagerModal = create(({ onResolve }) => {
   const [host, setHost] = useAtom(hostAtom);
   return (
-    <Modal className='p-3 max-w-[200px] m-auto' onClose={onResolve}>
+    <Modal className='p-2 max-w-[200px] m-auto' onClose={onResolve}>
       <Input
         autoFocus
         placeholder='Enter host of Elementum'
         value={host}
+        className='focus-visible:ring-0'
         onChange={({ target: { value } }) => setHost(value)}
         onKeyDown={({ key }) => key === 'Enter' && onResolve()}
       />
