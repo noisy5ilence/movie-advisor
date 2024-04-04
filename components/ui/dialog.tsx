@@ -52,7 +52,6 @@ const DialogContent = React.forwardRef<
     const threshold = 150;
 
     const { clientY } = event.touches[0];
-    const content = contentRef.current;
     const overlay = overlayRef.current;
     const wrapper = wrapperRef.current;
     const diff = clientY - position.current;
@@ -62,12 +61,8 @@ const DialogContent = React.forwardRef<
 
     close.current = canBeClosed && isTop;
 
-    if (isTop && content && wrapper) {
-      const opacity = `${1 - (diff * 100) / threshold / 100}`;
-
-      content.style.opacity = opacity;
-      wrapper.style.opacity = opacity;
-      content.style.transform = `translate(-50%, ${diff}px)`;
+    if (isTop && wrapper) {
+      wrapper.style.opacity = `${1 - (diff * 100) / threshold / 100}`;
     }
 
     if (top <= 0 && delta.current < 0 && canBeClosed) onClose?.();
@@ -78,11 +73,9 @@ const DialogContent = React.forwardRef<
 
     close.current = false;
 
-    if (!contentRef.current || !wrapperRef.current) return;
+    if (!wrapperRef.current) return;
 
-    contentRef.current.style.opacity = '1';
     wrapperRef.current.style.opacity = '1';
-    contentRef.current.style.transform = 'translate(-50%, 0)';
   };
 
   const handleRef = (element: HTMLDivElement | null) => {
