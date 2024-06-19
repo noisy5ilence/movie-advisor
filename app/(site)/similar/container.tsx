@@ -10,9 +10,10 @@ export default function Container() {
   const params = useSearchParams();
 
   const title = params.get('title');
+  const type = params.get('type');
   const movieId = params.get('movieId') || undefined;
 
-  const { data: top, hasNextPage, fetchNextPage, isFetched } = useSimilar({ movieId });
+  const { data: top, hasNextPage, fetchNextPage, isFetched } = useSimilar({ movieId, type: type as ShowType });
 
   return (
     <>
@@ -21,7 +22,7 @@ export default function Container() {
           Similar: {decodeURIComponent(title || '')}
         </span>
       )}
-      <List pages={top?.pages || []} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />
+      <List type={type as ShowType} pages={top?.pages || []} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />
       {isFetched && !top?.pages?.[0]?.results?.length && (
         <div className='h-40 w-full flex items-center justify-center text-xl text-muted-foreground'>
           Nothing was found

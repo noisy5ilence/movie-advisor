@@ -11,6 +11,7 @@ import { Modal } from '@/components/ui/dialog';
 interface Props {
   movieId?: number;
   children?: ({ onPlay, disabled }: { onPlay: () => void; disabled: boolean }) => ReactNode;
+  type?: ShowType;
 }
 
 const Trailer: FC<{ trailerKey?: string } & InstanceProps<void>> = ({ trailerKey, onResolve }) => {
@@ -32,8 +33,8 @@ const Trailer: FC<{ trailerKey?: string } & InstanceProps<void>> = ({ trailerKey
 
 export const showTrailerModal = create(Trailer);
 
-export default function ToggleTrailer({ movieId, children }: Props) {
-  const { data: trailer, isFetched } = useTrailer({ movieId });
+export default function ToggleTrailer({ movieId, type = 'movie', children }: Props) {
+  const { data: trailer, isFetched } = useTrailer({ movieId, type });
 
   return children
     ? children({ onPlay: () => showTrailerModal({ trailerKey: trailer?.key }), disabled: isFetched && !trailer })

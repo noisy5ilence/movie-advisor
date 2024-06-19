@@ -8,11 +8,11 @@ import Container from './container';
 export default async function Similar({ searchParams }: { searchParams: Record<string, string> }) {
   const queryClient = getQueryClient();
 
-  const { movieId } = searchParams || {};
+  const { movieId, type } = searchParams || {};
 
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ['similar', movieId],
-    queryFn: () => similarMovies({ movieId }),
+    queryKey: ['similar', movieId, type],
+    queryFn: () => similarMovies({ movieId, type: type as ShowType }),
     initialPageParam: '1'
   });
 

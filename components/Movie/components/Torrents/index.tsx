@@ -1,8 +1,6 @@
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import { ArrowDownIcon, CaretSortIcon } from '@radix-ui/react-icons';
-import { useAtom, useAtomValue } from 'jotai';
-import { atomWithStorage } from 'jotai/utils';
 import { Cast, Loader, Magnet } from 'lucide-react';
 
 import useTorrents from '@/app/(site)/useTorrents';
@@ -10,7 +8,9 @@ import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Toggle } from '@/components/ui/toggle';
+import { useCastMagnet, useHost, useSetHost } from '@/hooks/useMagnetHosts';
 import { ORDER } from '@/lib/api/parsers/pirate-bay';
+import showHostManagerModal from './HostManager';
 
 interface Props extends InstanceProps<void> {
   title: string;
@@ -49,26 +49,8 @@ const TableHeadSortable = ({
   );
 };
 
-const hostAtom = atomWithStorage<string>('magnet-host', '');
-
-const showHostManagerModal = create(({ onResolve }) => {
-  const [host, setHost] = useAtom(hostAtom);
-  return (
-    <Modal className='p-2 max-w-[200px] m-auto' onClose={onResolve}>
-      <Input
-        autoFocus
-        placeholder='Enter host of Elementum'
-        value={host}
-        className='focus-visible:ring-0'
-        onChange={({ target: { value } }) => setHost(value)}
-        onKeyDown={({ key }) => key === 'Enter' && onResolve()}
-      />
-    </Modal>
-  );
-});
-
 const Torrents: FC<Props> = ({ title, year, onResolve }) => {
-  const hosts = useAtomValue(hostAtom);
+  const host = useHost();
   const [sorting, setSorting] = useState<Sorting>({ by: ORDER.seeders });
   const [withYear, setWithYear] = useState(true);
 
@@ -78,14 +60,7 @@ const Torrents: FC<Props> = ({ title, year, onResolve }) => {
     isFetched
   } = useTorrents({ query: withYear ? `${title} ${year || ''}` : title, order: sorting.by });
 
-  const handleCast = (magnet: string) => (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    event.preventDefault();
-
-    hosts.split(',').forEach((host) => {
-      const link = window.open(`http://${host}:65220/playuri?uri=${magnet}`, '_blank');
-      setTimeout(() => link?.close(), 1000);
-    });
-  };
+  const cast = useCastMagnet();
 
   return (
     <Modal className='p-0' onClose={onResolve}>
@@ -123,9 +98,12 @@ const Torrents: FC<Props> = ({ title, year, onResolve }) => {
               <TableCell className='text-center p-2'>{torrent.seeders}</TableCell>
               <TableCell className='text-center p-1'>
                 <div className='flex gap-2 m-auto justify-center'>
-                  {hosts ? (
+                  {host ? (
                     <a
-                      onClick={handleCast(torrent.magnet!)}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        cast(torrent.magnet!);
+                      }}
                       className='flex items-center justify-center h-8 w-8 border rounded-lg'
                     >
                       <Cast size={20} />

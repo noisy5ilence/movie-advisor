@@ -12,6 +12,7 @@ import Card from '@/components/Movie/Card';
 import Movie from '@/components/Movie/Preview';
 import { Button } from '@/components/ui/button';
 import useMounted from '@/hooks/useMounted';
+import useUrlToMagnet from '@/hooks/useUrlToMagnet';
 import { genres } from '@/lib/api';
 import getQueryClient from '@/lib/queryClient';
 
@@ -38,6 +39,8 @@ export default function Container() {
   const { ref, hasPrevious, movies, movie, next, previous, index, onDrag, onIndexChange } = useRandomMovie();
   const isMounted = useMounted();
   const initialIndex = useRef(index);
+
+  useUrlToMagnet();
 
   useEffect(() => {
     const queryClient = getQueryClient();

@@ -6,8 +6,16 @@ import filterUnknownMovies from '../filterUnknownMovies';
 
 import pirateBay from './parsers/pirate-bay';
 
-export const search = async ({ query, page }: { query: string; page: number }): Promise<MovieDBResponse> => {
-  return server.get('/search/movie', {
+export const search = async ({
+  query,
+  page,
+  type = 'movie'
+}: {
+  query: string;
+  page: number;
+  type: ShowType;
+}): Promise<MovieDBResponse> => {
+  return server.get(`/search/${type}`, {
     params: {
       query,
       page
@@ -64,12 +72,14 @@ export const topMovies = async ({
 
 export const similarMovies = async ({
   page,
-  movieId
+  movieId,
+  type = 'movie'
 }: {
   page?: string;
   movieId?: string;
+  type?: ShowType;
 }): Promise<MovieDBResponse> => {
-  return server.get(`/movie/${movieId}/recommendations`, {
+  return server.get(`/${type}/${movieId}/recommendations`, {
     params: {
       page
     }
@@ -80,12 +90,26 @@ export const genres = async (): Promise<IDName[]> => {
   return server.get('/genre/movie/list').then((response) => (response as unknown as { genres: IDName[] }).genres);
 };
 
-export const credits = async ({ movieId }: { movieId: number }): Promise<Array<Actor>> => {
+export const credits = async ({
+  movieId,
+  type = 'movie'
+}: {
+  movieId: number;
+  type?: ShowType;
+}): Promise<Array<Actor>> => {
   'use server';
 
-  return server
-    .get(`/movie/${movieId}/credits`)
-    .then((response) => (response as unknown as { cast: Array<Actor> }).cast);
+  return server.get(`/${type}/${movieId}/${type === 'tv' ? 'aggregate_credits' : 'credits'}`).then((response) => {
+    const data = (response as unknown as { cast: Array<unknown> }).cast;
+    if (type === 'tv') {
+      return data.map((item) => {
+        const actor = item as AggregatedActor;
+        const [role] = actor.roles || [{}];
+        return { ...actor, ...role } as unknown as Actor;
+      });
+    }
+    return data as Array<Actor>;
+  });
 };
 
 export const torrents = async ({ query, order, seeders }: { query: string; seeders?: number; order: number }) => {
@@ -102,11 +126,11 @@ export const torrents = async ({ query, order, seeders }: { query: string; seede
   }
 };
 
-export const trailers = async ({ movieId }: { movieId: number }): Promise<Trailer[]> => {
+export const trailers = async ({ movieId, type }: { movieId: number; type?: ShowType }): Promise<Trailer[]> => {
   'use server';
 
   return server
-    .get(`/movie/${movieId}/videos`, {
+    .get(`/${type}/${movieId}/videos`, {
       params: {
         language: 'en-US'
       }

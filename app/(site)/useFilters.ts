@@ -1,11 +1,16 @@
 import { useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export const mapFilters = (filters: Record<string, string>) =>
-  Object.entries(filters).reduce((filters, [key, value]) => {
-    filters[key as keyof Filters] = value.split(',');
-    return filters;
-  }, {} as Partial<Filters>);
+export const mapFilters = (filters: Record<string, string>) => {
+  try {
+    return Object.entries(filters).reduce((filters, [key, value]) => {
+      filters[key as keyof Filters] = value.split(',');
+      return filters;
+    }, {} as Partial<Filters>);
+  } catch (e) {
+    return {};
+  }
+};
 
 const useFilters = () => {
   const router = useRouter();

@@ -11,6 +11,7 @@ import useCredits from '@/app/(site)/useCredits';
 interface Props {
   movieId: number;
   onPersonClick?: (id: string) => void;
+  type?: ShowType;
 }
 
 const container = {
@@ -30,9 +31,9 @@ const item = {
   }
 };
 
-const Credits: FC<Props> = ({ movieId, onPersonClick }) => {
+const Credits: FC<Props> = ({ movieId, onPersonClick, type = 'movie' }) => {
   const router = useRouter();
-  const { data: credits } = useCredits({ movieId });
+  const { data: credits } = useCredits({ movieId, type });
 
   return (
     Boolean(credits?.length) && (

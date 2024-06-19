@@ -4,7 +4,6 @@ import { Dispatch, SetStateAction, useRef, useState } from 'react';
 
 import useFilters from '@/app/(site)/useFilters';
 import { Card } from '@/components/ui/card';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
 import { Toggle } from '@/components/ui/toggle';
 
@@ -43,23 +42,21 @@ export default function Filter() {
 
   return (
     <>
-      <ScrollArea className='mb-2'>
-        <Card>
-          <ul className='flex gap-2'>
-            {genres?.map((genre) => (
-              <li key={genre.id}>
-                <Toggle
-                  data-state={filters.genres?.includes(genre.id.toString()) ? 'on' : 'off'}
-                  onClick={handleChangeGenre(genre.id)}
-                  className='whitespace-nowrap'
-                >
-                  {genre.name}
-                </Toggle>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      </ScrollArea>
+      <Card className='mb-2'>
+        <ul className='flex gap-2 overflow-auto no-scrollbar'>
+          {genres?.map((genre) => (
+            <li key={genre.id}>
+              <Toggle
+                data-state={filters.genres?.includes(genre.id.toString()) ? 'on' : 'off'}
+                onClick={handleChangeGenre(genre.id)}
+                className='whitespace-nowrap'
+              >
+                {genre.name}
+              </Toggle>
+            </li>
+          ))}
+        </ul>
+      </Card>
       <div className='flex w-full my-4 gap-6 flex-wrap'>
         <div className='grow flex items-center basis-[250px]'>
           <Slider

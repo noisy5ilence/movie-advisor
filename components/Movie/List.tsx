@@ -1,4 +1,4 @@
-import { FC, Fragment, useLayoutEffect, useState } from 'react';
+import { FC, Fragment, useLayoutEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 
 import Card from '@/components/Movie/Card';
@@ -11,6 +11,7 @@ interface Props {
   fetchNextPage?: () => void;
   withBottomGap?: boolean;
   onPreviewClose?: () => void;
+  type?: ShowType;
 }
 
 const container = {
@@ -30,7 +31,14 @@ const item = {
   }
 };
 
-const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = true, onPreviewClose }) => {
+const List: FC<Props> = ({
+  pages,
+  hasNextPage,
+  fetchNextPage,
+  withBottomGap = true,
+  onPreviewClose,
+  type = 'movie'
+}) => {
   const [loader, setLoader] = useState<HTMLLIElement>();
 
   useLayoutEffect(() => {
@@ -52,34 +60,41 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, withBottomGap = tr
     return () => observer.disconnect();
   }, [fetchNextPage, loader, hasNextPage]);
 
+  const shows = useMemo(
+    () =>
+      pages?.reduce((shows, page) => {
+        shows.push(...filterUnknownMovies(page.results));
+        return shows;
+      }, [] as Movie[]) || [],
+    [pages]
+  );
+
+  if (!shows.length) return null;
+
   return (
     <>
       <motion.ul
-        className='flex gap-3 flex-wrap justify-center grow'
+        className='flex gap-3 flex-wrap justify-center grow empty:hidden'
         variants={container}
         initial={pages.length === 1 ? 'hidden' : false}
         animate='visible'
       >
-        {pages.map((page) => (
-          <Fragment key={page.page}>
-            {filterUnknownMovies(page.results)?.map((movie, index, array) => {
-              const isAnchor = Math.round(array.length / 2) === index;
+        {shows?.map((movie, index, array) => {
+          const isAnchor = Math.round(array.length / 2) === index;
 
-              return (
-                <motion.li
-                  key={movie.id}
-                  variants={item}
-                  className='flex xs:w-auto w-full cursor-pointer'
-                  ref={isAnchor ? (element) => setLoader(element!) : undefined}
-                >
-                  <Card fit movie={movie} onClick={() => showPreviewModal({ movie, onClose: onPreviewClose })} />
-                </motion.li>
-              );
-            })}
-          </Fragment>
-        ))}
+          return (
+            <motion.li
+              key={movie.id}
+              variants={item}
+              className='flex xs:w-auto w-full cursor-pointer'
+              ref={isAnchor ? (element) => setLoader(element!) : undefined}
+            >
+              <Card fit movie={movie} onClick={() => showPreviewModal({ movie, onClose: onPreviewClose, type })} />
+            </motion.li>
+          );
+        })}
       </motion.ul>
-      {withBottomGap && <div className='h-4 w-full' />}
+      {withBottomGap && <div className='h-2 w-full' />}
     </>
   );
 };

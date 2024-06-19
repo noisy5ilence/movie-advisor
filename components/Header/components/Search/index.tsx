@@ -1,13 +1,15 @@
 'use client';
 
-import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
-import { create, InstanceProps } from 'react-modal-promise';
+import { ChangeEvent, useRef, useState } from 'react';
+import { create } from 'react-modal-promise';
 import { Search as SearchIcon, XCircle } from 'lucide-react';
 
 import List from '@/components/Movie/List';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
 import useSearch from './useSearch';
 
@@ -17,7 +19,16 @@ export const showSearchModal = create(({ onResolve }) => {
   const timeout = useRef<NodeJS.Timeout>();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { data: results, hasNextPage, fetchNextPage } = useSearch({ query });
+  const {
+    data: movies,
+    hasNextPage: hasNextMoviesPage,
+    fetchNextPage: fetchNextMoviesPage
+  } = useSearch({ query, type: 'movie' });
+  const {
+    data: series,
+    hasNextPage: hasNextSeriesPage,
+    fetchNextPage: fetchNextSeriesPage
+  } = useSearch({ query, type: 'tv' });
 
   const handleChangeTitle = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setTitle(value);
@@ -60,17 +71,39 @@ export const showSearchModal = create(({ onResolve }) => {
           <XCircle />
         </Button>
       </div>
-      {Boolean(results?.pages.length && results?.pages?.[0]?.results?.length) && (
-        <div className='px-2'>
-          <List
-            pages={results!.pages as unknown as MovieDBResponse[]}
-            fetchNextPage={fetchNextPage}
-            hasNextPage={hasNextPage}
-            withBottomGap={false}
-            onPreviewClose={handleClose}
-          />
-        </div>
-      )}
+      <Tabs
+        defaultValue='movies'
+        className={cn('w-full px-2', !(movies?.pages.length && series?.pages?.length) && 'hidden')}
+      >
+        <TabsList className='grid w-full grid-cols-2'>
+          <TabsTrigger value='movies'>Movies</TabsTrigger>
+          <TabsTrigger value='series'>Series</TabsTrigger>
+        </TabsList>
+        <TabsContent value='movies'>
+          {Boolean(movies?.pages.length && movies?.pages?.[0]?.results?.length) && (
+            <List
+              withBottomGap
+              pages={movies!.pages as unknown as MovieDBResponse[]}
+              fetchNextPage={fetchNextMoviesPage}
+              hasNextPage={hasNextMoviesPage}
+              onPreviewClose={handleClose}
+              type='movie'
+            />
+          )}
+        </TabsContent>
+        <TabsContent value='series'>
+          {Boolean(series?.pages.length && series?.pages?.[0]?.results?.length) && (
+            <List
+              withBottomGap
+              pages={series!.pages as unknown as MovieDBResponse[]}
+              fetchNextPage={fetchNextSeriesPage}
+              hasNextPage={hasNextSeriesPage}
+              onPreviewClose={handleClose}
+              type='tv'
+            />
+          )}
+        </TabsContent>
+      </Tabs>
     </Modal>
   );
 });

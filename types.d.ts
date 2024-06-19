@@ -7,6 +7,8 @@ interface MovieDBResponse {
   total_results: number;
 }
 
+type ShowType = 'movie' | 'tv';
+
 interface Movie {
   adult: boolean;
   backdrop_path: string;
@@ -18,7 +20,9 @@ interface Movie {
   popularity: number;
   poster_path: string;
   release_date: Date;
+  first_air_date?: Date;
   title: string;
+  name?: string;
   video: boolean;
   vote_average: number;
   vote_count: number;
@@ -37,6 +41,26 @@ interface Actor {
   character: string;
   credit_id: string;
   order: number;
+}
+
+interface AggregatedActor {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+  roles: Role[];
+  total_episode_count: number;
+  order: number;
+}
+
+interface Role {
+  credit_id: string;
+  character: string;
+  episode_count: number;
 }
 
 interface Person {

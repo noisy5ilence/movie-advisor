@@ -33,12 +33,12 @@ const Card: FC<Props> = ({ movie, onClick, fit }) => {
     >
       <motion.div className='absolute top-0 left-0 flex flex-col w-full h-full mx-auto bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg overflow-hidden rounded-lg'>
         <motion.div onTap={onClick} className='flex w-full h-full'>
-          <Poster title={movie.title} size={100} poster={movie.poster_path} />
+          <Poster title={movie?.name || movie.title} size={100} poster={movie.poster_path} />
         </motion.div>
         <div className='absolute left-0 top-0 w-full h-20 bg-gradient-to-t from-transparent to-black opacity-75 rounded-t-lg'>
           <div className='h-full w-full mx-auto pt-1 px-3 text-white'>
             <div className='grid items-center grid-cols-[1fr_50px]'>
-              <Title key={movie.title} title={movie.title} />
+              <Title key={movie?.name || movie.title} title={movie?.name || movie.title} />
               {movie.release_date && (
                 <span className='flex justify-end text-lg font-semibold'>
                   {new Date(movie.release_date).getFullYear()}
