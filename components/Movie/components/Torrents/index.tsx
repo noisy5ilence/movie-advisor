@@ -5,11 +5,11 @@ import { Cast, Loader, Magnet } from 'lucide-react';
 
 import useTorrents from '@/app/(site)/useTorrents';
 import { Modal } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Toggle } from '@/components/ui/toggle';
 import { useCastMagnet, useHost, useSetHost } from '@/hooks/useMagnetHosts';
 import { ORDER } from '@/lib/api/parsers/pirate-bay';
+
 import showHostManagerModal from './HostManager';
 
 interface Props extends InstanceProps<void> {
