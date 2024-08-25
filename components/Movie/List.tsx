@@ -1,5 +1,5 @@
-import { FC, Fragment, useLayoutEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { FC, forwardRef, useMemo } from 'react';
+import { VirtuosoGrid, VirtuosoGridProps } from 'react-virtuoso';
 
 import Card from '@/components/Movie/Card';
 import { showPreviewModal } from '@/components/Movie/Preview';
@@ -31,6 +31,18 @@ const item = {
   }
 };
 
+const components: VirtuosoGridProps<Movie, { shows: Movie[]; onClick: (movie: Movie) => void }>['components'] = {
+  List: forwardRef(function List(props, ref) {
+    return <div {...props} className='flex gap-3 flex-wrap justify-center grow empty:hidden' ref={ref} />;
+  }),
+  Item: ({ context, 'data-index': index }) => {
+    const { shows, onClick } = context || {};
+    const movie = shows?.[index];
+
+    return <Card movie={movie} onClick={() => onClick?.(movie!)} />;
+  }
+};
+
 const List: FC<Props> = ({
   pages,
   hasNextPage,
@@ -39,27 +51,6 @@ const List: FC<Props> = ({
   onPreviewClose,
   type = 'movie'
 }) => {
-  const [loader, setLoader] = useState<HTMLLIElement>();
-
-  useLayoutEffect(() => {
-    if (!loader || !hasNextPage) return;
-
-    const observer = new IntersectionObserver(
-      ([{ isIntersecting }]) => {
-        if (!isIntersecting) return;
-
-        fetchNextPage?.();
-      },
-      {
-        threshold: 1
-      }
-    );
-
-    observer.observe(loader);
-
-    return () => observer.disconnect();
-  }, [fetchNextPage, loader, hasNextPage]);
-
   const shows = useMemo(
     () =>
       pages?.reduce((shows, page) => {
@@ -71,29 +62,26 @@ const List: FC<Props> = ({
 
   if (!shows.length) return null;
 
+  const context = {
+    shows,
+    onClick: (movie: Movie) => showPreviewModal({ movie, onClose: onPreviewClose, type })
+  };
+
+  const handleFetchMore = () => {
+    if (!hasNextPage) return;
+    fetchNextPage?.();
+  };
+
   return (
     <>
-      <motion.ul
-        className='flex gap-3 flex-wrap justify-center grow empty:hidden'
-        variants={container}
-        initial={pages.length === 1 ? 'hidden' : false}
-        animate='visible'
-      >
-        {shows?.map((movie, index, array) => {
-          const isAnchor = Math.round(array.length / 2) === index;
-
-          return (
-            <motion.li
-              key={movie.id}
-              variants={item}
-              className='flex xs:w-auto w-full cursor-pointer'
-              ref={isAnchor ? (element) => setLoader(element!) : undefined}
-            >
-              <Card fit movie={movie} onClick={() => showPreviewModal({ movie, onClose: onPreviewClose, type })} />
-            </motion.li>
-          );
-        })}
-      </motion.ul>
+      <VirtuosoGrid
+        useWindowScroll
+        totalCount={shows.length}
+        endReached={handleFetchMore}
+        data={shows}
+        context={context}
+        components={components}
+      />
       {withBottomGap && <div className='h-2 w-full' />}
     </>
   );

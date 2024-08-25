@@ -154,6 +154,9 @@ const Modal: React.FC<{
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
+      <DialogHeader>
+        <DialogTitle />
+      </DialogHeader>
       <DialogContent forceMount onClose={handleClose} className={className}>
         {children}
       </DialogContent>

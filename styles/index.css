@@ -101,4 +101,50 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  font-family: 'Poppins', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* html {
+  scroll-padding-top: 62px;
+  scroll-snap-type: y mandatory;
+} */
+
+.card-gradient {
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.396) 2.83%,
+    rgba(0, 0, 0, 0.384) 5.67%,
+    rgba(0, 0, 0, 0.37) 8.5%,
+    rgba(0, 0, 0, 0.34) 11.33%,
+    rgba(0, 0, 0, 0.306) 14.17%,
+    rgba(0, 0, 0, 0.267) 17%,
+    rgba(0, 0, 0, 0.224) 19.83%,
+    rgba(0, 0, 0, 0.176) 22.67%,
+    rgba(0, 0, 0, 0.133) 25.5%,
+    rgba(0, 0, 0, 0.094) 28.33%,
+    rgba(0, 0, 0, 0.06) 31.17%,
+    rgba(0, 0, 0, 0.03) 34%,
+    rgba(0, 0, 0, 0.016) 36.83%,
+    rgba(0, 0, 0, 0.004) 39.67%,
+    rgba(0, 0, 0, 0) 42.5%,
+    rgba(0, 0, 0, 0) 57.5%,
+    rgba(0, 0, 0, 0.004) 60.33%,
+    rgba(0, 0, 0, 0.016) 63.17%,
+    rgba(0, 0, 0, 0.03) 66%,
+    rgba(0, 0, 0, 0.06) 68.83%,
+    rgba(0, 0, 0, 0.094) 71.67%,
+    rgba(0, 0, 0, 0.133) 74.5%,
+    rgba(0, 0, 0, 0.176) 77.33%,
+    rgba(0, 0, 0, 0.224) 80.17%,
+    rgba(0, 0, 0, 0.267) 83%,
+    rgba(0, 0, 0, 0.306) 85.83%,
+    rgba(0, 0, 0, 0.34) 88.67%,
+    rgba(0, 0, 0, 0.37) 91.5%,
+    rgba(0, 0, 0, 0.384) 94.33%,
+    rgba(0, 0, 0, 0.396) 97.17%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
 }

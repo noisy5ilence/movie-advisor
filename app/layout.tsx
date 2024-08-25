@@ -27,10 +27,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang='en' className={theme}>
       <head>
         <meta name='theme-color' content='black' />
+        <link rel='preconnect' href='https://fonts.googleapis.com' />
+        <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='' />
+        <link href='https://fonts.googleapis.com/css2?family=Moderustic&family=Poppins&display=swap' rel='stylesheet' />
       </head>
       <body>
         <Providers theme={theme}>
-          <Header />
+          <div className='sticky top-0 z-20'>
+            <Header />
+          </div>
           <main className='px-2 max-w-[1252px] mx-auto'>{children}</main>
         </Providers>
       </body>

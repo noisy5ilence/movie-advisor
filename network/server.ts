@@ -1,15 +1,23 @@
-import axios, { AxiosResponse } from 'axios';
+class Server {
+  get<T>(url: string, {params}: { params?: Record<string, unknown> } = {}): Promise<T> {
+    const base = 'https://api.themoviedb.org/3';
 
-export const server = axios.create({
-  baseURL: 'https://api.themoviedb.org/3',
-  headers: {
-    Authorization: `Bearer ${process.env.MOVIE_DB_TOKEN}`,
-    accept: 'application/json'
+    const serializedParams = Object.entries(params || {}).reduce((params, [key, value]) => {
+      if (!['', undefined, null].includes(value as string)) {
+        params.set(key, value as string);
+      }
+      return params;
+    }, new URLSearchParams());
+
+    return fetch(`${base}${url}?${serializedParams}`, {
+      cache: 'force-cache',
+      headers: {
+        Authorization: `Bearer ${process.env.MOVIE_DB_TOKEN}`,
+      }
+    }).then(response => response.json());
   }
-});
+}
 
-const handleResponse = (response: AxiosResponse): AxiosResponse['data'] => response.data;
-
-server.interceptors.response.use(handleResponse);
+export const server = new Server();
 
 export default server;

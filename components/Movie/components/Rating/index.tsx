@@ -26,7 +26,7 @@ const Rating: FC<Props> = ({ isFavorite, rating, toggleFavorite, iconsFillColor 
       </motion.span>
       <span className='flex items-center'>
         <Star size={18} className={`mr-1 ${iconsFillColor}`} />
-        <span className='font-semibold'>{rating?.toFixed(1)}</span>
+        <p className='mt-[3px]'>{rating?.toFixed(1)}</p>
       </span>
     </span>
   );

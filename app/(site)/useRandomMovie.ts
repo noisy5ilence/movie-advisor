@@ -1,8 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Swiper } from 'swiper/types';
 
 import useFilters from '@/app/(site)/useFilters';
 import { randomMovies } from '@/lib/api';
@@ -16,8 +15,6 @@ const useRandomMovie = () => {
   const { filters } = useFilters();
   const indexByFilter = previousIndexes[JSON.stringify(filters)];
   const [index, setIndex] = useState(indexByFilter);
-  const ref = useRef<Swiper>();
-  const timeout = useRef<NodeJS.Timeout>();
 
   const { data: movies, refetch } = useQuery({
     queryKey: ['random-movie', filters],
@@ -42,42 +39,21 @@ const useRandomMovie = () => {
     setIndex(indexByFilter || 0);
   }, [indexByFilter]);
 
-  const previous = () => ref.current?.slidePrev();
-
-  const next = () => ref.current?.slideNext();
-
   return {
     movies,
     movie: movies?.[index],
     hasPrevious: index > 0,
     onIndexChange: useCallback(
-      ({ activeIndex }: Swiper) => {
-        if ((activeIndex && activeIndex % UPDATE_RATE === 0) || movies!.length < UPDATE_RATE) {
+      (index: number) => {
+        if ((index && index % UPDATE_RATE === 0) || movies!.length < UPDATE_RATE) {
           refetch();
         }
-        clearTimeout(timeout.current);
-        previousIndexes[JSON.stringify(filters)] = activeIndex;
-        timeout.current = setTimeout(() => {
-          setIndex(activeIndex);
-        }, 100);
+        previousIndexes[JSON.stringify(filters)] = index;
+        setIndex(index);
       },
       [movies, filters]
     ),
-    onDrag: useCallback(
-      ({ activeIndex }: Swiper) => {
-        clearTimeout(timeout.current);
-        timeout.current = setTimeout(() => {
-          if (index === activeIndex) return;
-
-          setIndex(activeIndex);
-        }, 100);
-      },
-      [index]
-    ),
-    next,
-    previous,
-    index,
-    ref
+    index
   };
 };
 

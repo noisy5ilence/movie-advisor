@@ -1,25 +1,20 @@
 'use client';
 
-import { useState } from 'react';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle
-} from '@/components/ui/navigation-menu';
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger
+} from '@/components/ui/drawer';
 
 const paths = [
   { path: '/popular', title: 'Popular' },
@@ -27,54 +22,61 @@ const paths = [
   { path: '/favorites', title: 'Favorites' }
 ];
 
-interface Props {
-  className?: string;
-}
-
-export function NavigationSmall({ className }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
+export function MobileNavigation() {
   const currentPath = usePathname();
 
   return (
-    <div className={className}>
-      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-        <DropdownMenuTrigger asChild>
+    <div className='flex xs:hidden'>
+      <Drawer>
+        <DrawerTrigger asChild>
           <Button variant='ghost' size='icon'>
             <Menu size={19} />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuRadioGroup value={currentPath}>
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader className='pointer-events-none absolute'>
+            <DrawerTitle />
+            <DrawerDescription />
+          </DrawerHeader>
+          <ul className='flex flex-col gap-2 p-2'>
             {paths.map(({ path, title }) => (
-              <Link href={path} legacyBehavior shallow key={path}>
-                <DropdownMenuRadioItem value={path} onClick={() => setIsOpen(false)}>
-                  {title}
-                </DropdownMenuRadioItem>
-              </Link>
+              <li key={path}>
+                <DrawerClose asChild>
+                  <Button className='w-full relative' variant={currentPath === path ? 'default' : 'outline'}>
+                    <Link href={path} className='absolute flex items-center justify-center w-full h-full top-0 left-0'>
+                      {title}
+                    </Link>
+                  </Button>
+                </DrawerClose>
+              </li>
             ))}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          </ul>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
 
-export default function Navigation({ className }: Props) {
+export function DesktopNavigation() {
   const currentPath = usePathname();
 
   return (
-    <NavigationMenu className={className}>
-      <NavigationMenuList>
-        {paths.map(({ path, title }) => (
-          <NavigationMenuItem key={path}>
-            <Link href={path} shallow passHref legacyBehavior>
-              <NavigationMenuLink active={path === currentPath} className={navigationMenuTriggerStyle()}>
-                {title}
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-        ))}
-      </NavigationMenuList>
-    </NavigationMenu>
+    <ul className='hidden xs:flex items-center whitespace-nowrap text-sm gap-3'>
+      {paths.map(({ path, title }) => (
+        <li key={path} className={currentPath === path ? undefined : 'cursor-pointer'}>
+          <Link href={path} shallow passHref legacyBehavior>
+            <div>
+              {currentPath === path ? (
+                <Badge className='text-sm font-normal pointer-events-none' variant='secondary'>
+                  {title}
+                </Badge>
+              ) : (
+                title
+              )}
+            </div>
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }
