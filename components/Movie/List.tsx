@@ -1,4 +1,4 @@
-import { FC, useMemo, useRef } from 'react';
+import { FC, forwardRef, useMemo } from 'react';
 import { VirtuosoGrid, VirtuosoGridProps } from 'react-virtuoso';
 import { motion } from 'framer-motion';
 
@@ -7,15 +7,15 @@ import { showPreviewModal } from '@/components/Movie/Preview';
 import filterUnknownMovies from '@/lib/filterUnknownMovies';
 
 interface Props {
+  type?: ShowType;
   pages: Array<MovieDBResponse>;
   hasNextPage?: boolean;
+  customScrollParent?: HTMLElement;
   fetchNextPage?: () => void;
   onPreviewClose?: () => void;
-  type?: ShowType;
-  customScrollParent?: HTMLElement;
 }
 
-const item = {
+const container = {
   hidden: { y: -20, opacity: 0 },
   visible: {
     y: 0,
@@ -23,31 +23,28 @@ const item = {
   }
 };
 
-const components: VirtuosoGridProps<
-  Movie,
-  { shows: Movie[]; initial: boolean; onClick: (movie: Movie) => void }
->['components'] = {
+const components: VirtuosoGridProps<Movie, { shows: Movie[]; onClick: (movie: Movie) => void }>['components'] = {
+  List: forwardRef(function List({ context, ...props }, ref) {
+    return (
+      <motion.div
+        {...props}
+        variants={container}
+        initial='hidden'
+        animate='visible'
+        className='flex gap-2 flex-wrap justify-center grow empty:hidden'
+        ref={ref}
+      />
+    );
+  }),
   Item: ({ context, 'data-index': index }) => {
     const { shows, onClick } = context || {};
     const movie = shows?.[index];
 
-    return (
-      <motion.div
-        variants={item}
-        initial='hidden'
-        animate='visible'
-        transition={context?.initial ? { delay: 0.15 * index } : undefined}
-        className='xs:w-[300px] xs:h-[450px] w-full h-full shrink-0'
-      >
-        <Card movie={movie} onClick={() => onClick?.(movie!)} />
-      </motion.div>
-    );
+    return <Card movie={movie} onClick={() => onClick?.(movie!)} />;
   }
 };
 
 const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, onPreviewClose, type = 'movie', customScrollParent }) => {
-  const initial = useRef(true);
-
   const shows = useMemo(
     () =>
       pages?.reduce((shows, page) => {
@@ -61,13 +58,11 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, onPreviewClose, ty
 
   const context = {
     shows,
-    initial: initial.current,
     onClick: (movie: Movie) => showPreviewModal({ movie, onClose: onPreviewClose, type })
   };
 
   const handleFetchMore = () => {
     if (!hasNextPage) return;
-    initial.current = false;
     fetchNextPage?.();
   };
 
@@ -75,10 +70,8 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, onPreviewClose, ty
     <>
       <VirtuosoGrid
         useWindowScroll
-        listClassName='flex gap-2 flex-wrap justify-center grow empty:hidden'
         customScrollParent={customScrollParent}
         totalCount={shows.length}
-        initialItemCount={20}
         overscan={4}
         endReached={handleFetchMore}
         data={shows}

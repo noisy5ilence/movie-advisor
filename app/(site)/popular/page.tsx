@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     'Check out the most popular movies right now on Movie Advisor. See what’s trending and don’t miss out on the latest hits.'
 };
 
+export const revalidate = 3600;
+
 export default async function Popular() {
   const queryClient = getQueryClient();
 

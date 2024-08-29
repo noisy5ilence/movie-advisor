@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     'Discover the top-rated movies on Movie Advisor. Find the highest-rated films and make informed viewing choices.'
 };
 
+export const revalidate = 3600;
+
 export default async function Top() {
   const queryClient = getQueryClient();
 

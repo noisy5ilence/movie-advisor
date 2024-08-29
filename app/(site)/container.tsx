@@ -1,27 +1,38 @@
 'use client';
 
+import { motion, Variants } from 'framer-motion';
+
 import Preview from '@/components/Movie/Preview';
 
 import { Carousel, Measurer } from './components/Carousel';
-import Filter from './components/Filter';
 import useRandomMovie from './useRandomMovie';
 
+const container: Variants = {
+  hidden: { y: -20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      delay: 0.1
+    }
+  }
+};
+
 export default function Container() {
-  const { movies, movie, onIndexChange } = useRandomMovie();
+  const { movies, movie, index, onIndexChange } = useRandomMovie();
 
   return (
-    <>
-      <Filter />
-      <Measurer>
-        {(width) => (
+    <Measurer>
+      {(width) => (
+        <motion.div variants={container} initial='hidden' animate='visible'>
           <Preview
             movie={movie}
             className='bg-background rounded-md'
-            card={<Carousel width={width} movies={movies} onIndexChange={onIndexChange} />}
+            card={<Carousel index={index} width={width} movies={movies} onIndexChange={onIndexChange} />}
           />
-        )}
-      </Measurer>
-      <div className='w-full h-2 max-sm:h-12' />
-    </>
+          <div className='w-full h-2 max-sm:h-12' />
+        </motion.div>
+      )}
+    </Measurer>
   );
 }

@@ -1,16 +1,9 @@
+'use client';
+
 import { useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export const mapFilters = (filters: Record<string, string>) => {
-  try {
-    return Object.entries(filters).reduce((filters, [key, value]) => {
-      filters[key as keyof Filters] = value.split(',');
-      return filters;
-    }, {} as Partial<Filters>);
-  } catch (e) {
-    return {};
-  }
-};
+import { mapFilters } from '@/lib/utils';
 
 const useFilters = () => {
   const router = useRouter();
