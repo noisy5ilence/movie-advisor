@@ -1,35 +1,15 @@
 import { FC } from 'react';
-import { motion } from 'framer-motion';
-import { Heart, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 interface Props {
-  isFavorite: boolean;
-  toggleFavorite: () => void;
-  iconsFillColor?: string;
   rating?: number;
 }
 
-const Rating: FC<Props> = ({ isFavorite, rating, toggleFavorite, iconsFillColor = 'fill-accent-foreground' }) => {
-  return (
-    <span className='select-none flex w-full items-center ml-auto gap-1 mt-[-8px] justify-between'>
-      <motion.span
-        onTap={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-
-          toggleFavorite();
-        }}
-        className='z-[2] cursor-pointer'
-        title={isFavorite ? 'Remove from favorites' : 'Add to favorite'}
-      >
-        <Heart className={isFavorite ? iconsFillColor : ''} size={20} />
-      </motion.span>
-      <span className='flex items-center'>
-        <Star size={18} className={`mr-1 ${iconsFillColor}`} />
-        <p className='mt-[3px]'>{rating?.toFixed(1)}</p>
-      </span>
-    </span>
-  );
-};
+const Rating: FC<Props> = ({ rating }) => (
+  <span className='flex items-center'>
+    <Star size={18} className='mr-1 fill-white' />
+    <p className='mt-[3px]'>{rating?.toFixed(1)}</p>
+  </span>
+);
 
 export default Rating;

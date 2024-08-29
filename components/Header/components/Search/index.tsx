@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, MutableRefObject, useRef, useState } from 'react';
 import { create } from 'react-modal-promise';
 import { Search as SearchIcon, XCircle } from 'lucide-react';
 
@@ -16,6 +16,7 @@ import useSearch from './useSearch';
 export const showSearchModal = create(({ onResolve }) => {
   const [title, setTitle] = useState('');
   const [query, setQuery] = useState('');
+  const scrollRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement>;
   const timeout = useRef<NodeJS.Timeout>();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -24,6 +25,7 @@ export const showSearchModal = create(({ onResolve }) => {
     hasNextPage: hasNextMoviesPage,
     fetchNextPage: fetchNextMoviesPage
   } = useSearch({ query, type: 'movie' });
+
   const {
     data: series,
     hasNextPage: hasNextSeriesPage,
@@ -49,7 +51,7 @@ export const showSearchModal = create(({ onResolve }) => {
   };
 
   return (
-    <Modal className='block p-0 max-w-[940px]' onClose={handleClose}>
+    <Modal className='block p-0 max-w-[932px]' onClose={handleClose} scrollRef={scrollRef}>
       <div className='relative p-2'>
         <Input
           autoFocus
@@ -82,7 +84,7 @@ export const showSearchModal = create(({ onResolve }) => {
         <TabsContent value='movies'>
           {Boolean(movies?.pages.length && movies?.pages?.[0]?.results?.length) && (
             <List
-              withBottomGap
+              customScrollParent={scrollRef.current}
               pages={movies!.pages as unknown as MovieDBResponse[]}
               fetchNextPage={fetchNextMoviesPage}
               hasNextPage={hasNextMoviesPage}
@@ -94,7 +96,7 @@ export const showSearchModal = create(({ onResolve }) => {
         <TabsContent value='series'>
           {Boolean(series?.pages.length && series?.pages?.[0]?.results?.length) && (
             <List
-              withBottomGap
+              customScrollParent={scrollRef.current}
               pages={series!.pages as unknown as MovieDBResponse[]}
               fetchNextPage={fetchNextSeriesPage}
               hasNextPage={hasNextSeriesPage}

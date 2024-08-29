@@ -34,12 +34,15 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { onClose?: () => void }
->(({ className, children, onClose, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+    onClose?: () => void;
+    scrollRef?: React.MutableRefObject<HTMLDivElement>;
+  }
+>(({ className, children, onClose, scrollRef, ...props }, ref) => {
   const position = React.useRef(0);
   const close = React.useRef(false);
   const wrapperRef = React.useRef<HTMLDivElement>(null);
-  const overlayRef = React.useRef<HTMLDivElement>(null);
+  const overlayRef = React.useRef<HTMLDivElement>(null) as React.MutableRefObject<HTMLDivElement>;
   const contentRef = React.useRef<HTMLDivElement | null>(null);
 
   const { delta, onScroll } = useScrollDelta();
@@ -88,7 +91,18 @@ const DialogContent = React.forwardRef<
   return (
     <DialogPortal>
       <div className='fixed inset-0 w-full h-full bg-black/50 z-50' ref={wrapperRef}>
-        <DialogOverlay ref={overlayRef} onScroll={onScroll}>
+        <DialogOverlay
+          ref={(element) => {
+            if (!element) return;
+
+            overlayRef.current = element;
+
+            if (scrollRef) {
+              scrollRef.current = element;
+            }
+          }}
+          onScroll={onScroll}
+        >
           <DialogPrimitive.Content
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -144,7 +158,8 @@ const Modal: React.FC<{
   children: React.ReactNode;
   className?: string;
   onClose: () => void;
-}> = ({ children, onClose, className }) => {
+  scrollRef?: React.MutableRefObject<HTMLDivElement>;
+}> = ({ children, onClose, className, scrollRef }) => {
   const [open, setOpen] = useState(true);
 
   const handleClose = () => {
@@ -157,7 +172,7 @@ const Modal: React.FC<{
       <DialogHeader>
         <DialogTitle />
       </DialogHeader>
-      <DialogContent forceMount onClose={handleClose} className={className}>
+      <DialogContent scrollRef={scrollRef} forceMount onClose={handleClose} className={className}>
         {children}
       </DialogContent>
     </Dialog>

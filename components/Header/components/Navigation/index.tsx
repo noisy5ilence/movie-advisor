@@ -2,7 +2,7 @@
 
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -41,13 +41,15 @@ export function MobileNavigation() {
           <ul className='flex flex-col gap-2 p-2'>
             {paths.map(({ path, title }) => (
               <li key={path}>
-                <DrawerClose asChild>
-                  <Button className='w-full relative' variant={currentPath === path ? 'default' : 'outline'}>
-                    <Link href={path} className='absolute flex items-center justify-center w-full h-full top-0 left-0'>
-                      {title}
-                    </Link>
-                  </Button>
-                </DrawerClose>
+                <Link href={path} shallow>
+                  <div>
+                    <DrawerClose asChild>
+                      <Button className='w-full relative' variant={currentPath === path ? 'default' : 'outline'}>
+                        {title}
+                      </Button>
+                    </DrawerClose>
+                  </div>
+                </Link>
               </li>
             ))}
           </ul>

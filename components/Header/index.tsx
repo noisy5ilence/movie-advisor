@@ -9,7 +9,7 @@ import ToggleTheme from './components/ThemeToggle';
 
 const Header: FC = () => (
   <header className='flex justify-center bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-2'>
-    <div className='max-w-[1252px] w-full px-2'>
+    <div className='max-w-[1240px] w-full px-2'>
       <div className='flex items-center justify-between gap-2 xs:flex-nowrap'>
         <Link href='/' shallow legacyBehavior>
           <Badge className='whitespace-nowrap cursor-pointer font-normal'>Movie advisor</Badge>

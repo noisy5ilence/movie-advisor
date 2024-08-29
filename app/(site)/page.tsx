@@ -1,6 +1,6 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
-import { randomMovies } from '@/lib/api';
+import { randomMovies, trendingMovies } from '@/lib/api';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';

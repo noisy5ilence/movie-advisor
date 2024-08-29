@@ -1,9 +1,16 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { Metadata } from 'next';
 
 import { topMovies } from '@/lib/api';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
+
+export const metadata: Metadata = {
+  title: 'Top Rated Movies | Movie Advisor',
+  description:
+    'Discover the top-rated movies on Movie Advisor. Find the highest-rated films and make informed viewing choices.'
+};
 
 export default async function Top() {
   const queryClient = getQueryClient();

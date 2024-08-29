@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { startTransition, useCallback, useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import useFilters from '@/app/(site)/useFilters';
@@ -49,7 +49,7 @@ const useRandomMovie = () => {
           refetch();
         }
         previousIndexes[JSON.stringify(filters)] = index;
-        setIndex(index);
+        startTransition(() => setIndex(index));
       },
       [movies, filters]
     ),

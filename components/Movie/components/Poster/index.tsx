@@ -14,7 +14,7 @@ const Poster: FC<Props> = ({ title, poster }) => {
       alt={title}
     />
   ) : (
-    <div className={'w-full flex items-center justify-center rounded-lg grow'}>
+    <div className='w-full flex items-center justify-center rounded-lg grow'>
       <ImageOff size={100} strokeWidth={1} color='hsl(215.4 16.3% 46.9%)' />
     </div>
   );

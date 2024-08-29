@@ -53,6 +53,14 @@ export const popularMovies = async ({ page }: { page?: string } = {}): Promise<M
   });
 };
 
+export const trendingMovies = async ({ page }: { page?: string } = {}): Promise<MovieDBResponse> => {
+  return server.get('/trending/movie/day', {
+    params: {
+      page
+    }
+  });
+};
+
 export const topMovies = async ({
   page,
   starring

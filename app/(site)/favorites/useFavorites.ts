@@ -43,4 +43,15 @@ export const useFavoritesMutation = () => {
   };
 };
 
+export const useFavoriteToggle = (movie: Movie) => {
+  const { add, remove } = useFavoritesMutation();
+  const { map } = useFavorites();
+
+  const isFavorite = map.has(movie.id);
+
+  const toggle = () => (isFavorite ? remove(movie.id) : add(movie));
+
+  return { isFavorite, toggle };
+};
+
 export default useFavorites;
