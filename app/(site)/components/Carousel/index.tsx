@@ -31,14 +31,14 @@ export const Measurer = ({ children }: { children: (width: number) => ReactNode 
 };
 
 export const Carousel = ({
+  index,
   movies,
   width: initialWidth,
-  index,
   onIndexChange
 }: {
+  index: number;
   movies?: Movie[];
   width: number;
-  index: number;
   onIndexChange: (index: number) => void;
 }) => {
   const timeout = useRef<NodeJS.Timeout>();
@@ -57,16 +57,21 @@ export const Carousel = ({
   }, []);
 
   useEffect(() => {
-    const scrollTo = (event: globalThis.KeyboardEvent) => {
-      if (event.key === 'ArrowLeft') {
-        if (index <= 0) return;
+    let pressed = false;
+
+    const scrollTo = ({ key }: globalThis.KeyboardEvent) => {
+      if (['ArrowLeft', 'ArrowRight'].includes(key)) {
+        pressed = true;
         setSnap(false);
+      }
+
+      if (key === 'ArrowLeft') {
+        if (index <= 0) return;
         ref.current?.scrollIntoView({ index: index - 1, behavior: 'smooth' });
       }
 
-      if (event.key === 'ArrowRight') {
+      if (key === 'ArrowRight') {
         if (index >= (movies?.length || 0) - 1) return;
-        setSnap(false);
         ref.current?.scrollIntoView({ index: index + 1, behavior: 'smooth' });
       }
     };
@@ -75,7 +80,7 @@ export const Carousel = ({
 
     return () => {
       document.removeEventListener('keydown', scrollTo);
-      setTimeout(() => setSnap(true), 100);
+      pressed && setTimeout(() => setSnap(true), 100);
     };
   }, [index, movies?.length]);
 

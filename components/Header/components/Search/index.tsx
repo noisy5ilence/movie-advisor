@@ -62,7 +62,6 @@ export const showSearchModal = create(({ onResolve }) => {
           className='pr-10 focus-visible:ring-0'
         />
         <Button
-          base
           variant='outline'
           type='button'
           size='icon'
@@ -112,7 +111,7 @@ export const showSearchModal = create(({ onResolve }) => {
 
 export default function ToggleSearch() {
   return (
-    <Button base variant='ghost' size='icon' onClick={() => showSearchModal()}>
+    <Button variant='ghost' size='icon' onClick={() => showSearchModal()}>
       <SearchIcon size={19} />
     </Button>
   );

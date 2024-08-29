@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { useRef, useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { HTMLMotionProps, motion } from 'framer-motion';
 
 import { cn } from '@/lib/utils';
 
@@ -37,27 +35,8 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
-const Button = React.forwardRef<
-  HTMLButtonElement,
-  HTMLMotionProps<'button'> & Pick<ButtonProps, 'size' | 'variant'> & { base?: boolean }
->(({ className, variant, size, base, ...props }, ref) => {
-  if (base)
-    return (
-      <button
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...(props as unknown as ButtonProps)}
-      />
-    );
-  return (
-    <motion.button
-      className={cn(buttonVariants({ variant, size, className }))}
-      ref={ref}
-      {...props}
-      onClick={undefined}
-      onTap={(e) => props.onClick?.(e as unknown as React.MouseEvent<HTMLButtonElement, MouseEvent>)}
-    />
-  );
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, ...props }, ref) => {
+  return <button className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
 });
 Button.displayName = 'Button';
 

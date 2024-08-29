@@ -25,10 +25,11 @@ export const search = async ({
 
 export const randomMovies = async ({ filters }: { filters: Partial<Filters> }): Promise<Movie[]> => {
   return server
-    .get('/discover/movie', {
+    .get<MovieDBResponse>('/discover/movie', {
       params: {
         sort_by: 'popularity.desc',
-        page: Math.floor(Math.random() * 500) + 1,
+        with_origin_country: 'UA|GB|AU|US|IT|DE|FR',
+        page: Math.floor(Math.random() * 499) + 1,
         with_genres: filters.genres?.join('|'),
         'vote_average.gte': filters.score?.[0],
         'vote_average.lte': filters.score?.[1],
@@ -36,7 +37,7 @@ export const randomMovies = async ({ filters }: { filters: Partial<Filters> }): 
         'release_date.lte': filters.year?.[1]
       }
     })
-    .then((data: unknown) => filterUnknownMovies((data as MovieDBResponse).results));
+    .then((data) => filterUnknownMovies(data.results));
 };
 
 export const popularMovies = async ({ page }: { page?: string } = {}): Promise<MovieDBResponse> => {

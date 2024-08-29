@@ -1,6 +1,5 @@
-import { FC, forwardRef, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { VirtuosoGrid, VirtuosoGridProps } from 'react-virtuoso';
-import { motion } from 'framer-motion';
 
 import Card from '@/components/Movie/Card';
 import { showPreviewModal } from '@/components/Movie/Preview';
@@ -15,27 +14,7 @@ interface Props {
   onPreviewClose?: () => void;
 }
 
-const container = {
-  hidden: { y: -20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1
-  }
-};
-
 const components: VirtuosoGridProps<Movie, { shows: Movie[]; onClick: (movie: Movie) => void }>['components'] = {
-  List: forwardRef(function List({ context, ...props }, ref) {
-    return (
-      <motion.div
-        {...props}
-        variants={container}
-        initial='hidden'
-        animate='visible'
-        className='flex gap-2 flex-wrap justify-center grow empty:hidden'
-        ref={ref}
-      />
-    );
-  }),
   Item: ({ context, 'data-index': index }) => {
     const { shows, onClick } = context || {};
     const movie = shows?.[index];
@@ -70,6 +49,7 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, onPreviewClose, ty
     <>
       <VirtuosoGrid
         useWindowScroll
+        listClassName='flex gap-2 flex-wrap justify-center grow empty:hidden opacity-0 animate-fade-in-slide-in'
         customScrollParent={customScrollParent}
         totalCount={shows.length}
         overscan={4}

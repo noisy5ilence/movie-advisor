@@ -2,7 +2,6 @@
 
 import { FC, ReactNode } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
-import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';
 
 import useTrailer from '@/app/(site)/useTrailer';
@@ -39,12 +38,12 @@ export default function ToggleTrailer({ movieId, type = 'movie', children }: Pro
   return children
     ? children({ onPlay: () => showTrailerModal({ trailerKey: trailer?.key }), disabled: isFetched && !trailer })
     : trailer && (
-        <motion.div
-          onTap={() => showTrailerModal({ trailerKey: trailer?.key })}
+        <div
+          onClick={() => showTrailerModal({ trailerKey: trailer?.key })}
           title='Play trailer'
           className='absolute w-full h-full left-0 top-0 bg-black cursor-pointer overflow-hidden rounded-lg transition-opacity opacity-0 hover:opacity-70 flex items-center justify-center'
         >
           <Play size={100} className='fill-white' />
-        </motion.div>
+        </div>
       );
 }

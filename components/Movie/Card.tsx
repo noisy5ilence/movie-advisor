@@ -31,8 +31,8 @@ const Card: FC<Props> = ({ movie, onClick, className }) => {
           </div>
           <div className='text-white absolute w-full h-full top-0 left-0 rounded-md flex flex-col justify-between p-2 card-gradient'>
             <Handlers movie={movie} onClick={onClick} />
-            <div className='flex items-start justify-between text-lg opacity-75'>
-              <span>{movie.name || movie.title}</span>
+            <div className='grid grid-cols-[1fr_auto] text-lg opacity-75 gap-2'>
+              <span className='overflow-ellipsis overflow-hidden whitespace-nowrap'>{movie.name || movie.title}</span>
               {Boolean(movie.release_date) && <span>{new Date(movie.release_date).getFullYear()}</span>}
             </div>
             <div className='opacity-75 mb-[-5px]'>

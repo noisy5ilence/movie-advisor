@@ -10,7 +10,6 @@ class Server {
     }, new URLSearchParams());
 
     return fetch(`${base}${url}?${serializedParams}`, {
-      cache: 'force-cache',
       next: { revalidate: 3600 },
       headers: {
         Authorization: `Bearer ${process.env.MOVIE_DB_TOKEN}`

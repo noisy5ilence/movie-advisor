@@ -2,7 +2,6 @@
 
 import { FC, useEffect, useRef, useState } from 'react';
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
-import { motion } from 'framer-motion';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -71,11 +70,16 @@ export function DesktopNavigation() {
           </Link>
         </li>
       ))}
-      <Cursor position={position} />
+      <Cursor options={position} />
     </ul>
   );
 }
 
-const Cursor: FC<{ position: { left: number; width: number; opacity: number } }> = ({ position }) => {
-  return <motion.li className='pointer-events-none absolute bg-primary rounded-full h-full z-0' animate={position} />;
+const Cursor: FC<{ options: { left: number; width: number; opacity: number } }> = ({ options }) => {
+  return (
+    <li
+      className='pointer-events-none absolute bg-primary rounded-full h-full z-0 transition-all'
+      style={{ width: options.width, left: options.left, opacity: options.opacity }}
+    />
+  );
 };
