@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 import useScrollDelta from '@/hooks/useScrollDelta';
@@ -157,9 +157,10 @@ DialogDescription.displayName = DialogPrimitive.Description.displayName;
 const Modal: React.FC<{
   children: React.ReactNode;
   className?: string;
+  style?: CSSProperties;
   onClose: () => void;
   scrollRef?: React.MutableRefObject<HTMLDivElement>;
-}> = ({ children, onClose, className, scrollRef }) => {
+}> = ({ children, onClose, className, style, scrollRef }) => {
   const [open, setOpen] = useState(true);
 
   const handleClose = () => {
@@ -172,7 +173,7 @@ const Modal: React.FC<{
       <DialogHeader>
         <DialogTitle />
       </DialogHeader>
-      <DialogContent scrollRef={scrollRef} forceMount onClose={handleClose} className={className}>
+      <DialogContent style={style} scrollRef={scrollRef} forceMount onClose={handleClose} className={className}>
         {children}
       </DialogContent>
     </Dialog>

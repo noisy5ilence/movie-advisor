@@ -1,27 +1,24 @@
 'use client';
 
-import { startTransition, useCallback, useEffect, useState } from 'react';
+import { startTransition, useCallback, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import useFilters from '@/app/(site)/useFilters';
 import { randomMovies } from '@/lib/api';
 
 const UPDATE_RATE = 10;
 
-const previousIndexes: Record<string, number> = {};
+let previousIndex: number = 0;
 
 const useRandomMovie = () => {
   const queryClient = useQueryClient();
-  const { filters } = useFilters();
-  const indexByFilter = previousIndexes[JSON.stringify(filters)];
-  const [index, setIndex] = useState(indexByFilter);
+  const [index, setIndex] = useState(previousIndex);
 
   const { data: movies, refetch } = useQuery({
-    queryKey: ['random-movie', filters],
-    queryFn: () => randomMovies({ filters }),
+    queryKey: ['random-movie'],
+    queryFn: () => randomMovies({ filters: {} }),
     structuralSharing(_, newData) {
       const uniqueIds: Record<string, number> = {};
-      const current = queryClient.getQueryData<Movie[]>(['random-movie', filters]) || [];
+      const current = queryClient.getQueryData<Movie[]>(['random-movie']) || [];
       const next = Array.isArray(newData) ? newData : [newData];
 
       return [...current, ...next].reduce((unique, movie) => {
@@ -35,10 +32,6 @@ const useRandomMovie = () => {
     }
   });
 
-  useEffect(() => {
-    setIndex(indexByFilter || 0);
-  }, [indexByFilter]);
-
   return {
     movies,
     movie: movies?.[index],
@@ -48,10 +41,10 @@ const useRandomMovie = () => {
         if ((index && index % UPDATE_RATE === 0) || movies!.length < UPDATE_RATE) {
           refetch();
         }
-        previousIndexes[JSON.stringify(filters)] = index;
+        previousIndex = index;
         startTransition(() => setIndex(index));
       },
-      [movies, filters]
+      [movies]
     ),
     index
   };

@@ -83,5 +83,5 @@ module.exports = {
   corePlugins: {
     aspectRatio: false
   },
-  plugins: [require('tailwindcss-animate'), require('@tailwindcss/aspect-ratio'), require('tailwindcss-touch')()]
+  plugins: [require('tailwindcss-animate'), require('tailwindcss-touch')()]
 };

@@ -25,21 +25,19 @@ const Preview: FC<Props> = ({ movie, className, onClose, children, card, type = 
   if (!movie) return null;
 
   return (
-    <div className={cn('rounded-xl text-card-foreground', { 'p-2': Boolean(onClose) }, className)}>
-      <div className='flex flex-col md:flex-row max-w-[100%] gap-2'>
-        {card || <Card className='mx-auto' movie={movie} />}
-        <div className='flex flex-col grow'>
-          {children && <div className='flex hover-none:hidden w-full max-sm:mb-0 mb-2 gap-2'>{children}</div>}
-          <div className='flex w-full gap-2'>
-            <Actions type={type} movie={movie} onClose={onClose} />
-          </div>
-          <Separator className='my-2' />
-          <p key={movie.id} className='leading-7 mb-3'>
-            {movie.overview}
-          </p>
-          <div className='mt-auto grid grid-cols-1 rounded-lg'>
-            <Credits type={type} movieId={movie.id} onPersonClick={onClose} />
-          </div>
+    <div className={cn('flex flex-col md:flex-row gap-2 rounded-xl', { 'p-2': Boolean(onClose) }, className)}>
+      {card || <Card className='mx-auto' movie={movie} />}
+      <div className='flex flex-col grow'>
+        {children && <div className='flex hover-none:hidden w-full max-sm:mb-0 mb-2 gap-2'>{children}</div>}
+        <div className='flex w-full gap-2'>
+          <Actions type={type} movie={movie} onClose={onClose} />
+        </div>
+        <Separator className='my-2' />
+        <p key={movie.id} className='leading-7 mb-3'>
+          {movie.overview}
+        </p>
+        <div className='mt-auto grid grid-cols-1 rounded-lg'>
+          <Credits type={type} movieId={movie.id} onPersonClick={onClose} />
         </div>
       </div>
     </div>

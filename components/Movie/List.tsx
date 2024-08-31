@@ -49,14 +49,12 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, onPreviewClose, ty
     <>
       <VirtuosoGrid
         useWindowScroll
-        listClassName='flex gap-2 flex-wrap justify-center grow empty:hidden opacity-0 animate-fade-in-slide-in'
-        customScrollParent={customScrollParent}
-        totalCount={shows.length}
-        overscan={4}
-        endReached={handleFetchMore}
         data={shows}
         context={context}
         components={components}
+        listClassName='flex gap-2 flex-wrap justify-center grow empty:hidden opacity-0 animate-fade-in-slide-in'
+        customScrollParent={customScrollParent}
+        endReached={handleFetchMore}
       />
       <div className='h-2 w-full' />
     </>

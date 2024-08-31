@@ -1,8 +1,12 @@
 import React, { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
+import { Poppins } from 'next/font/google';
 import { cookies } from 'next/headers';
 
+const poppins = Poppins({ subsets: ['latin'], weight: '400' });
+
 import Header from '@/components/Header';
+import { cn } from '@/lib/utils';
 import Providers from '@/providers';
 
 import '@/styles/index.css';
@@ -28,16 +32,18 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang='en' className={theme}>
       <head>
         <meta name='theme-color' content='black' />
-        <link rel='preconnect' href='https://fonts.googleapis.com' />
+        {/* <link rel='preconnect' href='https://fonts.googleapis.com' />
         <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='' />
-        <link href='https://fonts.googleapis.com/css2?family=Moderustic&family=Poppins&display=swap' rel='stylesheet' />
+        <link href='https://fonts.googleapis.com/css2?family=Moderustic&family=Poppins&display=swap' rel='stylesheet' /> */}
       </head>
       <body>
         <Providers theme={theme}>
           <div className='sticky top-0 z-20'>
             <Header />
           </div>
-          <main className='px-2 max-w-[1240px] mx-auto'>{children}</main>
+          <main className='px-2 max-w-[1240px] mx-auto' style={poppins.style}>
+            {children}
+          </main>
         </Providers>
       </body>
     </html>

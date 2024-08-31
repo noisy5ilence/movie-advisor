@@ -21,7 +21,7 @@ export function MobileNavigation() {
   const currentPath = usePathname();
 
   return (
-    <div className='flex xs:hidden'>
+    <div className='flex md:hidden'>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant='ghost' size='icon'>
@@ -58,7 +58,7 @@ export function DesktopNavigation() {
   }, [currentPath]);
 
   return (
-    <ul className='relative hidden xs:flex items-center whitespace-nowrap text-sm gap-3'>
+    <ul className='relative hidden md:flex items-center whitespace-nowrap text-sm gap-3'>
       {paths.map(({ path, title }) => (
         <li
           key={path}
