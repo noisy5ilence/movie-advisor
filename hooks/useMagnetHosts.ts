@@ -4,29 +4,28 @@ import { atomWithStorage } from 'jotai/utils';
 
 import showHostManagerModal from '@/components/Movie/components/Torrents/HostManager';
 
-const hostAtom = atomWithStorage<string>('magnet-host', '', undefined, {
+const magnetPrefixAtom = atomWithStorage<string>('magnet-prefix', 'http://{host}:65220/playuri?uri=', undefined, {
   unstable_getOnInit: true
 });
 
-export const useHost = () => useAtomValue(hostAtom);
+export const usePrefix = () => useAtomValue(magnetPrefixAtom);
 
-export const useSetHost = () => useSetAtom(hostAtom);
+export const useSetPrefix = () => useSetAtom(magnetPrefixAtom);
 
 export const useCastMagnet = () => {
-  const hosts = useHost();
+  const prefix = usePrefix();
 
   return useCallback(
     (magnet: string) => {
-      const open = (hosts: string) =>
-        hosts.split(',').forEach((host) => {
-          const link = window.open(`http://${host}:65220/playuri?uri=${magnet}`, '_blank');
-          setTimeout(() => link?.close(), 1000);
-        });
+      const open = (prefix: string) => {
+        const link = window.open(`${prefix}${magnet}`, '_blank');
+        setTimeout(() => link?.close(), 1000);
+      };
 
-      if (!hosts) return showHostManagerModal().then(open);
+      if (!prefix || prefix.includes('{host}')) return showHostManagerModal().then(open);
 
-      return Promise.resolve(open(hosts));
+      return Promise.resolve(open(prefix));
     },
-    [hosts]
+    [prefix]
   );
 };

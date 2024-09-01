@@ -17,11 +17,10 @@ const Trailer: FC<{ trailerKey?: string } & InstanceProps<void>> = ({ trailerKey
   if (!trailerKey) return;
 
   return (
-    <Modal className='block p-0 min-h-[400px] border-none' style={{ aspectRatio: '16/9' }} onClose={onResolve}>
+    <Modal className='block p-0 max-w-[930px] border-none bg-black' style={{ aspectRatio: '16/9' }} onClose={onResolve}>
       <iframe
         allow='autoplay'
         className='border-none rounded-lg'
-        style={{ aspectRatio: '16/9' }}
         width='100%'
         height='100%'
         src={`//www.youtube.com/embed/${trailerKey}?autoplay=1`}

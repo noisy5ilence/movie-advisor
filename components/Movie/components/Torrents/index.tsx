@@ -1,13 +1,13 @@
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import React, { Dispatch, FC, Fragment, SetStateAction, useState } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import { ArrowDownIcon, CaretSortIcon } from '@radix-ui/react-icons';
-import { Cast, Loader, Magnet } from 'lucide-react';
+import { Cast, Copy,Loader, Magnet } from 'lucide-react';
 
 import useTorrents from '@/app/(site)/useTorrents';
 import { Modal } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Toggle } from '@/components/ui/toggle';
-import { useCastMagnet, useHost, useSetHost } from '@/hooks/useMagnetHosts';
+import { useCastMagnet, usePrefix } from '@/hooks/useMagnetHosts';
 import { ORDER } from '@/lib/api/parsers/pirate-bay';
 
 import showHostManagerModal from './HostManager';
@@ -41,7 +41,7 @@ const TableHeadSortable = ({
       }
       className='cursor-pointer select-none px-2'
     >
-      <div className='flex gap-1 items-center justify-center'>
+      <div className='flex gap-1 items-center'>
         <span>{title}</span>
         {value.by === by ? <ArrowDownIcon className='ml-2 h-4 w-4' /> : <CaretSortIcon className='ml-2 h-4 w-4' />}
       </div>
@@ -50,7 +50,8 @@ const TableHeadSortable = ({
 };
 
 const Torrents: FC<Props> = ({ title, year, onResolve }) => {
-  const host = useHost();
+  const isMobile = matchMedia('(max-width: 600px)').matches;
+  const prefix = usePrefix();
   const [sorting, setSorting] = useState<Sorting>({ by: ORDER.seeders });
   const [withYear, setWithYear] = useState(true);
 
@@ -68,54 +69,65 @@ const Torrents: FC<Props> = ({ title, year, onResolve }) => {
         <TableHeader>
           <TableRow>
             <TableHead className='px-2' colSpan={4}>
-              {title}{' '}
-              <Toggle
-                size='sm'
-                className='p-2 h-7'
-                pressed={withYear}
-                onClick={() => setWithYear((withYear) => !withYear)}
-              >
-                {year}
-              </Toggle>
+              <div className='grid grid-cols-[1fr_auto] items-center gap-3'>
+                <span className='overflow-ellipsis overflow-hidden text-base whitespace-nowrap'>{title}</span>
+                <Toggle
+                  size='sm'
+                  className='p-2 h-7'
+                  pressed={withYear}
+                  onClick={() => setWithYear((withYear) => !withYear)}
+                >
+                  {year}
+                </Toggle>
+              </div>
             </TableHead>
           </TableRow>
           <TableRow>
-            <TableHead className='px-2'>Title</TableHead>
+            {!isMobile && <TableHead className='px-2'>Title</TableHead>}
             <TableHeadSortable title='Size' by={ORDER.size} value={sorting} onChange={setSorting} />
             <TableHeadSortable title='Seeders' by={ORDER.seeders} value={sorting} onChange={setSorting} />
-            <TableHead className='px-2 text-center cursor-pointer select-none' onClick={() => showHostManagerModal()}>
-              Magnet
-            </TableHead>
+            <TableHead className='px-2 cursor-pointer select-none' onClick={() => showHostManagerModal()} />
           </TableRow>
         </TableHeader>
         <TableBody>
           {torrents?.map((torrent) => (
-            <TableRow key={torrent.magnet + torrent.id}>
-              <TableCell className='break-all p-2'>{torrent.title}</TableCell>
-              <TableCell className='p-2'>
-                <div className='flex items-center gap-1 shrink-0 justify-center'>{torrent.size}</div>
-              </TableCell>
-              <TableCell className='text-center p-2'>{torrent.seeders}</TableCell>
-              <TableCell className='text-center p-1'>
-                <div className='flex gap-2 m-auto justify-center'>
-                  {host ? (
-                    <a
-                      onClick={(event) => {
-                        event.preventDefault();
-                        cast(torrent.magnet!);
-                      }}
-                      className='flex items-center justify-center h-8 w-8 border rounded-lg'
-                    >
-                      <Cast size={20} />
-                    </a>
-                  ) : (
+            <Fragment key={torrent.magnet + torrent.id}>
+              {isMobile && (
+                <TableRow className='border-b-0'>
+                  <TableCell className='break-all p-2' colSpan={4}>
+                    {torrent.title}
+                  </TableCell>
+                </TableRow>
+              )}
+              <TableRow>
+                {!isMobile && <TableCell className='break-all p-2'>{torrent.title}</TableCell>}
+                <TableCell className='p-2'>
+                  <div className='flex items-center gap-1 shrink-0'>{torrent.size}</div>
+                </TableCell>
+                <TableCell className='p-2'>{torrent.seeders}</TableCell>
+                <TableCell className='text-center p-1 pr-2'>
+                  <div className='flex gap-2 justify-end'>
                     <a href={torrent.magnet} className='flex items-center justify-center h-8 w-8 border rounded-lg'>
                       <Magnet size={20} />
                     </a>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
+                    <div
+                      className='flex items-center justify-center h-8 w-8 border rounded-lg cursor-pointer'
+                      onClick={() => navigator.clipboard.writeText(torrent.magnet)}
+                    >
+                      <Copy size={20} />
+                    </div>
+                    {prefix && !prefix.includes('{host}') && (
+                      <div
+                        onClick={() => cast(torrent.magnet!)}
+                        className='flex items-center justify-center h-8 w-8 border rounded-lg cursor-pointer'
+                      >
+                        <Cast size={20} />
+                      </div>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            </Fragment>
           ))}
           {isLoading && (
             <TableRow>
