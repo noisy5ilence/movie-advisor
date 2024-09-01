@@ -6,7 +6,6 @@ import { cookies } from 'next/headers';
 const poppins = Poppins({ subsets: ['latin'], weight: '400' });
 
 import Header from '@/components/Header';
-import { cn } from '@/lib/utils';
 import Providers from '@/providers';
 
 import '@/styles/index.css';
@@ -38,7 +37,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <div className='sticky top-0 z-20'>
             <Header />
           </div>
-          <main className='px-2 max-w-[1240px] mx-auto'>{children}</main>
+          <main className='px-2 mx-auto max-w-[1240px]'>{children}</main>
         </Providers>
       </body>
     </html>

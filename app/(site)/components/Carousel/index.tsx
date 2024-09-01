@@ -1,30 +1,23 @@
 'use client';
 
 import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
-import { StateSnapshot, Virtuoso, VirtuosoHandle, VirtuosoProps } from 'react-virtuoso';
+import { Virtuoso, VirtuosoHandle, VirtuosoProps } from 'react-virtuoso';
 
 import Card from '@/components/Movie/Card';
-
-let snapshot: StateSnapshot;
 
 const Carousel = ({
   index,
   movies,
-  onIndexChange
+  onIndexChange,
+  onEndReached
 }: {
   index: number;
   movies?: Movie[];
   onIndexChange: (index: number) => void;
+  onEndReached: () => void;
 }) => {
   const ref = useRef<VirtuosoHandle>(null);
-
-  useEffect(() => {
-    const virtuoso = ref.current;
-
-    if (!virtuoso) return;
-
-    return () => virtuoso.getState((state) => (snapshot = state));
-  }, []);
+  const initialIndex = useRef(index);
 
   useEffect(() => {
     const scrollTo = ({ key }: globalThis.KeyboardEvent) => {
@@ -52,11 +45,12 @@ const Carousel = ({
         ref={ref}
         data={movies}
         context={onIndexChange}
-        horizontalDirection
+        endReached={onEndReached}
+        initialTopMostItemIndex={initialIndex.current}
         components={components}
+        horizontalDirection
         skipAnimationFrameInResizeObserver
         increaseViewportBy={1000}
-        restoreStateFrom={snapshot}
       />
     </div>
   );

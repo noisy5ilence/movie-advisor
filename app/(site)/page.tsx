@@ -8,7 +8,11 @@ import Container from './container';
 export default async function Random() {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery({ queryKey: ['random-movie'], queryFn: () => randomMovies({ filters: {} }) });
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['random-movie'],
+    queryFn: () => randomMovies(),
+    initialPageParam: '1'
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

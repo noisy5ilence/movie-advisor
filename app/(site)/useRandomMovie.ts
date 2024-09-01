@@ -1,52 +1,43 @@
 'use client';
 
-import { startTransition, useCallback, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { startTransition, useCallback, useMemo, useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
+import useSessionRef from '@/hooks/useSessionRef';
 import { randomMovies } from '@/lib/api';
 
-const UPDATE_RATE = 10;
-
-let previousIndex: number = 0;
-
 const useRandomMovie = () => {
-  const queryClient = useQueryClient();
-  const [index, setIndex] = useState(previousIndex);
+  const [indexRef, setIndexRef] = useSessionRef('random-movie-index', 0);
+  const [index, setIndex] = useState(indexRef.current);
 
-  const { data: movies, refetch } = useQuery({
+  const { data, fetchNextPage } = useInfiniteQuery({
     queryKey: ['random-movie'],
-    queryFn: () => randomMovies({ filters: {} }),
-    structuralSharing(_, newData) {
-      const uniqueIds: Record<string, number> = {};
-      const current = queryClient.getQueryData<Movie[]>(['random-movie']) || [];
-      const next = Array.isArray(newData) ? newData : [newData];
-
-      return [...current, ...next].reduce((unique, movie) => {
-        if (uniqueIds[movie.id]) return unique;
-
-        uniqueIds[movie.id] = movie.id;
-        unique.push(movie);
-
-        return unique;
-      }, [] as Movie[]);
-    }
+    queryFn: () => randomMovies(),
+    getNextPageParam: () => '',
+    initialPageParam: ''
   });
 
+  const movies = useMemo(
+    () =>
+      data?.pages.reduce((movies, page) => {
+        movies.push(...page);
+        return movies;
+      }, []),
+    [data]
+  );
+
   return {
+    index,
     movies,
     movie: movies?.[index],
-    hasPrevious: index > 0,
+    fetchNextPage,
     onIndexChange: useCallback(
       (index: number) => {
-        if ((index && index % UPDATE_RATE === 0) || movies!.length < UPDATE_RATE) {
-          refetch();
-        }
-        previousIndex = index;
+        setIndexRef(index);
         startTransition(() => setIndex(index));
       },
-      [movies]
-    ),
-    index
+      [setIndexRef]
+    )
   };
 };
 

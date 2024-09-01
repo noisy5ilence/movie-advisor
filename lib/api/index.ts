@@ -3,6 +3,7 @@
 import server from '@/network/server';
 
 import filterUnknownMovies from '../filterUnknownMovies';
+import { createUniqueRandomGenerator } from '../utils';
 
 import pirateBay from './parsers/pirate-bay';
 
@@ -23,13 +24,15 @@ export const search = async ({
   });
 };
 
-export const randomMovies = async ({ filters }: { filters: Partial<Filters> }): Promise<Movie[]> => {
+const generatePage = createUniqueRandomGenerator(500);
+
+export const randomMovies = async ({ filters }: { filters: Partial<Filters> } = { filters: {} }): Promise<Movie[]> => {
   return server
     .get<MovieDBResponse>('/discover/movie', {
       params: {
         sort_by: 'popularity.desc',
-        with_origin_country: 'UA|GB|AU|US|IT|DE|FR',
-        page: Math.floor(Math.random() * 499) + 1,
+        with_origin_country: 'UA|GB|JP|AU|US|IT|DE|FR',
+        page: generatePage(),
         with_genres: filters.genres?.join('|'),
         'vote_average.gte': filters.score?.[0],
         'vote_average.lte': filters.score?.[1],
@@ -96,7 +99,7 @@ export const similarMovies = async ({
 };
 
 export const genres = async (): Promise<IDName[]> => {
-  return server.get('/genre/movie/list').then((response) => (response as unknown as { genres: IDName[] }).genres);
+  return server.get<{ genres: IDName[] }>('/genre/movie/list').then((data) => data.genres);
 };
 
 export const credits = async ({
@@ -106,24 +109,21 @@ export const credits = async ({
   movieId: number;
   type?: ShowType;
 }): Promise<Array<Actor>> => {
-  'use server';
-
-  return server.get(`/${type}/${movieId}/${type === 'tv' ? 'aggregate_credits' : 'credits'}`).then((response) => {
-    const data = (response as unknown as { cast: Array<unknown> }).cast;
-    if (type === 'tv') {
-      return data.map((item) => {
-        const actor = item as AggregatedActor;
-        const [role] = actor.roles || [{}];
-        return { ...actor, ...role } as unknown as Actor;
-      });
-    }
-    return data as Array<Actor>;
-  });
+  return server
+    .get<{ cast: Array<unknown> }>(`/${type}/${movieId}/${type === 'tv' ? 'aggregate_credits' : 'credits'}`)
+    .then((data) => {
+      if (type === 'tv') {
+        return data.cast.map((item) => {
+          const actor = item as AggregatedActor;
+          const [role] = actor.roles || [{}];
+          return { ...actor, ...role } as unknown as Actor;
+        });
+      }
+      return data.cast as Array<Actor>;
+    });
 };
 
 export const torrents = async ({ query, order, seeders }: { query: string; seeders?: number; order: number }) => {
-  'use server';
-
   try {
     const torrents = await pirateBay.search({
       query,
@@ -136,13 +136,11 @@ export const torrents = async ({ query, order, seeders }: { query: string; seede
 };
 
 export const trailers = async ({ movieId, type }: { movieId: number; type?: ShowType }): Promise<Trailer[]> => {
-  'use server';
-
   return server
-    .get(`/${type}/${movieId}/videos`, {
+    .get<{ id: number; results: Trailer[] }>(`/${type}/${movieId}/videos`, {
       params: {
         language: 'en-US'
       }
     })
-    .then((response) => (response as unknown as { id: number; results: Trailer[] }).results);
+    .then((data) => data.results);
 };
