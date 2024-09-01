@@ -26,6 +26,11 @@ const useRandomMovie = () => {
     [data]
   );
 
+  if (movies?.length && !movies[index]) {
+    setIndex(0);
+    setIndexRef(0);
+  }
+
   return {
     index,
     movies,
