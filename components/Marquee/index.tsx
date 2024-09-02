@@ -1,4 +1,5 @@
 import { FC } from 'react';
+
 import Card from '../Movie/Card';
 import { showPreviewModal } from '../Movie/Preview';
 

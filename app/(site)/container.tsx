@@ -3,8 +3,8 @@
 import Preview from '@/components/Movie/Preview';
 
 import Carousel from './components/Carousel';
-import useRandomMovie from './useRandomMovie';
 import Trending from './components/Trending';
+import useRandomMovie from './useRandomMovie';
 
 const Random = () => {
   const { movies, movie, index, onIndexChange, fetchNextPage } = useRandomMovie();

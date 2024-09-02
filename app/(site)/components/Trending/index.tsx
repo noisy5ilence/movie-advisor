@@ -1,8 +1,10 @@
 'use client';
 
+import { FC } from 'react';
+
 import Marquee from '@/components/Marquee';
 import { Badge } from '@/components/ui/badge';
-import { FC } from 'react';
+
 import useTrending from './useTrending';
 
 const Trending: FC<{ label: string; type: 'trending' | 'streaming' | 'theater' | 'rent' }> = ({ label, type }) => {
