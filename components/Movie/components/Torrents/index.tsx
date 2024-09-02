@@ -51,17 +51,19 @@ const providers = [
 const Torrents: FC<Props> = ({ title, year, type, id, onResolve }) => {
   const isMobile = matchMedia('(max-width: 600px)').matches;
   const prefix = usePrefix();
-  const [sorting, setSorting] = useState<Sort>(Sort.seeds);
+  const [sort, setSort] = useState<Sort>(Sort.seeds);
   const [withYear, setWithYear] = useState(true);
   const [{ key, queryFn, sortable }, setProvider] = useState(providers[0]);
+
+  const query = key === 'yts' ? title : withYear ? `${title} ${year || ''}` : title;
 
   const {
     data: torrents,
     isLoading,
     isFetched
   } = useTorrents({
-    query: withYear ? `${title} ${year || ''}` : title,
-    sort: sorting,
+    query,
+    sort,
     id,
     type,
     key,
@@ -104,20 +106,8 @@ const Torrents: FC<Props> = ({ title, year, type, id, onResolve }) => {
           </TableRow>
           <TableRow>
             {!isMobile && <TableHead className='px-2'>Title</TableHead>}
-            <TableHeadSortable
-              sortable={sortable}
-              title='Size'
-              sort={Sort.size}
-              value={sorting}
-              onChange={setSorting}
-            />
-            <TableHeadSortable
-              sortable={sortable}
-              title='Seeders'
-              sort={Sort.seeds}
-              value={sorting}
-              onChange={setSorting}
-            />
+            <TableHeadSortable sortable={sortable} title='Size' sort={Sort.size} value={sort} onChange={setSort} />
+            <TableHeadSortable sortable={sortable} title='Seeders' sort={Sort.seeds} value={sort} onChange={setSort} />
             <TableHead className='px-2 cursor-pointer select-none' onClick={() => showHostManagerModal()} />
           </TableRow>
         </TableHeader>
