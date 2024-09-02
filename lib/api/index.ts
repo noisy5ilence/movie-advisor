@@ -45,6 +45,21 @@ export const randomMovies = async ({ filters }: { filters: Partial<Filters> } = 
     .then((data) => filterUnknownMovies(data.results));
 };
 
+export const popularByType = async ({ type }: { type: 'streaming' | 'theater' | 'rent' }): Promise<Movie[]> => {
+  const params =
+    type === 'theater'
+      ? { with_release_type: 3 }
+      : { with_watch_monetization_types: type === 'streaming' ? 'flatrate' : 'rent' };
+  return server
+    .get<MovieDBResponse>('/discover/movie', {
+      params: {
+        ...params,
+        watch_region: 'US'
+      }
+    })
+    .then((data) => data.results);
+};
+
 export const popularMovies = async ({ page }: { page?: string } = {}): Promise<MovieDBResponse> => {
   return server.get('/discover/movie', {
     params: {
@@ -59,12 +74,14 @@ export const popularMovies = async ({ page }: { page?: string } = {}): Promise<M
   });
 };
 
-export const trendingMovies = async ({ page }: { page?: string } = {}): Promise<MovieDBResponse> => {
-  return server.get('/trending/movie/day', {
-    params: {
-      page
-    }
-  });
+export const trendingMovies = async ({ page }: { page?: string } = {}): Promise<Movie[]> => {
+  return server
+    .get<MovieDBResponse>('/trending/movie/day', {
+      params: {
+        page
+      }
+    })
+    .then((data) => data.results);
 };
 
 export const topMovies = async ({

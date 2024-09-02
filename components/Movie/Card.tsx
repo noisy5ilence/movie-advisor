@@ -21,7 +21,7 @@ const Card: FC<Props> = ({ movie, onClick, className, containerProps }) => {
     <div
       {...(containerProps || {})}
       className={cn(
-        'card-aspect-ratio relative bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg overflow-hidden rounded-lg',
+        'card-aspect-ratio relative bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg overflow-hidden rounded-lg text-lg',
         className
       )}
     >
@@ -30,7 +30,7 @@ const Card: FC<Props> = ({ movie, onClick, className, containerProps }) => {
       </div>
       <div className='text-white absolute w-full h-full top-0 left-0 rounded-md flex flex-col justify-between p-2 card-gradient'>
         <Handlers movie={movie} onClick={onClick} />
-        <div className='grid grid-cols-[1fr_auto] text-lg opacity-75 gap-2'>
+        <div className='grid grid-cols-[1fr_auto] opacity-75 gap-2'>
           <span className='overflow-ellipsis overflow-hidden whitespace-nowrap'>{movie.name || movie.title}</span>
           {Boolean(movie.release_date) && <span>{new Date(movie.release_date).getFullYear()}</span>}
         </div>

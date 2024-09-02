@@ -34,10 +34,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body style={poppins.style}>
         <Providers theme={theme}>
-          <div className='sticky top-0 z-20'>
+          <div className='fixed w-full left-0 top-0 z-20'>
             <Header />
           </div>
-          <main className='px-2 mx-auto max-w-[1240px]'>{children}</main>
+          <main className='px-2 mx-auto flex flex-col flex-1 w-full max-w-[1240px] mt-[56px]'>{children}</main>
         </Providers>
       </body>
     </html>
