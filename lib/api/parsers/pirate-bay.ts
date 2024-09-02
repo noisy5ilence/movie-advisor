@@ -1,13 +1,14 @@
 import axios, { AxiosInstance } from 'axios';
 import { parse } from 'node-html-parser';
 
-export enum ORDER {
-  size = 5,
-  seeders = 7
-}
+import { Sort } from './index';
 
 export class PirateBay {
   private client: AxiosInstance;
+  private sort = {
+    [Sort.size]: 5,
+    [Sort.seeds]: 7
+  };
 
   constructor(private host: string = process.env.PIRATE_BAY_HOST || 'https://thepiratebay10.org') {
     this.host = host;
@@ -20,14 +21,14 @@ export class PirateBay {
     query,
     page = 1,
     category = 200,
-    order = ORDER.size
+    sort = Sort.size
   }: {
     query: string;
     page?: number;
     category?: number;
-    order?: ORDER;
-  }) {
-    return this.client.post(`/search/${query}/${page}/${order}/${category}`, null).then(({ data }) => {
+    sort?: Sort;
+  }): Promise<Torrent[]> {
+    return this.client.post(`/search/${query}/${page}/${this.sort[sort]}/${category}`, null).then(({ data }) => {
       const html = parse(data);
       const table = html?.getElementById('searchResult');
       const rows = table?.querySelectorAll('tr:not(.header)');
@@ -54,7 +55,7 @@ export class PirateBay {
           seeders: parseInt(seeders[index]!),
           magnet: magnets[index]!
         };
-      });
+      }) as Torrent[];
     });
   }
 }

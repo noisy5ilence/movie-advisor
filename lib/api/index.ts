@@ -6,6 +6,8 @@ import filterUnknownMovies from '../filterUnknownMovies';
 import { createUniqueRandomGenerator } from '../utils';
 
 import pirateBay from './parsers/pirate-bay';
+import yts from './parsers/yts';
+import { Sort } from './parsers';
 
 export const search = async ({
   query,
@@ -102,6 +104,10 @@ export const genres = async (): Promise<IDName[]> => {
   return server.get<{ genres: IDName[] }>('/genre/movie/list').then((data) => data.genres);
 };
 
+export const externalIDs = async ({ id, type = 'movie' }: { id: number; type: ShowType }): Promise<string> => {
+  return server.get<ExternalIDS>(`/${type}/${id}/external_ids`).then(({ imdb_id }) => imdb_id);
+};
+
 export const credits = async ({
   movieId,
   type = 'movie'
@@ -123,11 +129,35 @@ export const credits = async ({
     });
 };
 
-export const torrents = async ({ query, order, seeders }: { query: string; seeders?: number; order: number }) => {
+export const YTSTorrents = async ({
+  query,
+  sort,
+  type,
+  id
+}: {
+  query: string;
+  sort: Sort;
+  id: number;
+  type: ShowType;
+}) => {
+  try {
+    const imdbID = await externalIDs({ id, type });
+    const torrents = await yts.search({
+      imdbID,
+      query,
+      sort
+    });
+    return torrents;
+  } catch (error) {
+    return [];
+  }
+};
+
+export const TPBTorrents = async ({ query, sort }: { query: string; sort: Sort; id: number; type: ShowType }) => {
   try {
     const torrents = await pirateBay.search({
       query,
-      order: order || seeders
+      sort
     });
     return torrents;
   } catch (error) {

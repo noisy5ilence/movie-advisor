@@ -156,3 +156,12 @@ interface Filters {
   year: Array<string>;
   score: Array<string>;
 }
+
+interface ExternalIDS {
+  id: number;
+  imdb_id: string;
+  wikidata_id: string;
+  facebook_id: string;
+  instagram_id: string;
+  twitter_id: string;
+}

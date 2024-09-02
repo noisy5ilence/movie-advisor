@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 
@@ -14,8 +14,6 @@ interface Props {
 }
 
 export default function Actions({ onClose, movie, type }: Props) {
-  const router = useRouter();
-
   return (
     <>
       <ToggleTrailer type={type} movieId={movie?.id}>
@@ -29,6 +27,8 @@ export default function Actions({ onClose, movie, type }: Props) {
         className='h-8 flex-grow w-[50%]'
         onClick={() =>
           showTorrentsModal({
+            id: movie.id,
+            type: type as ShowType,
             title: movie?.name || movie.title,
             year: new Date(movie.first_air_date || movie.release_date).getFullYear()
           })
@@ -36,17 +36,13 @@ export default function Actions({ onClose, movie, type }: Props) {
       >
         Torrents
       </Button>
-      <Button
-        className='h-8 flex-grow w-[50%]'
-        onClick={() => {
-          router.push(
-            `/similar?movieId=${movie.id}&title=${encodeURIComponent(movie?.name || movie.title)}&type=${type}`
-          );
-          onClose?.();
-        }}
+      <Link
+        className='flex w-[50%]'
+        href={`/similar?movieId=${movie.id}&title=${encodeURIComponent(movie?.name || movie.title)}&type=${type}`}
+        onClick={onClose}
       >
-        Similar
-      </Button>
+        <Button className='h-8 flex-grow'>Similar</Button>
+      </Link>
     </>
   );
 }

@@ -1,13 +1,26 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { torrents } from '@/lib/api';
-import { ORDER } from '@/lib/api/parsers/pirate-bay';
+import { Sort } from '@/lib/api/parsers';
 
-const useTorrents = ({ query, order }: { query: string; order: ORDER }) => {
+const useTorrents = ({
+  query,
+  sort,
+  id,
+  type,
+  key,
+  queryFn
+}: {
+  type: ShowType;
+  key: string;
+  id: number;
+  query: string;
+  sort: Sort;
+  queryFn: (params: { query: string; sort: Sort; id: number; type: ShowType }) => Promise<Torrent[]>;
+}) => {
   return useQuery({
     enabled: Boolean(query),
-    queryKey: ['pirate-bay', query, order],
-    queryFn: () => torrents({ query, order })
+    queryKey: [key, query, sort, id, type],
+    queryFn: () => queryFn({ query, sort, id, type })
   });
 };
 
