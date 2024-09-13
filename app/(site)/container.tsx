@@ -26,18 +26,9 @@ export default function Container() {
         <div className='w-full h-2' />
       </div>
 
-      <div className='xs:flex hidden flex-1 w-full h-full overflow-auto snap-mandatory snap-y relative rounded-lg no-scrollbar'>
-        <div className='absolute left-0 top-0 w-full'>
-          <div className='snap-center'>
-            <Trending label='Trending' type='trending' />
-          </div>
-          <div className='mt-6 snap-center'>
-            <Trending label='Streaming' type='streaming' />
-          </div>
-          <div className='mt-6 mb-6 snap-center'>
-            <Trending label='In theaters' type='theater' />
-          </div>
-        </div>
+      <div className='xs:block hidden w-full rounded-lg'>
+        <Trending />
+        <div className='w-full h-2' />
       </div>
     </div>
   );

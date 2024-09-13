@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
+import Nav from '@/components/ui/nav';
 
 const paths = [
   { path: '/', title: 'Random' },
@@ -47,39 +47,16 @@ export function MobileNavigation() {
 }
 
 export function DesktopNavigation() {
-  const [position, setPosition] = useState({ left: 0, width: 0, opacity: 0 });
-  const currentRef = useRef<HTMLLIElement>(null);
   const currentPath = usePathname();
-
-  useEffect(() => {
-    const link = currentRef.current;
-
-    setPosition({ width: link?.clientWidth || 0, left: link?.offsetLeft || 0, opacity: link ? 1 : 0 });
-  }, [currentPath]);
+  const active = paths.find(({ path }) => path === currentPath);
 
   return (
-    <ul className='relative hidden md:flex items-center whitespace-nowrap text-sm gap-3'>
-      {paths.map(({ path, title }) => (
-        <li
-          key={path}
-          ref={currentPath !== path ? undefined : currentRef}
-          className={cn('mix-blend-difference text-white z-10 px-2.5 py-0.5', currentPath !== path && 'cursor-pointer')}
-        >
-          <Link href={path}>
-            <div>{title}</div>
-          </Link>
-        </li>
-      ))}
-      <Cursor options={position} />
-    </ul>
+    <Nav tabs={paths} active={active || paths[0]}>
+      {({ path, title }) => (
+        <Link href={path}>
+          <div>{title}</div>
+        </Link>
+      )}
+    </Nav>
   );
 }
-
-const Cursor: FC<{ options: { left: number; width: number; opacity: number } }> = ({ options }) => {
-  return (
-    <li
-      className='pointer-events-none absolute bg-primary rounded-full h-full z-0 transition-all'
-      style={{ width: options.width, left: options.left, opacity: options.opacity }}
-    />
-  );
-};
