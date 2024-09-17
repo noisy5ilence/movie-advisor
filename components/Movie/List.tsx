@@ -49,6 +49,8 @@ const List: FC<Props> = ({ pages, hasNextPage, fetchNextPage, onPreviewClose, ty
     <>
       <VirtuosoGrid
         useWindowScroll
+        initialItemCount={20}
+        overscan={10}
         data={shows}
         context={context}
         components={components}
