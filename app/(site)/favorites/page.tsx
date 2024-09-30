@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     'View your favorite shows on Movie Advisor. Keep track of films you’ve added and revisit your top picks anytime.'
 };
 
-export const revalidate = 3600;
-
-export default function Favorites() {
+const Favorites = () => {
   return <Container />;
-}
+};
+
+export default Favorites;

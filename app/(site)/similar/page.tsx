@@ -1,18 +1,18 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
-import { similarMovies } from '@/lib/api';
+import { similarShows } from '@/api';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-export default async function Similar({ searchParams }: { searchParams: Record<string, string> }) {
+const Similar = async ({ searchParams }: { searchParams: Record<string, string> }) => {
   const queryClient = getQueryClient();
 
-  const { movieId, type } = searchParams || {};
+  const { id, type } = searchParams || {};
 
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ['similar', movieId, type],
-    queryFn: () => similarMovies({ movieId, type: type as ShowType }),
+    queryKey: ['similar', id, type],
+    queryFn: () => similarShows({ showId: id, showType: type as Show['type'] }),
     initialPageParam: '1'
   });
 
@@ -21,6 +21,6 @@ export default async function Similar({ searchParams }: { searchParams: Record<s
       <Container />
     </HydrationBoundary>
   );
-}
+};
 
-export const revalidate = 3600;
+export default Similar;

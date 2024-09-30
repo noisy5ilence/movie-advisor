@@ -1,11 +1,11 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
-import { randomMovies } from '@/lib/api';
+import { randomMovies } from '@/api';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-export default async function Random() {
+const Random = async () => {
   const queryClient = getQueryClient();
 
   await queryClient.prefetchInfiniteQuery({
@@ -19,4 +19,6 @@ export default async function Random() {
       <Container />
     </HydrationBoundary>
   );
-}
+};
+
+export default Random;

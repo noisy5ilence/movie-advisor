@@ -24,7 +24,7 @@ export const viewport: Viewport = {
   userScalable: false
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+const RootLayout = ({ children }: { children: ReactNode }) => {
   const theme = cookies().get('theme')?.value as Theme;
 
   return (
@@ -34,12 +34,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body style={poppins.style}>
         <Providers theme={theme}>
-          <div className='fixed w-full left-0 top-0 z-20'>
+          <div className='sticky top-0 z-20'>
             <Header />
           </div>
-          <main className='px-2 mx-auto flex flex-col flex-1 w-full max-w-[1240px] mt-[56px]'>{children}</main>
+          <main className='container'>{children}</main>
         </Providers>
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-export default function useScrollDelta() {
+const useScrollDelta = () => {
   const lastKnownScrollPosition = useRef(0);
   const deltaY = useRef(0);
 
@@ -24,4 +24,6 @@ export default function useScrollDelta() {
       }
     }, [])
   };
-}
+};
+
+export default useScrollDelta;

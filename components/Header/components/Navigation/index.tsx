@@ -1,6 +1,5 @@
 'use client';
 
-import { FC, useEffect, useRef, useState } from 'react';
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
@@ -10,14 +9,9 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import Nav from '@/components/ui/nav';
 
-const paths = [
-  { path: '/', title: 'Random' },
-  { path: '/popular', title: 'Popular' },
-  { path: '/top', title: 'Top rated' },
-  { path: '/favorites', title: 'Favorites' }
-];
+import { paths } from './constants';
 
-export function MobileNavigation() {
+export const MobileNavigation = () => {
   const currentPath = usePathname();
 
   return (
@@ -44,9 +38,9 @@ export function MobileNavigation() {
       </DropdownMenu>
     </div>
   );
-}
+};
 
-export function DesktopNavigation() {
+export const DesktopNavigation = () => {
   const currentPath = usePathname();
   const active = paths.find(({ path }) => path === currentPath);
 
@@ -59,4 +53,4 @@ export function DesktopNavigation() {
       )}
     </Nav>
   );
-}
+};

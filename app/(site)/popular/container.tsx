@@ -1,20 +1,16 @@
 'use client';
 
-import List from '@/components/Movie/List';
+import List from '@/components/List';
+import NoResults from '@/components/NoResults';
 
 import usePopular from './usePopular';
 
-export default function Container() {
-  const { data: top, hasNextPage, fetchNextPage, isFetched } = usePopular();
+const Container = () => {
+  const { shows, fetchNextPage, isFetched } = usePopular();
 
-  return (
-    <>
-      <List pages={top?.pages || []} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />
-      {isFetched && !top?.pages?.[0]?.results?.length && (
-        <div className='h-40 w-full flex items-center justify-center text-xl text-muted-foreground'>
-          Nothing was found
-        </div>
-      )}
-    </>
-  );
-}
+  if (isFetched && !shows.length) return <NoResults />;
+
+  return <List shows={shows} fetchNextPage={fetchNextPage} />;
+};
+
+export default Container;

@@ -13,4 +13,5 @@ export const queryClientOptions: QueryClientConfig = {
 };
 
 const getQueryClient = cache(() => new QueryClient(queryClientOptions));
+
 export default getQueryClient;

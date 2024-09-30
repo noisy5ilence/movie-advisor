@@ -2,17 +2,18 @@
 
 import { useSearchParams } from 'next/navigation';
 
-import List from '@/components/Movie/List';
+import List from '@/components/List';
+import NoResults from '@/components/NoResults';
 
 import useStarring from './useStarring';
 
-export default function Container() {
+const Container = () => {
   const params = useSearchParams();
 
-  const title = params.get('title');
-  const actorId = params.get('actorId') || undefined;
+  const title = params.get('title') as string;
+  const actorId = params.get('actorId') as string;
 
-  const { data: top, hasNextPage, fetchNextPage, isFetched } = useStarring({ actorId });
+  const { shows, fetchNextPage, isFetched } = useStarring({ actorId });
 
   return (
     <>
@@ -21,12 +22,10 @@ export default function Container() {
           Starring: {decodeURIComponent(title || '')}
         </span>
       )}
-      <List pages={top?.pages || []} fetchNextPage={fetchNextPage} hasNextPage={hasNextPage} />
-      {isFetched && !top?.pages?.[0]?.results?.length && (
-        <div className='h-40 w-full flex items-center justify-center text-xl text-muted-foreground'>
-          Nothing was found
-        </div>
-      )}
+      <List shows={shows} fetchNextPage={fetchNextPage} />
+      {isFetched && !shows.length && <NoResults />}
     </>
   );
-}
+};
+
+export default Container;

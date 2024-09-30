@@ -4,54 +4,40 @@ import { ChangeEvent, MutableRefObject, useRef, useState } from 'react';
 import { create } from 'react-modal-promise';
 import { Search as SearchIcon, XCircle } from 'lucide-react';
 
-import List from '@/components/Movie/List';
+import List from '@/components/List';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import useDistinctUntilChanged from '@/hooks/useDistinctUntilChanged';
 import { cn } from '@/lib/utils';
 
 import useSearch from './useSearch';
 
 export const showSearchModal = create(({ onResolve }) => {
   const [title, setTitle] = useState('');
-  const [query, setQuery] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement>;
-  const timeout = useRef<NodeJS.Timeout>();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const {
-    data: movies,
-    hasNextPage: hasNextMoviesPage,
-    fetchNextPage: fetchNextMoviesPage
-  } = useSearch({ query, type: 'movie' });
+  const query = useDistinctUntilChanged(title);
 
-  const {
-    data: series,
-    hasNextPage: hasNextSeriesPage,
-    fetchNextPage: fetchNextSeriesPage
-  } = useSearch({ query, type: 'tv' });
+  const movies = useSearch({ query, type: 'movie' });
+  const series = useSearch({ query, type: 'tv' });
 
-  const handleChangeTitle = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    setTitle(value);
-
-    clearTimeout(timeout.current);
-    timeout.current = setTimeout(() => setQuery(value.trim()), 500);
-  };
+  const handleChangeTitle = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => setTitle(value);
 
   const handleReset = () => {
-    setQuery('');
     setTitle('');
     inputRef.current?.focus();
   };
 
-  const handleClose = () => {
-    handleReset();
-    return onResolve();
-  };
+  const tabs = [
+    { title: 'Movies', data: movies, type: 'movie' as const },
+    { title: 'Series', data: series, type: 'tv' as const }
+  ].filter(({ data: { shows } }) => shows.length);
 
   return (
-    <Modal className='block p-0 max-w-[932px]' onClose={handleClose} scrollRef={scrollRef}>
+    <Modal className='block p-0 max-w-[932px]' onClose={onResolve} scrollRef={scrollRef}>
       <div className='relative p-2'>
         <Input
           autoFocus
@@ -66,53 +52,51 @@ export const showSearchModal = create(({ onResolve }) => {
           type='button'
           size='icon'
           onClick={handleReset}
-          disabled={!query.length}
+          disabled={!title.length}
           className='absolute right-2 top-2'
         >
           <XCircle />
         </Button>
       </div>
-      <Tabs
-        defaultValue='movies'
-        className={cn('w-full px-2', !(movies?.pages.length && series?.pages?.length) && 'hidden')}
-      >
-        <TabsList className='grid w-full grid-cols-2'>
-          <TabsTrigger value='movies'>Movies</TabsTrigger>
-          <TabsTrigger value='series'>Series</TabsTrigger>
-        </TabsList>
-        <TabsContent value='movies'>
-          {Boolean(movies?.pages.length && movies?.pages?.[0]?.results?.length) && (
-            <List
-              customScrollParent={scrollRef.current}
-              pages={movies!.pages as unknown as MovieDBResponse[]}
-              fetchNextPage={fetchNextMoviesPage}
-              hasNextPage={hasNextMoviesPage}
-              onPreviewClose={handleClose}
-              type='movie'
-            />
-          )}
-        </TabsContent>
-        <TabsContent value='series'>
-          {Boolean(series?.pages.length && series?.pages?.[0]?.results?.length) && (
-            <List
-              customScrollParent={scrollRef.current}
-              pages={series!.pages as unknown as MovieDBResponse[]}
-              fetchNextPage={fetchNextSeriesPage}
-              hasNextPage={hasNextSeriesPage}
-              onPreviewClose={handleClose}
-              type='tv'
-            />
-          )}
-        </TabsContent>
-      </Tabs>
+      {tabs.length > 1 ? (
+        <Tabs defaultValue='movie' className={cn('w-full px-2')}>
+          <TabsList className='grid w-full grid-cols-2'>
+            {tabs.map(({ type, title }) => (
+              <TabsTrigger key={type} value={type}>
+                {title}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {tabs.map(({ data: { shows, fetchNextPage }, type }) => (
+            <TabsContent value={type} key={type}>
+              <List
+                shows={shows}
+                customScrollParent={scrollRef.current}
+                fetchNextPage={fetchNextPage}
+                onPreviewClose={onResolve}
+              />
+            </TabsContent>
+          ))}
+        </Tabs>
+      ) : (
+        tabs.map(({ data: { shows, fetchNextPage }, type }) => (
+          <List
+            key={type}
+            shows={shows}
+            customScrollParent={scrollRef.current}
+            fetchNextPage={fetchNextPage}
+            onPreviewClose={onResolve}
+          />
+        ))
+      )}
     </Modal>
   );
 });
 
-export default function ToggleSearch() {
-  return (
-    <Button variant='ghost' size='icon' onClick={() => showSearchModal()}>
-      <SearchIcon size={19} />
-    </Button>
-  );
-}
+const ToggleSearch = () => (
+  <Button variant='ghost' size='icon' onClick={() => showSearchModal()}>
+    <SearchIcon size={19} />
+  </Button>
+);
+
+export default ToggleSearch;

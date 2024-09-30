@@ -5,14 +5,14 @@ module.exports = {
   theme: {
     container: {
       center: true,
-      padding: '2rem',
+      padding: '0.5rem',
       screens: {
-        '2xl': '1400px'
+        DEFAULT: '1240px'
       }
     },
     extend: {
       screens: {
-        xs: '500px'
+        xs: '600px'
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -77,6 +77,10 @@ module.exports = {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in-slide-in': 'fadeInSlideIn 0.2s ease-in-out forwards',
         'fade-aside-slide-in': 'fadeAsideSlideIn 0.2s ease-in-out forwards'
+      },
+      backgroundImage: {
+        vignette:
+          'linear-gradient(rgba(0, 0, 0, 0.4) 0%,rgba(0, 0, 0, 0.396) 2.83%,rgba(0, 0, 0, 0.384) 5.67%,rgba(0, 0, 0, 0.37) 8.5%,rgba(0, 0, 0, 0.34) 11.33%,rgba(0, 0, 0, 0.306) 14.17%,rgba(0, 0, 0, 0.267) 17%,rgba(0, 0, 0, 0.224) 19.83%,rgba(0, 0, 0, 0.176) 22.67%,rgba(0, 0, 0, 0.133) 25.5%,rgba(0, 0, 0, 0.094) 28.33%,rgba(0, 0, 0, 0.06) 31.17%,rgba(0, 0, 0, 0.03) 34%,rgba(0, 0, 0, 0.016) 36.83%,rgba(0, 0, 0, 0.004) 39.67%,rgba(0, 0, 0, 0) 42.5%,rgba(0, 0, 0, 0) 57.5%,rgba(0, 0, 0, 0.004) 60.33%,rgba(0, 0, 0, 0.016) 63.17%,rgba(0, 0, 0, 0.03) 66%,rgba(0, 0, 0, 0.06) 68.83%,rgba(0, 0, 0, 0.094) 71.67%,rgba(0, 0, 0, 0.133) 74.5%,rgba(0, 0, 0, 0.176) 77.33%,rgba(0, 0, 0, 0.224) 80.17%,rgba(0, 0, 0, 0.267) 83%,rgba(0, 0, 0, 0.306) 85.83%,rgba(0, 0, 0, 0.34) 88.67%,rgba(0, 0, 0, 0.37) 91.5%,rgba(0, 0, 0, 0.384) 94.33%,rgba(0, 0, 0, 0.396) 97.17%,rgba(0, 0, 0, 0.4) 100%)'
       }
     }
   },

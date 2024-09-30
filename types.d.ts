@@ -1,13 +1,17 @@
 type Theme = 'light' | 'dark';
 
-interface MovieDBResponse {
+interface TMDBPagination<T> {
   page: number;
-  results: Movie[];
+  results: T[];
   total_pages: number;
   total_results: number;
 }
 
-type ShowType = 'movie' | 'tv';
+interface Pagination<T> {
+  page: number;
+  total: number;
+  results: T[];
+}
 
 interface Movie {
   adult: boolean;
@@ -20,12 +24,40 @@ interface Movie {
   popularity: number;
   poster_path: string;
   release_date: Date;
-  first_air_date?: Date;
   title: string;
-  name?: string;
   video: boolean;
   vote_average: number;
   vote_count: number;
+}
+
+interface Series {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: number[];
+  id: number;
+  origin_country: string[];
+  original_language: string;
+  original_name: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  first_air_date: Date;
+  name: string;
+  vote_average: number;
+  vote_count: number;
+}
+
+interface Show {
+  type: 'movie' | 'tv';
+  id: number;
+  title: string;
+  overview: string;
+  backdrop: string;
+  poster: string;
+  release: Date;
+  rating: number;
+  votes: number;
+  genres: string[];
 }
 
 interface Actor {
@@ -63,23 +95,6 @@ interface Role {
   episode_count: number;
 }
 
-interface Person {
-  adult: boolean;
-  also_known_as: string[];
-  biography: string;
-  birthday: Date;
-  deathday: null;
-  gender: number;
-  homepage: null;
-  id: number;
-  imdb_id: string;
-  known_for_department: string;
-  name: string;
-  place_of_birth: string;
-  popularity: number;
-  profile_path: string;
-}
-
 interface Trailer {
   iso_639_1: string;
   iso_3166_1: string;
@@ -98,63 +113,12 @@ interface IDName<T = number> {
   name: string;
 }
 
-interface TrackerTorrent {
-  author: string;
-  category: string;
-  id: string;
-  leeches: number;
-  seeds: number;
-  size: number;
-  state: string;
-  title: string;
-  downloads: number;
-  registered: Date;
-  host: string;
-}
-
-interface PirateTorrent {
-  id: string;
-  name: string;
-  size: string;
-  link: string;
-  category: Category;
-  seeders: string;
-  leechers: string;
-  uploadDate: Date;
-  magnetLink: string;
-  subcategory: Category;
-  uploader: string;
-  verified: boolean;
-  uploaderLink: string;
-}
-
 interface Torrent {
   id: string;
   title: string;
   seeders: number;
   size: string;
   magnet: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-}
-
-interface Poster {
-  aspect_ratio: number;
-  height: number;
-  iso_639_1: null;
-  file_path: string;
-  vote_average: number;
-  vote_count: number;
-  width: number;
-}
-
-interface Filters {
-  genres: Array<string>;
-  year: Array<string>;
-  score: Array<string>;
 }
 
 interface ExternalIDS {

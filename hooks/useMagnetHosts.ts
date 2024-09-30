@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
-import showHostManagerModal from '@/components/Movie/components/Torrents/HostManager';
+import showHostManagerModal from '@/components/Show/components/Torrents/HostManager';
 
 const magnetPrefixAtom = atomWithStorage<string>('magnet-prefix', 'http://{host}:65220/playuri?uri=', undefined, {
   unstable_getOnInit: true

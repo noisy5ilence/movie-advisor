@@ -2,16 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -83,85 +73,47 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+  ::-moz-selection {
+    color: hsl(var(--secondary));
+    background: hsl(var(--secondary-foreground));
+  }
+  ::selection {
+    color: hsl(var(--secondary));
+    background: hsl(var(--secondary-foreground));
   }
   body {
     @apply bg-background text-foreground;
   }
 }
 
-html,
-body {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-* {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-}
-
-::-moz-selection {
-  color: white;
-  background: black;
-}
-::selection {
-  color: white;
-  background: black;
-}
-
-.card-gradient {
-  background: linear-gradient(
-    rgba(0, 0, 0, 0.4) 0%,
-    rgba(0, 0, 0, 0.396) 2.83%,
-    rgba(0, 0, 0, 0.384) 5.67%,
-    rgba(0, 0, 0, 0.37) 8.5%,
-    rgba(0, 0, 0, 0.34) 11.33%,
-    rgba(0, 0, 0, 0.306) 14.17%,
-    rgba(0, 0, 0, 0.267) 17%,
-    rgba(0, 0, 0, 0.224) 19.83%,
-    rgba(0, 0, 0, 0.176) 22.67%,
-    rgba(0, 0, 0, 0.133) 25.5%,
-    rgba(0, 0, 0, 0.094) 28.33%,
-    rgba(0, 0, 0, 0.06) 31.17%,
-    rgba(0, 0, 0, 0.03) 34%,
-    rgba(0, 0, 0, 0.016) 36.83%,
-    rgba(0, 0, 0, 0.004) 39.67%,
-    rgba(0, 0, 0, 0) 42.5%,
-    rgba(0, 0, 0, 0) 57.5%,
-    rgba(0, 0, 0, 0.004) 60.33%,
-    rgba(0, 0, 0, 0.016) 63.17%,
-    rgba(0, 0, 0, 0.03) 66%,
-    rgba(0, 0, 0, 0.06) 68.83%,
-    rgba(0, 0, 0, 0.094) 71.67%,
-    rgba(0, 0, 0, 0.133) 74.5%,
-    rgba(0, 0, 0, 0.176) 77.33%,
-    rgba(0, 0, 0, 0.224) 80.17%,
-    rgba(0, 0, 0, 0.267) 83%,
-    rgba(0, 0, 0, 0.306) 85.83%,
-    rgba(0, 0, 0, 0.34) 88.67%,
-    rgba(0, 0, 0, 0.37) 91.5%,
-    rgba(0, 0, 0, 0.384) 94.33%,
-    rgba(0, 0, 0, 0.396) 97.17%,
-    rgba(0, 0, 0, 0.4) 100%
-  );
-}
-
-.card-aspect-ratio {
-  width: 300px;
-  height: 450px;
-  flex-shrink: 0;
-  @media screen and (max-width: 500px) {
-    width: 100%;
-    height: 100%;
-    aspect-ratio: 2/3;
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-}
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 
-@supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
   .card-aspect-ratio {
-    @media screen and (max-width: 500px) {
-      aspect-ratio: 2/2.908;
+    width: 300px;
+    height: 450px;
+    flex-shrink: 0;
+    @media screen and (max-width: 600px) {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 2/3;
+    }
+  }
+
+  @supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
+    .card-aspect-ratio {
+      @media screen and (max-width: 600px) {
+        aspect-ratio: 1.35/2;
+      }
     }
   }
 }

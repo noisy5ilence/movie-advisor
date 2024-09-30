@@ -1,6 +1,6 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
-import { topMovies } from '@/lib/api';
+import { topMovies } from '@/api';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';

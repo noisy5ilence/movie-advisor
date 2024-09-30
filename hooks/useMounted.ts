@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState } from 'react';
 
-export default function useMounted() {
+const useMounted = () => {
   const [isMounted, setIsMounted] = useState(false);
 
   useLayoutEffect(() => {
@@ -8,4 +8,6 @@ export default function useMounted() {
   }, []);
 
   return isMounted;
-}
+};
+
+export default useMounted;

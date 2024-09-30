@@ -1,4 +1,4 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react';
+import { createContext, Dispatch, FC, ReactNode, SetStateAction, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 
 export const ThemeContext = createContext<[Theme, Dispatch<SetStateAction<Theme>>]>([
@@ -6,7 +6,12 @@ export const ThemeContext = createContext<[Theme, Dispatch<SetStateAction<Theme>
   () => null
 ]);
 
-export default function Provider({ children, theme: initialTheme }: { children: ReactNode; theme?: Theme }) {
+interface Props {
+  children: ReactNode;
+  theme?: Theme;
+}
+
+const Provider: FC<Props> = ({ children, theme: initialTheme }) => {
   const state = useState<Theme>((Cookies.get('theme') || initialTheme) as Theme);
 
   const [theme, setTheme] = state;
@@ -21,4 +26,6 @@ export default function Provider({ children, theme: initialTheme }: { children: 
   }, [theme, setTheme]);
 
   return <ThemeContext.Provider value={state}>{children}</ThemeContext.Provider>;
-}
+};
+
+export default Provider;
