@@ -175,6 +175,7 @@ const Modal: React.FC<{
       </DialogHeader>
       <DialogContent style={style} scrollRef={scrollRef} forceMount onClose={handleClose} className={className}>
         {children}
+        <DialogDescription />
       </DialogContent>
     </Dialog>
   );

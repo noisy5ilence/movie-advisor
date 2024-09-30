@@ -10,7 +10,6 @@ import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useDistinctUntilChanged from '@/hooks/useDistinctUntilChanged';
-import { cn } from '@/lib/utils';
 
 import useSearch from './useSearch';
 
@@ -36,13 +35,15 @@ export const showSearchModal = create(({ onResolve }) => {
     { title: 'Series', data: series, type: 'tv' as const }
   ].filter(({ data: { shows } }) => shows.length);
 
+  const isFetched = movies.isFetched && series.isFetched;
+
   return (
     <Modal className='block p-0 max-w-[932px]' onClose={onResolve} scrollRef={scrollRef}>
       <div className='relative p-2'>
         <Input
           autoFocus
           ref={inputRef}
-          placeholder='Start entering title...'
+          placeholder='Start typing title...'
           value={title}
           onChange={handleChangeTitle}
           className='pr-10 focus-visible:ring-0'
@@ -58,36 +59,40 @@ export const showSearchModal = create(({ onResolve }) => {
           <XCircle />
         </Button>
       </div>
-      {tabs.length > 1 ? (
-        <Tabs defaultValue='movie' className={cn('w-full px-2')}>
-          <TabsList className='grid w-full grid-cols-2'>
-            {tabs.map(({ type, title }) => (
-              <TabsTrigger key={type} value={type}>
-                {title}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {tabs.map(({ data: { shows, fetchNextPage }, type }) => (
-            <TabsContent value={type} key={type}>
+      {isFetched && (
+        <div className='px-2'>
+          {tabs.length > 1 ? (
+            <Tabs defaultValue='movie'>
+              <TabsList className='grid w-full grid-cols-2'>
+                {tabs.map(({ type, title }) => (
+                  <TabsTrigger key={type} value={type}>
+                    {title}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {tabs.map(({ data: { shows, fetchNextPage }, type }) => (
+                <TabsContent value={type} key={type}>
+                  <List
+                    shows={shows}
+                    customScrollParent={scrollRef.current}
+                    fetchNextPage={fetchNextPage}
+                    onPreviewClose={onResolve}
+                  />
+                </TabsContent>
+              ))}
+            </Tabs>
+          ) : (
+            tabs.map(({ data: { shows, fetchNextPage }, type }) => (
               <List
+                key={type}
                 shows={shows}
                 customScrollParent={scrollRef.current}
                 fetchNextPage={fetchNextPage}
                 onPreviewClose={onResolve}
               />
-            </TabsContent>
-          ))}
-        </Tabs>
-      ) : (
-        tabs.map(({ data: { shows, fetchNextPage }, type }) => (
-          <List
-            key={type}
-            shows={shows}
-            customScrollParent={scrollRef.current}
-            fetchNextPage={fetchNextPage}
-            onPreviewClose={onResolve}
-          />
-        ))
+            ))
+          )}
+        </div>
       )}
     </Modal>
   );
