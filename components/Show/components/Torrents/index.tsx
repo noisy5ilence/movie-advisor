@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
-import { Cast, Copy, Loader, Magnet } from 'lucide-react';
+import { Cast, Copy, Loader, Magnet, Play } from 'lucide-react';
 
 import { Sort } from '@/api/parsers';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCastMagnet, usePrefix } from '@/hooks/useMagnetHosts';
 
+import showPlayer from './components/Player';
 import TableHeadSortable from './components/TableHeadSortable';
 import { providers } from './constants';
 import showHostManagerModal from './HostManager';
@@ -101,6 +102,12 @@ const showTorrentsModal = create(({ title, year, showType, showId, onResolve }: 
                 <TableCell className='p-2'>{torrent.seeders}</TableCell>
                 <TableCell className='text-center p-1 pr-2'>
                   <div className='flex gap-2 justify-end'>
+                    <div
+                      className='flex items-center justify-center h-8 w-8 border rounded-lg cursor-pointer'
+                      onClick={() => showPlayer({ magnet: torrent.magnet })}
+                    >
+                      <Play size={20} />
+                    </div>
                     <a href={torrent.magnet} className='flex items-center justify-center h-8 w-8 border rounded-lg'>
                       <Magnet size={20} />
                     </a>

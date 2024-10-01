@@ -36,13 +36,16 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.6",
     "typescript": "5.1.6",
-    "vaul": "^0.8.9"
+    "vaul": "^0.8.9",
+    "video.js": "^8.17.4",
+    "webtorrent": "^2.5.1"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.3",
     "@types/node": "20.4.4",
     "@types/react": "18.2.15",
     "@types/react-dom": "18.2.7",
+    "@types/webtorrent": "^0.109.8",
     "autoprefixer": "^10.4.14",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "postcss": "^8.4.27",
