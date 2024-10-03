@@ -9,6 +9,7 @@ import Header from '@/components/Header';
 import Providers from '@/providers';
 
 import '@/styles/index.css';
+import '@/styles/player.css';
 
 export const metadata: Metadata = {
   title: 'Movie advisor | Discover Your Next Favorite Movie',

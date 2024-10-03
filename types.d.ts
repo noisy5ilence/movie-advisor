@@ -119,6 +119,21 @@ interface Torrent {
   seeders: number;
   size: string;
   magnet: string;
+  type: 'web' | 'bluray';
+}
+
+interface Source {
+  name: string;
+  src: string;
+}
+
+interface Subtitles {
+  name: string;
+  content: string;
+}
+
+interface Video extends Source {
+  subtitles: Subtitles[];
 }
 
 interface ExternalIDS {

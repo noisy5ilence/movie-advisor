@@ -174,6 +174,22 @@ export const trailers = async ({
     .then((data) => data.results);
 };
 
+export const torrentFiles = (magnet: string): Promise<Video[]> => {
+  return http
+    .get<{ name: string; subtitles: Subtitles[] }[]>('/files', { params: { magnet } }, process.env.TRACKER_PROXY_BASE)
+    .then((files) =>
+      files.map((file) => {
+        const base = `${process.env.TRACKER_PROXY_BASE}/stream?magnet=${encodeURIComponent(magnet)}}`;
+
+        return {
+          name: file.name,
+          src: `${base}&filename=${encodeURIComponent(file.name)}`,
+          subtitles: file.subtitles
+        };
+      })
+    );
+};
+
 export const YTSTorrents = async ({
   query,
   sort,

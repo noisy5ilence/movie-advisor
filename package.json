@@ -15,6 +15,7 @@
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
+    "@radix-ui/react-toast": "^1.2.2",
     "@radix-ui/react-toggle": "^1.0.3",
     "@tanstack/react-query": "^5.17.3",
     "axios": "^1.4.0",
@@ -37,15 +38,15 @@
     "tailwindcss-animate": "^1.0.6",
     "typescript": "5.1.6",
     "vaul": "^0.8.9",
-    "video.js": "^8.17.4",
-    "webtorrent": "^2.5.1"
+    "video-react": "^0.16.0",
+    "video.js": "^8.17.4"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.3",
     "@types/node": "20.4.4",
     "@types/react": "18.2.15",
     "@types/react-dom": "18.2.7",
-    "@types/webtorrent": "^0.109.8",
+    "@types/video-react": "^0.15.8",
     "autoprefixer": "^10.4.14",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "postcss": "^8.4.27",

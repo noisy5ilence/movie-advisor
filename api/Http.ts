@@ -1,7 +1,7 @@
 class Http {
   base = 'https://api.themoviedb.org/3';
 
-  get<T>(url: string, { params }: { params?: Record<string, unknown> } = {}): Promise<T> {
+  get<T>(url: string, { params }: { params?: Record<string, unknown> } = {}, base?: string): Promise<T> {
     const serializedParams = Object.entries(params || {}).reduce((params, [key, value]) => {
       if (!['', undefined, null].includes(value as string)) {
         params.set(key, value as string);
@@ -10,7 +10,7 @@ class Http {
       return params;
     }, new URLSearchParams());
 
-    return fetch(`${this.base}${url}?${serializedParams}`, {
+    return fetch(`${base || this.base}${url}?${serializedParams}`, {
       headers: {
         Authorization: `Bearer ${process.env.MOVIE_DB_TOKEN}`
       },

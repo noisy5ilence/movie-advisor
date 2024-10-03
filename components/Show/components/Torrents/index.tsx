@@ -95,19 +95,25 @@ const showTorrentsModal = create(({ title, year, showType, showId, onResolve }: 
                 </TableRow>
               )}
               <TableRow>
-                {!isMobile && <TableCell className='break-all p-2'>{torrent.title}</TableCell>}
+                {!isMobile && (
+                  <TableCell className='break-all p-2'>
+                    {torrent.title} {torrent.type && `[${torrent.type?.toUpperCase()}]`}
+                  </TableCell>
+                )}
                 <TableCell className='p-2'>
                   <div className='flex items-center gap-1 shrink-0'>{torrent.size}</div>
                 </TableCell>
                 <TableCell className='p-2'>{torrent.seeders}</TableCell>
                 <TableCell className='text-center p-1 pr-2'>
                   <div className='flex gap-2 justify-end'>
-                    <div
-                      className='flex items-center justify-center h-8 w-8 border rounded-lg cursor-pointer'
-                      onClick={() => showPlayer({ magnet: torrent.magnet })}
-                    >
-                      <Play size={20} />
-                    </div>
+                    {Boolean(key === providers.yts.key && torrent.seeders) && (
+                      <div
+                        className='flex items-center justify-center h-8 w-8 border rounded-lg cursor-pointer'
+                        onClick={() => showPlayer({ magnet: torrent.magnet })}
+                      >
+                        <Play size={20} />
+                      </div>
+                    )}
                     <a href={torrent.magnet} className='flex items-center justify-center h-8 w-8 border rounded-lg'>
                       <Magnet size={20} />
                     </a>

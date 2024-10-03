@@ -53,6 +53,7 @@ export class YTS {
               title: `${movie.title_english} ${torrent.quality ? `[${torrent.quality}]` : ''}`,
               seeders: torrent.seeds,
               size: torrent.size,
+              type: torrent.type,
               magnet: `magnet:?xt=urn:btih:${torrent.hash}&dn=${encodeURIComponent(query)}&tr=${trackers.join('&tr=')}`
             };
           }) || []
