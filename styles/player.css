@@ -24,6 +24,6 @@
   border-top-right-radius: 4px;
 }
 
-.video-react-big-play-button-center {
+.video-react .video-react-big-play-button.video-react-big-play-button-center {
   display: none;
 }

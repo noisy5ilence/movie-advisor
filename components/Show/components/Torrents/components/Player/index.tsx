@@ -1,41 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import { Loader } from 'lucide-react';
-import { BigPlayButton, ClosedCaptionButton, ControlBar, Player } from 'video-react';
+import { BigPlayButton, ClosedCaptionButton, ControlBar, Player, PlayerReference } from 'video-react';
 
 import { Modal } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/useToast';
 
-import showFiles from './components/Files';
-import useFiles from './useFiles';
+import useSubtitles from './useSubtitles';
 
 interface Props extends InstanceProps<void> {
   magnet: string;
+  backdrop: string;
 }
 
-const showPlayer = create(({ onResolve, magnet }: Props) => {
-  const [source, setSource] = useState<string | null>(null);
+type PlayerRef = PlayerReference & { video: { video: HTMLVideoElement } };
+
+const showPlayer = create(({ onResolve, magnet, backdrop }: Props) => {
+  const [player, setPlayer] = useState<PlayerRef | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { data: subtitles } = useSubtitles({ magnet });
 
-  const { data, isFetched } = useFiles({
-    magnet,
-    onSuccess(files) {
-      if (!files.length) {
-        toast({ title: 'This torrent doesn\'t contain any compatible video files' });
-        return onResolve();
-      }
+  useEffect(() => {
+    if (!player) return;
 
-      if (files.length === 1) {
-        const [file] = files;
+    const { video } = player.video;
 
-        return setSource(file.src);
-      }
+    const handleCanPlay = () => setIsLoading(false);
 
-      showFiles({ files }).then((file) => setSource(file.src));
-    }
-  });
+    video.addEventListener('canplay', handleCanPlay);
+
+    return () => video.removeEventListener('canplay', handleCanPlay);
+  }, [player]);
 
   return (
     <Modal
@@ -43,33 +41,34 @@ const showPlayer = create(({ onResolve, magnet }: Props) => {
       style={{ aspectRatio: '16/9' }}
       onClose={onResolve}
     >
-      <Player autoPlay aspectRatio='16:9'>
-        {!isFetched && (
-          <>
-            <div className='w-full h-full left-0 top-0 absolute flex items-center justify-center'>
-              <div className='animate-spin'>
-                <Loader color='white' />
-              </div>
-            </div>
-          </>
-        )}
-        {source && <source src={source} />}
-        {isFetched &&
-          data?.map((file) =>
-            file.subtitles.map(({ name, content }) => (
-              <track
-                key={name}
-                kind='captions'
-                src={URL.createObjectURL(new Blob([content], { type: 'text/vtt' }))}
-                label={name}
-              />
-            ))
-          )}
-        <ControlBar autoHide={false}>
-          <ClosedCaptionButton order={7} />
-        </ControlBar>
+      <Player autoPlay aspectRatio='16:9' poster={backdrop} ref={(player) => setPlayer(player as PlayerRef)}>
+        {subtitles?.map(({ name, content }) => (
+          <track
+            key={name}
+            kind='captions'
+            src={URL.createObjectURL(new Blob([content], { type: 'text/vtt' }))}
+            label={name}
+          />
+        ))}
+        <source
+          src={`${process.env.NEXT_PUBLIC_TRACKER_PROXY_BASE}/stream?magnet=${encodeURIComponent(magnet)}`}
+          onError={() => {
+            toast({ title: 'This torrent doesn\'t contain any compatible video files' });
+            setIsLoading(false);
+          }}
+        />
+        <ControlBar>{Boolean(subtitles?.length) && <ClosedCaptionButton order={7} />}</ControlBar>
         <BigPlayButton position='center' />
       </Player>
+      {isLoading && (
+        <>
+          <div className='w-full h-full left-0 top-0 absolute flex items-center justify-center bg-black/70'>
+            <div className='animate-spin'>
+              <Loader color='white' />
+            </div>
+          </div>
+        </>
+      )}
     </Modal>
   );
 });

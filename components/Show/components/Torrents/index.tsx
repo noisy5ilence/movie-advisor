@@ -20,9 +20,10 @@ interface Props extends InstanceProps<void> {
   showType: Show['type'];
   title: string;
   year: number;
+  backdrop: string;
 }
 
-const showTorrentsModal = create(({ title, year, showType, showId, onResolve }: Props) => {
+const showTorrentsModal = create(({ title, year, showType, showId, backdrop, onResolve }: Props) => {
   const isMobile = matchMedia('(max-width: 600px)').matches;
   const prefix = usePrefix();
   const [sort, setSort] = useState<Sort>(Sort.seeds);
@@ -109,7 +110,7 @@ const showTorrentsModal = create(({ title, year, showType, showId, onResolve }: 
                     {Boolean(key === providers.yts.key && torrent.seeders) && (
                       <div
                         className='flex items-center justify-center h-8 w-8 border rounded-lg cursor-pointer'
-                        onClick={() => showPlayer({ magnet: torrent.magnet })}
+                        onClick={() => showPlayer({ magnet: torrent.magnet, backdrop })}
                       >
                         <Play size={20} />
                       </div>

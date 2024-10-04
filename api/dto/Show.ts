@@ -9,15 +9,15 @@ const mapMoviesSeriesResponseToShows = (
       id,
       type,
       overview,
-      backdrop: backdrop_path,
-      poster: poster_path,
       rating: vote_average,
       votes: vote_count,
+      backdrop: backdrop_path ? `https://image.tmdb.org/t/p/w1280/${backdrop_path}` : '',
+      poster: poster_path ? `https://image.tmdb.org/t/p/w500/${poster_path}` : '',
       release: 'release_date' in item ? item.release_date : item.first_air_date,
       title: 'release_date' in item ? item.title : item.name,
       genres: []
     }))
-    .filter((show) => show.votes && show.release)
+    .filter((show) => show.votes && show.release && show.backdrop && show.poster)
 });
 
 export default mapMoviesSeriesResponseToShows;

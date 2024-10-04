@@ -27,6 +27,7 @@ const Actions = ({ onClose, show }: Props) => (
           showId: show.id,
           showType: show.type,
           title: show.title,
+          backdrop: show.backdrop,
           year: new Date(show.release).getFullYear()
         })
       }
