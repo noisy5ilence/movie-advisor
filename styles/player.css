@@ -27,3 +27,7 @@
 .video-react .video-react-big-play-button.video-react-big-play-button-center {
   display: none;
 }
+
+.video-react .video-react-menu-button-popup .video-react-menu .video-react-menu-content {
+  overflow: hidden;
+}

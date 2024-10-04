@@ -53,7 +53,7 @@ const showPlayer = create(({ onResolve, magnet, backdrop }: Props) => {
         <source
           src={`${process.env.NEXT_PUBLIC_TRACKER_PROXY_BASE}/stream?magnet=${encodeURIComponent(magnet)}`}
           onError={() => {
-            toast({ title: 'This torrent doesn\'t contain any compatible video files' });
+            toast({ title: "This torrent doesn't contain any compatible video files" });
             setIsLoading(false);
           }}
         />
