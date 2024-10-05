@@ -27,7 +27,9 @@ export const search = async ({
     .then((response) => mapMoviesSeriesResponseToShows(response, type));
 };
 
-const generatePage = createUniqueRandomGenerator(500);
+const TOTAL_PAGES = 500;
+
+const generatePage = createUniqueRandomGenerator(TOTAL_PAGES);
 
 export const randomMovies = async (): Promise<Pagination<Show>> => {
   return http
