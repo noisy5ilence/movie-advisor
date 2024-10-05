@@ -22,12 +22,12 @@ export const MobileNavigation = () => {
             <Menu size={19} />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className='w-44 flex flex-col gap-2 p-2'>
+        <DropdownMenuContent className='flex w-44 flex-col gap-2 p-2'>
           {paths.map(({ path, title }) => (
             <DropdownMenuItem key={path} asChild>
               <Link href={path}>
                 <div>
-                  <Button className='w-full relative' variant={currentPath === path ? 'default' : 'outline'}>
+                  <Button className='relative w-full' variant={currentPath === path ? 'default' : 'outline'}>
                     {title}
                   </Button>
                 </div>

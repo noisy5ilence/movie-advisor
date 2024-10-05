@@ -11,7 +11,7 @@ const Random = () => {
   return (
     <Preview
       show={movie}
-      className='bg-background rounded-md'
+      className='rounded-md bg-background'
       card={<Carousel index={index} shows={movies} onIndexChange={onIndexChange} onEndReached={fetchNextPage} />}
     />
   );

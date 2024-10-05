@@ -19,10 +19,10 @@ const TableHeadSortable: FC<Props> = ({ title, sort, value, sortable, onChange }
 
   return (
     <TableHead onClick={handleSort} className={cn('select-none px-2', sortable && 'cursor-pointer')}>
-      <div className='flex gap-1 items-center'>
+      <div className='flex items-center gap-1'>
         <span>{title}</span>
         {sortable &&
-          (sort === value ? <ArrowDownIcon className='ml-2 h-4 w-4' /> : <CaretSortIcon className='ml-2 h-4 w-4' />)}
+          (sort === value ? <ArrowDownIcon className='ml-2 size-4' /> : <CaretSortIcon className='ml-2 size-4' />)}
       </div>
     </TableHead>
   );

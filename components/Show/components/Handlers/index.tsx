@@ -12,7 +12,7 @@ interface Props {
 const Handlers: FC<Props> = ({ onClick, show }) => {
   const { toggle } = useFavoriteToggle(show);
 
-  return <div onClick={onClick} onDoubleClick={toggle} className='absolute top-0 left-0 w-full h-full' />;
+  return <div onClick={onClick} onDoubleClick={toggle} className='absolute left-0 top-0 size-full' />;
 };
 
 export default Handlers;

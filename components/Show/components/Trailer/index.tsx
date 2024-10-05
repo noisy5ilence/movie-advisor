@@ -17,11 +17,11 @@ const showTrailerModal = create(({ trailerKey, onResolve }: { trailerKey?: strin
   if (!trailerKey) return;
 
   return (
-    <Modal className='block p-0 max-w-[930px] border-none bg-black' style={{ aspectRatio: '16/9' }} onClose={onResolve}>
+    <Modal className='block max-w-[930px] border-none bg-black p-0' style={{ aspectRatio: '16/9' }} onClose={onResolve}>
       <iframe
         allowFullScreen
         allow='autoplay'
-        className='border-none rounded-lg'
+        className='rounded-lg border-none'
         width='100%'
         height='100%'
         src={`//www.youtube.com/embed/${trailerKey}?autoplay=1`}

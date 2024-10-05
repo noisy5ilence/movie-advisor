@@ -13,7 +13,7 @@ export default function Container() {
 
   if (!shows.length)
     return (
-      <div className='h-40 w-full flex items-center text-center justify-center text-xl text-muted-foreground'>
+      <div className='flex h-40 w-full items-center justify-center text-center text-xl text-muted-foreground'>
         There are no items in your favorites list
       </div>
     );

@@ -8,7 +8,7 @@ interface Props {
 }
 
 const Marquee: FC<Props> = ({ shows }) => (
-  <ul className='flex overflow-auto gap-2 rounded-lg snap-mandatory snap-x no-scrollbar opacity-0 animate-fade-aside-slide-in'>
+  <ul className='no-scrollbar flex animate-fade-aside-slide-in snap-x snap-mandatory gap-2 overflow-auto rounded-lg opacity-0'>
     {shows.map((show) => (
       <li key={show.id} className='snap-start'>
         <Card className='!h-[350px] !w-[230px] text-sm' show={show} onClick={() => showPreviewModal({ show })} />

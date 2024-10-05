@@ -25,17 +25,17 @@ const Show: FC<Props> = ({ show, onClick, className, containerProps }) => {
         className
       )}
     >
-      <div className='flex w-full h-full'>
+      <div className='flex size-full'>
         <Poster title={show.title} poster={show.poster} />
       </div>
-      <div className='text-white absolute w-full h-full top-0 left-0 rounded-md flex flex-col justify-between p-2 bg-vignette'>
+      <div className='absolute left-0 top-0 flex size-full flex-col justify-between rounded-md bg-vignette p-2 text-white'>
         <Handlers show={show} onClick={onClick} />
-        <div className='grid grid-cols-[1fr_auto] opacity-75 gap-2'>
-          <span className='overflow-ellipsis overflow-hidden whitespace-nowrap'>{show.title}</span>
+        <div className='grid grid-cols-[1fr_auto] gap-2 opacity-75'>
+          <span className='truncate'>{show.title}</span>
           {Boolean(show.release) && <span>{new Date(show.release).getFullYear()}</span>}
         </div>
-        <div className='opacity-75 mb-[-5px]'>
-          <span className='select-none flex w-full items-center ml-auto gap-1 mt-[-8px] justify-between z-[1]'>
+        <div className='mb-[-5px] opacity-75'>
+          <span className='z-[1] ml-auto mt-[-8px] flex w-full select-none items-center justify-between gap-1'>
             <Favorite show={show} />
             <Rating rating={show.rating} />
           </span>

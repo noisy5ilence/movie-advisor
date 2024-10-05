@@ -15,13 +15,13 @@ const Actions = ({ onClose, show }: Props) => (
   <>
     <ToggleTrailer showType={show.type} showId={show.id}>
       {({ onPlay, disabled }) => (
-        <Button className='h-8 flex-grow w-[50%]' onClick={onPlay} disabled={disabled}>
+        <Button className='h-8 w-1/2 grow' onClick={onPlay} disabled={disabled}>
           Trailer
         </Button>
       )}
     </ToggleTrailer>
     <Button
-      className='h-8 flex-grow w-[50%]'
+      className='h-8 w-1/2 grow'
       onClick={() =>
         showTorrentsModal({
           showId: show.id,
@@ -35,11 +35,11 @@ const Actions = ({ onClose, show }: Props) => (
       Torrents
     </Button>
     <Link
-      className='flex w-[50%]'
+      className='flex w-1/2'
       href={`/similar?id=${show.id}&title=${encodeURIComponent(show.title)}&type=${show.type}`}
       onClick={onClose}
     >
-      <Button className='h-8 flex-grow'>Similar</Button>
+      <Button className='h-8 grow'>Similar</Button>
     </Link>
   </>
 );

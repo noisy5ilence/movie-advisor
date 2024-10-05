@@ -8,7 +8,7 @@ type CursorProps = { left: number; width: number; opacity: number };
 
 const Cursor: FC<CursorProps> = ({ width, left, opacity }) => (
   <li
-    className='pointer-events-none absolute bg-primary rounded-2xl h-full z-0 transition-all'
+    className='pointer-events-none absolute z-0 h-full rounded-2xl bg-primary transition-all'
     style={{ width, left, opacity }}
   />
 );

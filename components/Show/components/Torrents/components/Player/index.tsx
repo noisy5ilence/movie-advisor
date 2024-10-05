@@ -37,7 +37,7 @@ const showPlayer = create(({ onResolve, magnet, backdrop }: Props) => {
 
   return (
     <Modal
-      className='p-0 border-none rounded-lg overflow-hidden flex items-center justify-center relative'
+      className='relative flex items-center justify-center overflow-hidden rounded-lg border-none p-0'
       style={{ aspectRatio: '16/9' }}
       onClose={onResolve}
     >
@@ -62,7 +62,7 @@ const showPlayer = create(({ onResolve, magnet, backdrop }: Props) => {
       </Player>
       {isLoading && (
         <>
-          <div className='w-full h-full left-0 top-0 absolute flex items-center justify-center bg-black/70'>
+          <div className='absolute left-0 top-0 flex size-full items-center justify-center bg-black/70'>
             <div className='animate-spin'>
               <Loader color='white' />
             </div>

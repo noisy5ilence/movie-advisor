@@ -18,18 +18,18 @@ const Credits: FC<Props> = ({ showId, showType = 'movie', onPersonClick }) => {
 
   return (
     Boolean(credits?.length) && (
-      <ul className='flex gap-2 no-scrollbar overflow-auto rounded-lg snap-mandatory snap-x opacity-0 animate-fade-aside-slide-in'>
+      <ul className='no-scrollbar flex animate-fade-aside-slide-in snap-x snap-mandatory gap-2 overflow-auto rounded-lg opacity-0'>
         {credits?.map((actor) => (
           <li
             key={`${actor.id}_${actor.cast_id}`}
             title={actor.name}
-            className='bg-card text-card-foreground self-end max-w-[120px] w-full shrink-0 cursor-pointer transition-shadow hover:shadow-lg relative snap-start'
+            className='relative w-full max-w-[120px] shrink-0 cursor-pointer snap-start self-end bg-card text-card-foreground transition-shadow hover:shadow-lg'
           >
             <Link
               href={`/starring?actorId=${actor.id}&title=${encodeURIComponent(actor.name)}`}
               onClick={() => onPersonClick?.(actor.id.toString())}
             >
-              <div className='rounded-lg overflow-hidden'>
+              <div className='overflow-hidden rounded-lg'>
                 {actor.profile_path ? (
                   <Image
                     unoptimized
@@ -39,15 +39,15 @@ const Credits: FC<Props> = ({ showId, showType = 'movie', onPersonClick }) => {
                     alt={actor.name}
                   />
                 ) : (
-                  <div className='h-[180px] w-[120px] flex items-center justify-center rounded-lg'>
+                  <div className='flex h-[180px] w-[120px] items-center justify-center rounded-lg'>
                     <User2 size={120} strokeWidth={1} />
                   </div>
                 )}
               </div>
-              <div className='text-white text-sm absolute w-full h-full top-0 left-0 rounded-md flex flex-col justify-between p-2 py-1 bg-vignette'>
-                <p className=' overflow-ellipsis whitespace-nowrap overflow-hidden'>{actor.name}</p>
+              <div className='absolute left-0 top-0 flex size-full flex-col justify-between rounded-md bg-vignette p-2 py-1 text-sm text-white'>
+                <p className=' truncate'>{actor.name}</p>
                 {Boolean(actor.character) && (
-                  <p className='overflow-ellipsis whitespace-nowrap overflow-hidden'>{actor.character}</p>
+                  <p className='truncate'>{actor.character}</p>
                 )}
               </div>
             </Link>

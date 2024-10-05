@@ -49,12 +49,12 @@ const showTorrentsModal = create(({ title, year, showType, showId, backdrop, onR
 
   return (
     <Modal className='p-0' onClose={onResolve}>
-      <Table className='rounded-xl overflow-hidden'>
+      <Table className='overflow-hidden rounded-xl'>
         <TableHeader>
           <TableRow className='!border-b-0'>
             <TableHead className='px-2' colSpan={4}>
               <div className='grid grid-cols-[1fr_auto] items-center gap-3'>
-                <span className='overflow-ellipsis overflow-hidden text-base whitespace-nowrap'>{title}</span>
+                <span className='truncate text-base'>{title}</span>
                 <Button
                   className='h-6 p-2'
                   variant={withYear ? 'default' : 'ghost'}
@@ -82,7 +82,7 @@ const showTorrentsModal = create(({ title, year, showType, showId, backdrop, onR
             {!isMobile && <TableHead className='px-2'>Title</TableHead>}
             <TableHeadSortable sortable={sortable} title='Size' sort={Sort.size} value={sort} onChange={setSort} />
             <TableHeadSortable sortable={sortable} title='Seeders' sort={Sort.seeds} value={sort} onChange={setSort} />
-            <TableHead className='px-2 cursor-pointer select-none' onClick={() => showHostManagerModal()} />
+            <TableHead className='cursor-pointer select-none px-2' onClick={() => showHostManagerModal()} />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -102,24 +102,24 @@ const showTorrentsModal = create(({ title, year, showType, showId, backdrop, onR
                   </TableCell>
                 )}
                 <TableCell className='p-2'>
-                  <div className='flex items-center gap-1 shrink-0'>{torrent.size}</div>
+                  <div className='flex shrink-0 items-center gap-1'>{torrent.size}</div>
                 </TableCell>
                 <TableCell className='p-2'>{torrent.seeders}</TableCell>
-                <TableCell className='text-center p-1 pr-2'>
-                  <div className='flex gap-2 justify-end'>
+                <TableCell className='p-1 pr-2 text-center'>
+                  <div className='flex justify-end gap-2'>
                     {Boolean(key === providers.yts.key && torrent.seeders) && (
                       <div
-                        className='flex items-center justify-center h-8 w-8 border rounded-lg cursor-pointer'
+                        className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
                         onClick={() => showPlayer({ magnet: torrent.magnet, backdrop })}
                       >
                         <Play size={20} />
                       </div>
                     )}
-                    <a href={torrent.magnet} className='flex items-center justify-center h-8 w-8 border rounded-lg'>
+                    <a href={torrent.magnet} className='flex size-8 items-center justify-center rounded-lg border'>
                       <Magnet size={20} />
                     </a>
                     <div
-                      className='flex items-center justify-center h-8 w-8 border rounded-lg cursor-pointer'
+                      className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
                       onClick={() => navigator.clipboard.writeText(torrent.magnet)}
                     >
                       <Copy size={20} />
@@ -127,7 +127,7 @@ const showTorrentsModal = create(({ title, year, showType, showId, backdrop, onR
                     {prefix && !prefix.includes('{host}') && (
                       <div
                         onClick={() => cast(torrent.magnet!)}
-                        className='flex items-center justify-center h-8 w-8 border rounded-lg cursor-pointer'
+                        className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
                       >
                         <Cast size={20} />
                       </div>
@@ -140,7 +140,7 @@ const showTorrentsModal = create(({ title, year, showType, showId, backdrop, onR
           {isLoading && (
             <TableRow>
               <TableCell colSpan={4}>
-                <div className='h-40 w-full flex items-center justify-center'>
+                <div className='flex h-40 w-full items-center justify-center'>
                   <Loader className='animate-spin' />
                 </div>
               </TableCell>
@@ -149,7 +149,7 @@ const showTorrentsModal = create(({ title, year, showType, showId, backdrop, onR
           {!isLoading && isFetched && !torrents?.length && (
             <TableRow>
               <TableCell colSpan={4}>
-                <div className='h-40 w-full flex items-center justify-center text-xl text-muted-foreground'>
+                <div className='flex h-40 w-full items-center justify-center text-xl text-muted-foreground'>
                   Nothing was found
                 </div>
               </TableCell>

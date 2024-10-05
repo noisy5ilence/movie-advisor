@@ -1,9 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
 export const createUniqueRandomGenerator = (max: number) => {
   const numbers = Array.from({ length: max }, (_, i) => i + 1);
@@ -19,6 +17,7 @@ export const createUniqueRandomGenerator = (max: number) => {
     if (index >= numbers.length) {
       index = 0;
     }
+
     return numbers[index++];
   };
 };

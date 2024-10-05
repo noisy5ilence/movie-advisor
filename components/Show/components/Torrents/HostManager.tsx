@@ -9,7 +9,7 @@ const showHostManagerModal = create<InstanceProps<string>>(({ onResolve, onRejec
   const setPrefix = useSetPrefix();
 
   return (
-    <Modal className='p-2 max-w-[200px] m-auto' onClose={onReject}>
+    <Modal className='m-auto max-w-[200px] p-2' onClose={onReject}>
       <Input
         autoFocus
         placeholder='Enter address of your torrents streamer'

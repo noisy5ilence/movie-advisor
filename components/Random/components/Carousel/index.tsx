@@ -43,7 +43,7 @@ const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
   }),
   Scroller: forwardRef(function Scroller({ context, ...props }, ref) {
     return (
-      <div {...props} ref={ref} className='overflow-hidden no-scrollbar snap-mandatory snap-x rounded-lg h-full' />
+      <div {...props} ref={ref} className='no-scrollbar h-full snap-x snap-mandatory overflow-hidden rounded-lg' />
     );
   })
 };

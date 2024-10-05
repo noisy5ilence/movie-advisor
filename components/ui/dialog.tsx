@@ -90,7 +90,7 @@ const DialogContent = React.forwardRef<
 
   return (
     <DialogPortal>
-      <div className='fixed inset-0 w-full h-full bg-black/50 z-50' ref={wrapperRef}>
+      <div className='fixed inset-0 z-50 size-full bg-black/50' ref={wrapperRef}>
         <DialogOverlay
           ref={(element) => {
             if (!element) return;
@@ -115,7 +115,7 @@ const DialogContent = React.forwardRef<
             )}
           >
             {children}
-            <div className='absolute top-full block w-10 h-[20vh] pointer-events-none' />
+            <div className='pointer-events-none absolute top-full block h-[20vh] w-10' />
           </DialogPrimitive.Content>
         </DialogOverlay>
       </div>

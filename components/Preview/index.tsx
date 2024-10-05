@@ -25,13 +25,13 @@ const Preview: FC<Props> = ({ show, className, onClose, children, card }) => {
   return (
     <div className={cn('flex flex-col md:flex-row gap-2 rounded-xl', { 'p-2': Boolean(onClose) }, className)}>
       {card || <Card className='mx-auto' show={show} />}
-      <div className='flex flex-col grow'>
-        {children && <div className='flex hover-none:hidden w-full max-sm:mb-0 mb-2 gap-2'>{children}</div>}
+      <div className='flex grow flex-col'>
+        {children && <div className='mb-2 flex w-full gap-2 hover-none:hidden max-sm:mb-0'>{children}</div>}
         <div className='flex w-full gap-2'>
           <Actions show={show} onClose={onClose} />
         </div>
         <Separator className='my-2' />
-        <p key={show.id} className='leading-7 mb-3'>
+        <p key={show.id} className='mb-3 leading-7'>
           {show.overview}
         </p>
         <div className='mt-auto grid grid-cols-1 rounded-lg'>

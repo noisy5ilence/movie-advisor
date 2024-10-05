@@ -8,9 +8,9 @@ interface Props {
 
 const Poster: FC<Props> = ({ title, poster }) => {
   return poster ? (
-    <img className='rounded-lg w-full h-full object-cover' src={poster} alt={title} />
+    <img className='size-full rounded-lg object-cover' src={poster} alt={title} />
   ) : (
-    <div className='w-full flex items-center justify-center rounded-lg grow'>
+    <div className='flex w-full grow items-center justify-center rounded-lg'>
       <ImageOff size={100} strokeWidth={1} color='hsl(215.4 16.3% 46.9%)' />
     </div>
   );

@@ -19,7 +19,7 @@ const Container = () => {
   return (
     <>
       {Boolean(title) && (
-        <span className='inline-flex w-full h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground mb-2'>
+        <span className='mb-2 inline-flex h-10 w-full items-center justify-center rounded-md bg-muted p-1 text-muted-foreground'>
           Similar: {decodeURIComponent(title)}
         </span>
       )}

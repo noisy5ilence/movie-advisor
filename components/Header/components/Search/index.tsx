@@ -38,7 +38,7 @@ export const showSearchModal = create(({ onResolve }) => {
   const isFetched = movies.isFetched && series.isFetched;
 
   return (
-    <Modal className='block p-0 max-w-[932px]' onClose={onResolve} scrollRef={scrollRef}>
+    <Modal className='block max-w-[932px] p-0' onClose={onResolve} scrollRef={scrollRef}>
       <div className='relative p-2'>
         <Input
           autoFocus
