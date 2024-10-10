@@ -4,7 +4,7 @@ import { FC, useState } from 'react';
 
 import Nav from '@/components/ui/nav';
 
-import Marquee from './components/Marquee';
+import Gallery from './components/Gallery';
 import { tabs } from './constants';
 import useTrending from './useTrending';
 
@@ -22,7 +22,7 @@ const Trending: FC = () => {
     isFetched && (
       <div>
         <Nav tabs={tabs} active={active} onChange={(active) => setActive(active)} className='mb-3' />
-        <Marquee key={active.type} shows={shows} />
+        <Gallery key={active.type} shows={shows} />
       </div>
     )
   );

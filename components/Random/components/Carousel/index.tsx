@@ -1,8 +1,9 @@
 'use client';
 
-import { FC, forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
-import { Virtuoso, VirtuosoHandle, VirtuosoProps } from 'react-virtuoso';
+import { FC, ForwardedRef, forwardRef, useLayoutEffect, useRef } from 'react';
+import { Virtuoso, VirtuosoProps } from 'react-virtuoso';
 
+import ScrollNavigation from '@/components/ScrollNavigation';
 import Card from '@/components/Show';
 
 const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
@@ -42,8 +43,31 @@ const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
     return <div {...props} ref={ref} style={{ ...props.style, display: 'flex' }} className='gap-2' />;
   }),
   Scroller: forwardRef(function Scroller({ context, ...props }, ref) {
+    const handleRef =
+      (ref: ForwardedRef<HTMLDivElement>, setRef: (element: HTMLDivElement) => void) =>
+      (element: HTMLDivElement | null) => {
+        if (!element || !ref) return;
+
+        setRef(element);
+
+        typeof ref === 'function' ? ref(element) : (ref.current = element);
+      };
+
     return (
-      <div {...props} ref={ref} className='no-scrollbar h-full snap-x snap-mandatory overflow-hidden rounded-lg' />
+      <ScrollNavigation<HTMLDivElement>
+        className='size-full'
+        arrowsClassName='h-20 bg-secondary'
+        backClassName='rounded-none rounded-r-full'
+        nextClassName='rounded-none rounded-l-full'
+      >
+        {(setRef) => (
+          <div
+            {...props}
+            ref={handleRef(ref, setRef)}
+            className='no-scrollbar h-full snap-x snap-mandatory overflow-hidden rounded-lg'
+          />
+        )}
+      </ScrollNavigation>
     );
   })
 };
@@ -56,33 +80,11 @@ interface Props {
 }
 
 const Carousel: FC<Props> = ({ index, shows, onIndexChange, onEndReached }) => {
-  const ref = useRef<VirtuosoHandle>(null);
   const initialIndex = useRef(index);
-
-  useEffect(() => {
-    const scrollTo = ({ key }: globalThis.KeyboardEvent) => {
-      if (key === 'ArrowLeft') {
-        if (index <= 0) return;
-        ref.current?.scrollIntoView({ index: index - 1, behavior: 'smooth' });
-      }
-
-      if (key === 'ArrowRight') {
-        if (index >= (shows?.length || 0) - 1) return;
-        ref.current?.scrollIntoView({ index: index + 1, behavior: 'smooth' });
-      }
-    };
-
-    document.addEventListener('keydown', scrollTo);
-
-    return () => {
-      document.removeEventListener('keydown', scrollTo);
-    };
-  }, [index, shows?.length]);
 
   return (
     <div className='card-aspect-ratio mx-auto'>
       <Virtuoso
-        ref={ref}
         data={shows}
         context={onIndexChange}
         endReached={onEndReached}
