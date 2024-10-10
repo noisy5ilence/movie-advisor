@@ -87,7 +87,7 @@ function ScrollNavigation<E extends HTMLElement>({
           key={className}
           onClick={handleScroll}
           className={cn(
-            'opacity-0 transition-opacity absolute top-1/2 transform -translate-y-1/2 bg-gradient-to-r h-full w-14 flex items-center cursor-pointer',
+            'opacity-0 hover-none:hidden hover-none:pointer-events-none transition-opacity absolute top-1/2 transform -translate-y-1/2 bg-gradient-to-r h-full w-14 flex items-center cursor-pointer',
             {
               'group-hover:opacity-100 hover:!opacity-60': isShow,
               'pointer-events-none': !isShow
