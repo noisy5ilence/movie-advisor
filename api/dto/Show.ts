@@ -21,7 +21,7 @@ const mapMoviesSeriesResponseToShows = (
   total: total_pages,
   results: results
     .map(show => mapMovieSeriesToShow(show, type))
-    .filter((show) => show.votes && show.release && show.backdrop && show.poster && show.votes > 500)
+    .filter((show) => show.votes && show.release && show.backdrop && show.poster)
 });
 
 export default mapMoviesSeriesResponseToShows;
