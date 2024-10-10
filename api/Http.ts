@@ -1,5 +1,5 @@
 class Http {
-  base = 'https://api.themoviedb.org/3';
+  private base = 'https://api.themoviedb.org/3';
 
   get<T>(url: string, { params }: { params?: Record<string, unknown> } = {}, base?: string): Promise<T> {
     const serializedParams = Object.entries(params || {}).reduce((params, [key, value]) => {

@@ -3,6 +3,7 @@
 import { FC, ReactNode } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 
+import useDetails from '@/components/Preview/useDetails';
 import Card from '@/components/Show';
 import Credits from '@/components/Show/components/Credits';
 import { Modal } from '@/components/ui/dialog';
@@ -19,8 +20,12 @@ interface Props {
   card?: ReactNode;
 }
 
-const Preview: FC<Props> = ({ show, className, onClose, children, card }) => {
-  if (!show) return null;
+const Preview: FC<Props> = ({ show: baseShow, className, onClose, children, card }) => {
+  const { data: detailedShow } = useDetails({ showId: baseShow?.id, showType: baseShow?.type });
+
+  if (!baseShow) return null;
+
+  const show: Show & Partial<Details> | undefined = detailedShow || baseShow;
 
   return (
     <div className={cn('flex flex-col md:flex-row gap-2 rounded-xl', { 'p-2': Boolean(onClose) }, className)}>

@@ -7,7 +7,7 @@ import ToggleTrailer from '@/components/Show/components/Trailer';
 import { Button } from '@/components/ui/button';
 
 interface Props {
-  show: Show;
+  show: Show & Partial<Details>;
   onClose?: () => void;
 }
 
@@ -24,8 +24,7 @@ const Actions = ({ onClose, show }: Props) => (
       className='h-8 w-1/2 grow'
       onClick={() =>
         showTorrentsModal({
-          showId: show.id,
-          showType: show.type,
+          imdbID: show.imdb_id!,
           title: show.title,
           backdrop: show.backdrop,
           year: new Date(show.release).getFullYear()

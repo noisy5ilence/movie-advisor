@@ -16,14 +16,13 @@ import showHostManagerModal from './HostManager';
 import useTorrents from './useTorrents';
 
 interface Props extends InstanceProps<void> {
-  showId: Show['id'];
-  showType: Show['type'];
+  imdbID: string;
   title: string;
   year: number;
   backdrop: string;
 }
 
-const showTorrentsModal = create(({ title, year, showType, showId, backdrop, onResolve }: Props) => {
+const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: Props) => {
   const isMobile = matchMedia('(max-width: 600px)').matches;
   const prefix = usePrefix();
   const [sort, setSort] = useState<Sort>(Sort.seeds);
@@ -39,8 +38,7 @@ const showTorrentsModal = create(({ title, year, showType, showId, backdrop, onR
   } = useTorrents({
     query,
     sort,
-    showId,
-    showType,
+    imdbID,
     key,
     queryFn
   });

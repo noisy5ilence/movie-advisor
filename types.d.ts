@@ -13,6 +13,13 @@ interface Pagination<T> {
   results: T[];
 }
 
+interface Details {
+  genres: IDName[];
+  imdb_id: string;
+  runtime: number;
+  tagline: string;
+}
+
 interface Movie {
   adult: boolean;
   backdrop_path: string;
@@ -57,10 +64,9 @@ interface Show {
   release: Date;
   rating: number;
   votes: number;
-  genres: string[];
 }
 
-interface Actor {
+interface Person {
   adult: boolean;
   gender: number;
   id: number;
@@ -70,23 +76,17 @@ interface Actor {
   popularity: number;
   profile_path: string;
   cast_id: number;
-  character: string;
   credit_id: string;
   order: number;
 }
 
-interface AggregatedActor {
-  adult: boolean;
-  gender: number;
-  id: number;
-  known_for_department: string;
-  name: string;
-  original_name: string;
-  popularity: number;
-  profile_path: string;
+interface Actor extends Person {
+  character: string;
+}
+
+interface AggregatedActor extends Person {
   roles: Role[];
   total_episode_count: number;
-  order: number;
 }
 
 interface Role {
@@ -96,8 +96,6 @@ interface Role {
 }
 
 interface Trailer {
-  iso_639_1: string;
-  iso_3166_1: string;
   name: string;
   key: string;
   site: string;

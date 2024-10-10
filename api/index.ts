@@ -1,8 +1,8 @@
 'use server';
 
-import { createUniqueRandomGenerator } from '../lib/utils';
+import { createUniqueRandomGenerator } from '@/lib/utils';
 
-import mapMoviesSeriesResponseToShows from './dto/Show';
+import mapMoviesSeriesResponseToShows, { mapMovieSeriesToShow } from './dto/Show';
 import pirateBay from './parsers/pirate-bay';
 import yts from './parsers/yts';
 import http from './Http';
@@ -27,14 +27,27 @@ export const search = async ({
     .then((response) => mapMoviesSeriesResponseToShows(response, type));
 };
 
-const TOTAL_PAGES = 500;
+const TOTAL_PAGES = 400;
 
 const generatePage = createUniqueRandomGenerator(TOTAL_PAGES);
+
+export const details = async ({
+  showId,
+  showType = 'movie'
+}: {
+  showId: Show['id'];
+  showType: Show['type'];
+}): Promise<Show & Details> => {
+  return http
+    .get<(Movie | Series) & Details>(`/${showType}/${showId}`)
+    .then((response) => ({ ...mapMovieSeriesToShow(response, showType), ...response }));
+};
 
 export const randomMovies = async (): Promise<Pagination<Show>> => {
   return http
     .get<TMDBPagination<Movie>>('/discover/movie', {
       params: {
+        'vote_count.gte': 300,
         sort_by: 'popularity.desc',
         with_origin_country: 'UA|GB|JP|AU|US|IT|DE|FR',
         page: generatePage()
@@ -147,16 +160,17 @@ export const credits = async ({
   showType?: Show['type'];
 }): Promise<Array<Actor>> => {
   return http
-    .get<{ cast: Array<unknown> }>(`/${showType}/${showId}/${showType === 'tv' ? 'aggregate_credits' : 'credits'}`)
-    .then((data) => {
-      if (showType === 'tv') {
-        return data.cast.map((item) => {
-          const actor = item as AggregatedActor;
-          const [role] = actor.roles || [{}];
-          return { ...actor, ...role } as unknown as Actor;
-        });
-      }
-      return data.cast as Array<Actor>;
+    .get<{ cast: Array<Actor | AggregatedActor> }>(
+      `/${showType}/${showId}/${showType === 'tv' ? 'aggregate_credits' : 'credits'}`
+    )
+    .then(({ cast }) => {
+      return cast.map((actor) => {
+        if ('character' in actor) return actor;
+
+        const [{ character }] = actor.roles || [{}];
+
+        return { ...actor, character };
+      });
     });
 };
 
@@ -176,41 +190,21 @@ export const trailers = async ({
     .then((data) => data.results);
 };
 
-export const torrentFiles = (magnet: string): Promise<Video[]> => {
-  return http
-    .get<{ name: string; subtitles: Subtitles[] }[]>('/files', { params: { magnet } }, process.env.TRACKER_PROXY_BASE)
-    .then((files) =>
-      files.map((file) => {
-        const base = `${process.env.TRACKER_PROXY_BASE}/stream?magnet=${encodeURIComponent(magnet)}}`;
-
-        return {
-          name: file.name,
-          src: `${base}&filename=${encodeURIComponent(file.name)}`,
-          subtitles: file.subtitles
-        };
-      })
-    );
-};
-
 export const YTSTorrents = async ({
   query,
   sort,
-  showType,
-  showId
+  imdbID
 }: {
+  imdbID: string;
   query: string;
   sort: Sort;
-  showId: Show['id'];
-  showType: Show['type'];
 }) => {
   try {
-    const imdbID = await externalIDs({ showType, showId });
-    const torrents = await yts.search({
+    return yts.search({
       imdbID,
       query,
       sort
     });
-    return torrents;
   } catch (error) {
     return [];
   }
@@ -220,17 +214,15 @@ export const TPBTorrents = async ({
   query,
   sort
 }: {
+  imdbID: string;
   query: string;
   sort: Sort;
-  showId: Show['id'];
-  showType: Show['type'];
 }) => {
   try {
-    const torrents = await pirateBay.search({
+    return pirateBay.search({
       query,
       sort
-    });
-    return torrents;
+    })
   } catch (error) {
     return [];
   }
