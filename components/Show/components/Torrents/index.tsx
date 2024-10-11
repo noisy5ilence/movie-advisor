@@ -84,57 +84,65 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
           </TableRow>
         </TableHeader>
         <TableBody>
-          {torrents?.map((torrent) => (
-            <Fragment key={torrent.magnet + torrent.id}>
-              {isMobile && (
-                <TableRow className='border-b-0'>
-                  <TableCell className='break-all p-2' colSpan={4}>
-                    {torrent.title}
+          {torrents?.map((torrent) => {
+            const supportedForStream = Boolean(
+              key === providers.yts.key &&
+                torrent.seeders &&
+                ['720p', '1080p'].some((resolution) => torrent.title.includes(resolution))
+            );
+
+            return (
+              <Fragment key={torrent.magnet + torrent.id}>
+                {isMobile && (
+                  <TableRow className='border-b-0'>
+                    <TableCell className='break-all p-2' colSpan={4}>
+                      {torrent.title}
+                    </TableCell>
+                  </TableRow>
+                )}
+                <TableRow>
+                  {!isMobile && (
+                    <TableCell className='break-all p-2'>
+                      {torrent.title} {torrent.type && `[${torrent.type?.toUpperCase()}]`}
+                    </TableCell>
+                  )}
+                  <TableCell className='p-2'>
+                    <div className='flex shrink-0 items-center gap-1'>{torrent.size}</div>
+                  </TableCell>
+                  <TableCell className='p-2'>{torrent.seeders}</TableCell>
+                  <TableCell className='p-1 pr-2 text-center'>
+                    <div className='flex justify-end gap-2'>
+                      {supportedForStream && (
+                        <div
+                          className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
+                          onClick={() => showPlayer({ magnet: torrent.magnet, backdrop })}
+                        >
+                          <Play size={20} />
+                        </div>
+                      )}
+                      <a href={torrent.magnet} className='flex size-8 items-center justify-center rounded-lg border'>
+                        <Magnet size={20} />
+                      </a>
+                      <div
+                        className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
+                        onClick={() => navigator.clipboard.writeText(torrent.magnet)}
+                      >
+                        <Copy size={20} />
+                      </div>
+                      {prefix && !prefix.includes('{host}') && (
+                        <div
+                          onClick={() => cast(torrent.magnet!)}
+                          className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
+                        >
+                          <Cast size={20} />
+                        </div>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
-              )}
-              <TableRow>
-                {!isMobile && (
-                  <TableCell className='break-all p-2'>
-                    {torrent.title} {torrent.type && `[${torrent.type?.toUpperCase()}]`}
-                  </TableCell>
-                )}
-                <TableCell className='p-2'>
-                  <div className='flex shrink-0 items-center gap-1'>{torrent.size}</div>
-                </TableCell>
-                <TableCell className='p-2'>{torrent.seeders}</TableCell>
-                <TableCell className='p-1 pr-2 text-center'>
-                  <div className='flex justify-end gap-2'>
-                    {Boolean(key === providers.yts.key && torrent.seeders) && (
-                      <div
-                        className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
-                        onClick={() => showPlayer({ magnet: torrent.magnet, backdrop })}
-                      >
-                        <Play size={20} />
-                      </div>
-                    )}
-                    <a href={torrent.magnet} className='flex size-8 items-center justify-center rounded-lg border'>
-                      <Magnet size={20} />
-                    </a>
-                    <div
-                      className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
-                      onClick={() => navigator.clipboard.writeText(torrent.magnet)}
-                    >
-                      <Copy size={20} />
-                    </div>
-                    {prefix && !prefix.includes('{host}') && (
-                      <div
-                        onClick={() => cast(torrent.magnet!)}
-                        className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
-                      >
-                        <Cast size={20} />
-                      </div>
-                    )}
-                  </div>
-                </TableCell>
-              </TableRow>
-            </Fragment>
-          ))}
+              </Fragment>
+            );
+          })}
           {isLoading && (
             <TableRow>
               <TableCell colSpan={4}>
