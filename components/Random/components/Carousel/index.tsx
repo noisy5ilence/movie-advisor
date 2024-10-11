@@ -5,6 +5,7 @@ import { Virtuoso, VirtuosoProps } from 'react-virtuoso';
 
 import ScrollNavigation from '@/components/ScrollNavigation';
 import Card from '@/components/Show';
+import { cn } from '@/lib/utils';
 
 const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
   Item: ({ item, children, context: onIndexChange, ...props }) => {
@@ -43,6 +44,8 @@ const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
     return <div {...props} ref={ref} style={{ ...props.style, display: 'flex' }} className='gap-2' />;
   }),
   Scroller: forwardRef(function Scroller({ context, ...props }, ref) {
+    const GAP_BETWEEN_SLIDES = 8; // gap-2 = 0.5rem = 8px
+
     const handleRef =
       (ref: ForwardedRef<HTMLDivElement>, setRef: (element: HTMLDivElement) => void) =>
       (element: HTMLDivElement | null) => {
@@ -59,12 +62,15 @@ const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
         arrowsClassName='h-20 bg-secondary'
         backClassName='rounded-none rounded-r-full'
         nextClassName='rounded-none rounded-l-full'
+        gap={GAP_BETWEEN_SLIDES}
       >
-        {(setRef) => (
+        {(setRef, isArrowHovered) => (
           <div
             {...props}
             ref={handleRef(ref, setRef)}
-            className='no-scrollbar h-full snap-x snap-mandatory overflow-hidden rounded-lg'
+            className={cn('no-scrollbar h-full overflow-hidden rounded-lg', {
+              'snap-x snap-mandatory': !isArrowHovered
+            })}
           />
         )}
       </ScrollNavigation>

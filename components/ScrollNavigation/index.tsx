@@ -9,7 +9,8 @@ interface Props<E extends HTMLElement> {
   backClassName?: string;
   nextClassName?: string;
   iconClassName?: string;
-  children: (setScrollElement: (element: E) => void) => ReactNode;
+  gap?: number;
+  children: (setScrollElement: (element: E) => void, isArrowHovered: boolean) => ReactNode;
 }
 
 function ScrollNavigation<E extends HTMLElement>({
@@ -18,12 +19,14 @@ function ScrollNavigation<E extends HTMLElement>({
   backClassName,
   nextClassName,
   iconClassName,
+  gap = 0,
   children
 }: Props<E>) {
   const [scrollElement, setScrollElement] = useState<E | null>(null);
   const [isShowBack, setIsShowBack] = useState(true);
   const [isShowNext, setIsShowNext] = useState(true);
   const [childWidth, setChildWidth] = useState(0);
+  const [isArrowHovered, setIsArrowHovered] = useState(false);
 
   useEffect(() => {
     if (!scrollElement) return;
@@ -31,7 +34,7 @@ function ScrollNavigation<E extends HTMLElement>({
     let timeout: NodeJS.Timeout;
 
     if (scrollElement.firstChild) {
-      setChildWidth((scrollElement.firstChild as HTMLElement).clientWidth);
+      setChildWidth((scrollElement.firstChild as HTMLElement).clientWidth + gap);
     }
 
     const handleScroll = () => {
@@ -52,7 +55,7 @@ function ScrollNavigation<E extends HTMLElement>({
     return () => {
       scrollElement.removeEventListener('scroll', handleScroll);
     };
-  }, [scrollElement]);
+  }, [scrollElement, gap]);
 
   const handleScrollNext = (direction: 1 | -1) => () => {
     if (!scrollElement) return;
@@ -62,7 +65,7 @@ function ScrollNavigation<E extends HTMLElement>({
 
   return (
     <div className={cn('relative group', className)}>
-      {children(setScrollElement)}
+      {children(setScrollElement, isArrowHovered)}
       {[
         {
           Arrow: ChevronLeft,
@@ -86,6 +89,8 @@ function ScrollNavigation<E extends HTMLElement>({
         <div
           key={className}
           onClick={handleScroll}
+          onMouseEnter={() => setIsArrowHovered(true)}
+          onMouseLeave={() => setIsArrowHovered(false)}
           className={cn(
             'opacity-0 hover-none:hidden hover-none:pointer-events-none transition-opacity absolute top-1/2 transform -translate-y-1/2 bg-gradient-to-r h-full w-14 flex items-center cursor-pointer',
             {
