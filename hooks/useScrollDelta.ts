@@ -24,6 +24,6 @@ const useScrollDelta = () => {
       }
     }, [])
   };
-};
+}
 
 export default useScrollDelta;

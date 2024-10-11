@@ -39,8 +39,12 @@ const DialogContent = React.forwardRef<
     scrollRef?: React.MutableRefObject<HTMLDivElement>;
   }
 >(({ className, children, onClose, scrollRef, ...props }, ref) => {
+  const FULL_OPACITY = 1;
+
   const position = React.useRef(0);
-  const close = React.useRef(false);
+
+  const canBeCloseRef = React.useRef(false);
+
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   const overlayRef = React.useRef<HTMLDivElement>(null) as React.MutableRefObject<HTMLDivElement>;
   const contentRef = React.useRef<HTMLDivElement | null>(null);
@@ -52,39 +56,47 @@ const DialogContent = React.forwardRef<
   };
 
   const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
-    const threshold = 150;
+    const SCROLL_OVERFLOW_THRESHOLD = 150;
+    const TOP_POSITION = 0;
 
-    const { clientY } = event.touches[0];
     const overlay = overlayRef.current;
     const wrapper = wrapperRef.current;
-    const diff = clientY - position.current;
-    const top = overlay?.scrollTop || 0;
-    const isTop = top === 0;
-    const canBeClosed = diff > threshold;
 
-    close.current = canBeClosed && isTop;
+    if (!overlay) return;
+
+    const { clientY } = event.touches[0];
+
+    const scrollOverflow = clientY - position.current;
+    const top = overlay.scrollTop;
+
+    const isTop = top === TOP_POSITION;
+
+    const canBeClosed = scrollOverflow > SCROLL_OVERFLOW_THRESHOLD;
+
+    canBeCloseRef.current = canBeClosed && isTop;
 
     if (isTop && wrapper) {
-      wrapper.style.opacity = `${1 - (diff * 100) / threshold / 100}`;
+      wrapper.style.opacity = `${FULL_OPACITY - scrollOverflow / SCROLL_OVERFLOW_THRESHOLD}`;
     }
 
-    if (top <= 0 && delta.current < 0 && canBeClosed) onClose?.();
+    if (top <= TOP_POSITION && delta.current < TOP_POSITION && canBeClosed) onClose?.();
   };
 
   const handleTouchEnd = () => {
-    if (close.current) return onClose?.();
+    if (canBeCloseRef.current) return onClose?.();
 
-    close.current = false;
+    canBeCloseRef.current = false;
 
     if (!wrapperRef.current) return;
 
-    wrapperRef.current.style.opacity = '1';
+    wrapperRef.current.style.opacity = `${FULL_OPACITY}`;
   };
 
   const handleRef = (element: HTMLDivElement | null) => {
-    if (!element) return;
+    if (!element || !ref) return;
 
-    (ref as (element: HTMLElement | null) => void)?.(element);
+    typeof ref === 'function' ? ref(element) : (ref.current = element);
+
     contentRef.current = element;
   };
 
