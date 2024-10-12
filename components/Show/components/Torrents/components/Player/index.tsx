@@ -54,7 +54,7 @@ const showPlayer = create(({ onResolve, magnet, backdrop }: Props) => {
         aspectRatio='16/9'
         ref={player}
         src={(source as VideoSrc) || []}
-        className={cn('size-full', className)}
+        className='size-full'
         poster={backdrop}
       >
         <MediaProvider>
