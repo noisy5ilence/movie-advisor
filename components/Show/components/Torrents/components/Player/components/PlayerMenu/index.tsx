@@ -13,17 +13,17 @@ interface Props {
 }
 
 const PlayerMenu: FC<Props> = ({ children, options, isChecked }) => (
-  <Menu.Root className='vds-menu'>
-    <Menu.Button className='vds-menu-button vds-button' aria-label='Settings'>
+  <Menu.Root className={cn('vds-menu')}>
+    <Menu.Button className={cn('vds-menu-button vds-button')} aria-label='Settings'>
       {children}
     </Menu.Button>
-    <Menu.Items className='vds-menu-items !p-2' placement='top' offset={0}>
+    <Menu.Items className={cn('vds-menu-items !p-2')} placement='top end' offset={0}>
       <Menu.RadioGroup>
         {options.map((option) => (
           <Menu.Radio
             key={option.label}
             title={option.label}
-            className='flex w-64 cursor-pointer items-center gap-2 truncate'
+            className='flex w-64 cursor-pointer items-center gap-2 truncate p-2'
             onClick={option.onClick}
           >
             <CheckIcon className={cn('vds-icon shrink-0', { invisible: !isChecked(option) })} size={16} />

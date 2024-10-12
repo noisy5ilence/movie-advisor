@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('video-react/dist/video-react.css');
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -88,6 +86,12 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  :where(.vds-time),
+  :where(.vds-menu-items),
+  :where(.vds-video-layout) {
+    --media-font-family: var(--font-family);
   }
 }
 

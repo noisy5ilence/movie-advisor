@@ -87,5 +87,12 @@ module.exports = {
   corePlugins: {
     aspectRatio: false
   },
-  plugins: [require('tailwindcss-animate'), require('tailwindcss-touch')()]
+  plugins: [
+    require('tailwindcss-animate'),
+    require('tailwindcss-touch')(),
+    require('@vidstack/react/tailwind.cjs')({
+      selector: '.media-player',
+      prefix: 'media'
+    })
+  ]
 };

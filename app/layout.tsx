@@ -1,15 +1,12 @@
 import React, { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
-import { Poppins } from 'next/font/google';
 import { cookies } from 'next/headers';
-
-const poppins = Poppins({ subsets: ['latin'], weight: '400' });
 
 import Header from '@/components/Header';
 import Providers from '@/providers';
+import { font } from '@/styles/font';
 
 import '@/styles/index.css';
-import '@/styles/player.css';
 
 export const metadata: Metadata = {
   title: 'Movie advisor | Discover Your Next Favorite Movie',
@@ -33,7 +30,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
       <head>
         <meta name='theme-color' content='black' />
       </head>
-      <body style={poppins.style}>
+      <body style={font.style}>
         <Providers theme={theme}>
           <div className='sticky top-0 z-20'>
             <Header />
