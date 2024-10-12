@@ -19,11 +19,9 @@ import '@vidstack/react/player/styles/default/layouts/video.css';
 interface Props extends InstanceProps<void> {
   magnet: string;
   backdrop: string;
-  className?: string;
-  onClose: () => void;
 }
 
-const showPlayer = create(({ onResolve, magnet, backdrop, className }: Props) => {
+const showPlayer = create(({ onResolve, magnet, backdrop }: Props) => {
   const [index, setIndex] = useState(0);
 
   const player = useRef<MediaPlayerInstance>(null);
