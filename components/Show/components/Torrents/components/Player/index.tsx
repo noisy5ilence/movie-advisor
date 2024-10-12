@@ -1,74 +1,119 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { FC, useRef } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
-import { Loader } from 'lucide-react';
-import { BigPlayButton, ClosedCaptionButton, ControlBar, Player, PlayerReference } from 'video-react';
+import {
+  MediaPlayer,
+  MediaPlayerInstance,
+  MediaProvider,
+  Poster,
+  Track,
+  useActiveTextTrack,
+  useCaptionOptions,
+  useMediaPlayer,
+  useMediaStore,
+  VideoSrc
+} from '@vidstack/react';
+import { ClosedCaptionsIcon, ClosedCaptionsOnIcon, PlaylistIcon } from '@vidstack/react/icons';
+import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
 
 import { Modal } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/useToast';
+import { cn } from '@/lib/utils';
 
-import useSubtitles from './useSubtitles';
+import PlayerMenu from './components/PlayerMenu';
+import useFiles from './useFiles';
 
-interface Props extends InstanceProps<void> {
+import '@vidstack/react/player/styles/default/theme.css';
+import '@vidstack/react/player/styles/default/layouts/video.css';
+
+interface Props {
   magnet: string;
   backdrop: string;
+  className?: string;
 }
 
-type PlayerRef = PlayerReference & { video: { video: HTMLVideoElement } };
-
-const showPlayer = create(({ onResolve, magnet, backdrop }: Props) => {
-  const [player, setPlayer] = useState<PlayerRef | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
-  const { data: subtitles } = useSubtitles({ magnet });
-
-  useEffect(() => {
-    if (!player) return;
-
-    const { video } = player.video;
-
-    const handleCanPlay = () => setIsLoading(false);
-
-    video.addEventListener('canplay', handleCanPlay);
-
-    return () => video.removeEventListener('canplay', handleCanPlay);
-  }, [player]);
+const CaptionsMenu = () => {
+  const track = useActiveTextTrack(['subtitles']);
+  const tracks = useCaptionOptions();
 
   return (
+    <PlayerMenu
+      options={tracks.map((track) => ({ label: track.label, onClick: () => track.select() }))}
+      isChecked={({ label }) => (label === 'Off' ? !track : label === track?.label)}
+    >
+      {track ? <ClosedCaptionsOnIcon className='vds-icon' /> : <ClosedCaptionsIcon className='vds-icon' />}
+    </PlayerMenu>
+  );
+};
+
+const VideosMenu = () => {
+  const player = useMediaPlayer();
+  const { sources, source } = useMediaStore();
+
+  player?.remoteControl.console.log(sources, source);
+
+  return null;
+
+  return (
+    <PlayerMenu
+      options={tracks.map((track) => ({ label: track.label, onClick: () => track.select() }))}
+      isChecked={({ label }) => (label === 'Off' ? !track : label === track?.label)}
+    >
+      {track ? <ClosedCaptionsOnIcon className='vds-icon' /> : <ClosedCaptionsIcon className='vds-icon' />}
+    </PlayerMenu>
+  );
+};
+
+export const Player: FC<Props> = ({ magnet, backdrop, className }) => {
+  const { toast } = useToast();
+  const player = useRef<MediaPlayerInstance>(null);
+
+  const {
+    data: { subtitles, videos }
+  } = useFiles(magnet);
+
+  return (
+    <MediaPlayer
+      ref={player}
+      autoPlay
+      load='eager'
+      storage='movie-advisor'
+      posterLoad='eager'
+      aspectRatio='16/9'
+      src={videos as VideoSrc[]}
+      className={cn('size-full', className)}
+      poster={backdrop}
+    >
+      <MediaProvider>
+        <Poster className='vds-poster' src={backdrop} />
+        {subtitles.map((track) => (
+          <Track key={track.name} src={track.src} kind='subtitles' label={track.name} type='srt' default />
+        ))}
+      </MediaProvider>
+      <DefaultVideoLayout
+        colorScheme='dark'
+        icons={defaultLayoutIcons}
+        slots={{
+          settingsMenu: null,
+          captionButton: null,
+          googleCastButton: null,
+          beforeSettingsMenu: Boolean(videos.length) && <VideosMenu />,
+          afterSettingsMenu: Boolean(subtitles.length) && <CaptionsMenu />
+        }}
+      />
+    </MediaPlayer>
+  );
+};
+
+const showPlayer = create(({ onResolve, magnet, backdrop, className }: Props & InstanceProps<void>) => {
+  return (
     <Modal
-      className='relative flex items-center justify-center overflow-hidden rounded-lg border-none p-0'
+      className='relative flex items-center justify-center overflow-hidden rounded-lg border-none bg-black p-0'
       style={{ aspectRatio: '16/9' }}
       onClose={onResolve}
     >
-      <Player autoPlay aspectRatio='16:9' poster={backdrop} ref={(player) => setPlayer(player as PlayerRef)}>
-        {subtitles?.map(({ name, content }) => (
-          <track
-            key={name}
-            kind='captions'
-            src={URL.createObjectURL(new Blob([content], { type: 'text/vtt' }))}
-            label={name}
-          />
-        ))}
-        <source
-          src={`${process.env.NEXT_PUBLIC_TRACKER_PROXY_BASE}/stream?magnet=${encodeURIComponent(magnet)}`}
-          onError={() => {
-            toast({ title: 'This torrent doesn\'t contain any compatible video files' });
-            setIsLoading(false);
-          }}
-        />
-        <ControlBar>{Boolean(subtitles?.length) && <ClosedCaptionButton order={7} />}</ControlBar>
-        <BigPlayButton position='center' />
-      </Player>
-      {isLoading && (
-        <>
-          <div className='absolute left-0 top-0 flex size-full items-center justify-center bg-black/70'>
-            <div className='animate-spin'>
-              <Loader color='white' />
-            </div>
-          </div>
-        </>
-      )}
+      <Player className={className} backdrop={backdrop} magnet={magnet} />
     </Modal>
   );
 });

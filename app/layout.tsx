@@ -29,7 +29,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
   const theme = cookies().get('theme')?.value as Theme;
 
   return (
-    <html lang='en' className={theme}>
+    <html lang='en' data-mode={theme}>
       <head>
         <meta name='theme-color' content='black' />
       </head>

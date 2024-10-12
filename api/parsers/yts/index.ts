@@ -50,10 +50,12 @@ export class YTS {
 
             return {
               id: movie.id?.toString(),
-              title: `${movie.title_english} ${torrent.quality ? `[${torrent.quality}]` : ''}`,
+              title: movie.title_english,
               seeders: torrent.seeds,
               size: torrent.size,
-              type: torrent.type,
+              quality: torrent.quality,
+              source: torrent.type,
+              year: movie.year?.toString(),
               magnet: `magnet:?xt=urn:btih:${torrent.hash}&dn=${encodeURIComponent(query)}&tr=${trackers.join('&tr=')}`
             };
           }) || []

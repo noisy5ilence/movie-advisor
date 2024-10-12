@@ -9,7 +9,12 @@ const ThemeToggle = () => {
   const [theme, setTheme] = useTheme();
 
   return (
-    <Button variant='ghost' size='icon' onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+    <Button
+      variant='ghost'
+      size='icon'
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      title={`Set ${theme === 'dark' ? 'light' : 'dark'} theme`}
+    >
       {theme === 'light' ? <Moon size={19} /> : <Sun size={19} />}
     </Button>
   );

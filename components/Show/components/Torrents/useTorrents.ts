@@ -13,7 +13,7 @@ const useTorrents = ({
   query: string;
   sort: Sort;
   imdbID: string;
-  queryFn: (params: { query: string; sort: Sort; imdbID: string; }) => Promise<Torrent[]>;
+  queryFn: (params: { query: string; sort: Sort; imdbID: string }) => Promise<Torrent[]>;
 }) => {
   return useQuery({
     enabled: Boolean(query),

@@ -25,7 +25,7 @@ const Preview: FC<Props> = ({ show: baseShow, className, onClose, children, card
 
   if (!baseShow) return null;
 
-  const show: Show & Partial<Details> | undefined = detailedShow || baseShow;
+  const show: (Show & Partial<Details>) | undefined = detailedShow || baseShow;
 
   return (
     <div className={cn('flex flex-col md:flex-row gap-2 rounded-xl', { 'p-2': Boolean(onClose) }, className)}>

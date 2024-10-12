@@ -40,7 +40,7 @@ export const details = async ({
 }): Promise<Show & Details> => {
   return http
     .get<(Movie | Series) & Details>(`/${showType}/${showId}`)
-    .then((response) => ({ ...mapMovieSeriesToShow(response, showType), ...response }));
+    .then((response) => ({ ...response, ...mapMovieSeriesToShow(response, showType) }));
 };
 
 export const randomMovies = async (): Promise<Pagination<Show>> => {
@@ -82,7 +82,7 @@ export const popularMovies = async ({ page }: { page?: string } = {}): Promise<P
       params: {
         page,
         sort_by: 'popularity.desc',
-        'vote_count.gte': 0,
+        'vote_count.gte': 300,
         'vote_average.lte': 10,
         'vote_average.gte': 0,
         'with_runtime.gte': 0,
@@ -142,16 +142,6 @@ export const similarShows = async ({
     .then((response) => mapMoviesSeriesResponseToShows(response, showType));
 };
 
-export const externalIDs = async ({
-  showId,
-  showType = 'movie'
-}: {
-  showType: Show['type'];
-  showId: Show['id'];
-}): Promise<string> => {
-  return http.get<ExternalIDS>(`/${showType}/${showId}/external_ids`).then(({ imdb_id }) => imdb_id);
-};
-
 export const credits = async ({
   showId,
   showType = 'movie'
@@ -164,13 +154,17 @@ export const credits = async ({
       `/${showType}/${showId}/${showType === 'tv' ? 'aggregate_credits' : 'credits'}`
     )
     .then(({ cast }) => {
-      return cast.map((actor) => {
-        if ('character' in actor) return actor;
+      return cast
+        .filter((person) => person.profile_path)
+        .map((actor) => {
+          const photoUrl = `https://image.tmdb.org/t/p/w500/${actor.profile_path}`;
 
-        const [{ character }] = actor.roles || [{}];
+          if ('character' in actor) return { ...actor, photoUrl };
 
-        return { ...actor, character };
-      });
+          const [{ character }] = actor.roles || [{}];
+
+          return { ...actor, character, photoUrl };
+        });
     });
 };
 
@@ -190,15 +184,7 @@ export const trailers = async ({
     .then((data) => data.results);
 };
 
-export const YTSTorrents = async ({
-  query,
-  sort,
-  imdbID
-}: {
-  imdbID: string;
-  query: string;
-  sort: Sort;
-}) => {
+export const YTSTorrents = async ({ query, sort, imdbID }: { imdbID: string; query: string; sort: Sort }) => {
   try {
     return yts.search({
       imdbID,
@@ -210,19 +196,12 @@ export const YTSTorrents = async ({
   }
 };
 
-export const TPBTorrents = async ({
-  query,
-  sort
-}: {
-  imdbID: string;
-  query: string;
-  sort: Sort;
-}) => {
+export const TPBTorrents = async ({ query, sort }: { imdbID: string; query: string; sort: Sort }) => {
   try {
     return pirateBay.search({
       query,
       sort
-    })
+    });
   } catch (error) {
     return [];
   }

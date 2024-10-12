@@ -21,7 +21,7 @@ const Provider: FC<Props> = ({ children, theme: initialTheme }) => {
       return setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     }
 
-    document.documentElement.setAttribute('class', theme);
+    document.documentElement.setAttribute('data-mode', theme);
     Cookies.set('theme', theme);
   }, [theme, setTheme]);
 

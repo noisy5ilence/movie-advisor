@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import { parse } from 'node-html-parser';
+import torrentTitle from 'parse-torrent-title';
 
 import { Sort } from './index';
 
@@ -47,12 +48,22 @@ export class PirateBay {
 
       const magnets = table?.querySelectorAll('a[href^="magnet:"]').map((link) => link.getAttribute('href'));
 
-      return titles.map((title, index) => {
+      return titles.map((originalTitle, index) => {
+        const { title, resolution, source, codec, container, season, episode, year } = torrentTitle.parse(
+          originalTitle || ''
+        );
+
         return {
-          title,
+          year,
+          source,
+          codec,
+          container,
+          originalTitle,
+          title: `${title} ${season && episode ? `[S${season}:E${episode}]` : ''}`,
           id: title,
           size: sizes[index],
           seeders: parseInt(seeders[index]!),
+          quality: resolution,
           magnet: magnets[index]!
         };
       }) as Torrent[];

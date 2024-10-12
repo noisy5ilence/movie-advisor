@@ -1,4 +1,4 @@
-type Theme = 'light' | 'dark';
+type Theme = 'light' | 'dark' | 'system';
 
 interface TMDBPagination<T> {
   page: number;
@@ -82,6 +82,7 @@ interface Person {
 
 interface Actor extends Person {
   character: string;
+  photoUrl: string;
 }
 
 interface AggregatedActor extends Person {
@@ -114,10 +115,15 @@ interface IDName<T = number> {
 interface Torrent {
   id: string;
   title: string;
+  originalTitle?: string;
   seeders: number;
   size: string;
   magnet: string;
-  type: 'web' | 'bluray';
+  quality?: string;
+  source?: string;
+  codec?: string;
+  container?: string;
+  year?: string;
 }
 
 interface Source {
@@ -134,11 +140,27 @@ interface Video extends Source {
   subtitles: Subtitles[];
 }
 
-interface ExternalIDS {
+interface Stream {
+  title: string;
+  category: string;
+  poster: string;
+  timestamp: number;
+  name: string;
+  hash: string;
+  stat: number;
+  stat_string: string;
+  torrent_size: number;
+  total_peers: number;
+  pending_peers: number;
+  active_peers: number;
+  half_open_peers: number;
+  bytes_written: number;
+  bytes_read: number;
+  file_stats: FileStat[];
+}
+
+interface FileStat {
   id: number;
-  imdb_id: string;
-  wikidata_id: string;
-  facebook_id: string;
-  instagram_id: string;
-  twitter_id: string;
+  path: string;
+  length: number;
 }
