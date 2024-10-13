@@ -2,7 +2,7 @@
 
 import { FC, useRef, useState } from 'react';
 import { MediaPlayer, MediaPlayerInstance, MediaProvider, Track, VideoSrc } from '@vidstack/react';
-import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
+import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr';
 
 import CaptionsMenu from './components/CaptionsMenu';
 import VideosMenu from './components/VideosMenu';
@@ -10,10 +10,10 @@ import VideosMenu from './components/VideosMenu';
 interface Props {
   subtitles: Source[];
   videos: Source[];
-  onClose: () => void;
+  onReady: () => void;
 }
 
-const Player: FC<Props> = ({ videos, subtitles }) => {
+const Player: FC<Props> = ({ videos, subtitles, onReady }) => {
   const [index, setIndex] = useState(0);
 
   const player = useRef<MediaPlayerInstance>(null);
@@ -23,6 +23,7 @@ const Player: FC<Props> = ({ videos, subtitles }) => {
   return (
     <MediaPlayer
       autoPlay
+      onCanPlay={onReady}
       load='eager'
       storage='movie-advisor'
       ref={player}
@@ -34,17 +35,15 @@ const Player: FC<Props> = ({ videos, subtitles }) => {
           <Track key={track.name} src={track.src} kind='subtitles' label={track.name} type='srt' default />
         ))}
       </MediaProvider>
-      <DefaultVideoLayout
-        colorScheme='dark'
-        icons={defaultLayoutIcons}
+      <PlyrLayout
+        icons={plyrLayoutIcons}
         slots={{
+          playLargeButton: null,
+          afterVolumeSlider: <ul className='w-2' />,
+          beforeSettings: <CaptionsMenu />,
+          settings: <VideosMenu source={source} sources={videos} onChange={setIndex} />,
           settingsMenu: null,
-          captionButton: null,
-          googleCastButton: null,
-          beforeSettingsMenu: Boolean(videos.length > 1) && (
-            <VideosMenu source={source} sources={videos} onChange={setIndex} />
-          ),
-          afterSettingsMenu: Boolean(subtitles.length) && <CaptionsMenu />
+          captionsButton: null
         }}
       />
     </MediaPlayer>

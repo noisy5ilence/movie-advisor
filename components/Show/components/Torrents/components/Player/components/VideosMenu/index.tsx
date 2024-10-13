@@ -16,7 +16,8 @@ const VideosMenu: FC<Props> = ({ sources, source, onChange }) => (
     options={sources.map(({ name }, index) => ({ label: name, onClick: () => onChange(index) }))}
     isChecked={({ label }) => source.name === label}
   >
-    <PlaylistIcon className={cn('vds-icon')} />
+    <PlaylistIcon className={cn('vds-icon !transform-none')} />
+    <span className={cn('plyr__tooltip')}>Playlist</span>
   </PlayerMenu>
 );
 

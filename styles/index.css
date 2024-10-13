@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import '@vidstack/react/player/styles/default/theme.css';
-@import '@vidstack/react/player/styles/default/layouts/video.css';
+@import '@vidstack/react/player/styles/base.css';
+@import '@vidstack/react/player/styles/plyr/theme.css';
 
 @layer base {
   :root {
@@ -35,7 +35,7 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --ring: 215 20.2% 65.1%;
+    --ring: 0;
 
     --radius: 0.5rem;
   }
@@ -69,7 +69,7 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 85.7% 97.3%;
 
-    --ring: 217.2 32.6% 17.5%;
+    --ring: 0;
   }
 }
 
@@ -78,6 +78,8 @@
     @apply border-border;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
+    outline: none;
+    outline-color: transparent;
   }
   ::-moz-selection {
     color: hsl(var(--secondary));
@@ -90,12 +92,6 @@
   body {
     @apply bg-background text-foreground;
   }
-
-  :where(.vds-time),
-  :where(.vds-menu-items),
-  :where(.vds-video-layout) {
-    --media-font-family: var(--font-family);
-  }
 }
 
 @layer utilities {
@@ -103,6 +99,7 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -125,4 +122,22 @@
       }
     }
   }
+}
+
+button,
+input[type='button'],
+input[type='reset'],
+input[type='submit'] {
+  -webkit-appearance: button;
+  background-color: transparent;
+  background-image: none;
+}
+
+.plyr {
+  --plyr-menu-background: hsl(var(--card-foreground));
+  --plyr-menu-color: hsl(var(--secondary));
+  --plyr-video-control-background-hover: hsl(var(--secondary-foreground));
+  --plyr-video-control-color-hover: hsl(var(--secondary));
+  --plyr-video-control-color: white;
+  --plyr-color-main: white;
 }
