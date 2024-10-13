@@ -40,8 +40,8 @@ const Player: FC<Props> = ({ videos, subtitles, onReady }) => {
         slots={{
           playLargeButton: null,
           afterVolumeSlider: <ul className='w-2' />,
-          beforeSettings: <CaptionsMenu />,
-          settings: <VideosMenu source={source} sources={videos} onChange={setIndex} />,
+          beforeSettings: Boolean(subtitles.length) && <CaptionsMenu />,
+          settings: videos.length > 1 && <VideosMenu source={source} sources={videos} onChange={setIndex} />,
           settingsMenu: null,
           captionsButton: null
         }}
