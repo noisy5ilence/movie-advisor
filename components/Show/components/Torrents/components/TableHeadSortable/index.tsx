@@ -12,13 +12,14 @@ interface Props {
   value: Sort;
   sortable: boolean;
   onChange: (sort: Sort) => void;
+  className?: string;
 }
 
-const TableHeadSortable: FC<Props> = ({ title, sort, value, sortable, onChange }) => {
+const TableHeadSortable: FC<Props> = ({ title, sort, value, sortable, className, onChange }) => {
   const handleSort = !sortable ? undefined : () => onChange(value === Sort.seeds ? Sort.size : Sort.seeds);
 
   return (
-    <TableHead onClick={handleSort} className={cn('select-none px-2', sortable && 'cursor-pointer')}>
+    <TableHead onClick={handleSort} className={cn('select-none px-2', sortable && 'cursor-pointer', className)}>
       <div className='flex items-center gap-1'>
         <span>{title}</span>
         {sortable &&

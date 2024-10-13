@@ -83,7 +83,14 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
             <TableHead className='hidden px-2 md:table-cell'>Title</TableHead>
             <TableHead className='hidden px-2 md:table-cell'>Resolution</TableHead>
             <TableHeadSortable sortable={sortable} title='Size' sort={Sort.size} value={sort} onChange={setSort} />
-            <TableHeadSortable sortable={sortable} title='Seeders' sort={Sort.seeds} value={sort} onChange={setSort} />
+            <TableHeadSortable
+              sortable={sortable}
+              title='Seeders'
+              className='max-w-10'
+              sort={Sort.seeds}
+              value={sort}
+              onChange={setSort}
+            />
             <TableHead className='cursor-pointer select-none px-2' onClick={() => showHostManagerModal()} />
           </TableRow>
         </TableHeader>
@@ -116,12 +123,12 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
                   <TableCell className='hidden p-2 md:table-cell'>
                     <div className='flex shrink-0 items-center gap-1'>{torrent.quality}</div>
                   </TableCell>
-                  <TableCell className='p-2'>
+                  <TableCell className='truncate p-2'>
                     <div className='flex shrink-0 items-center gap-1'>{torrent.size}</div>
                   </TableCell>
-                  <TableCell className='p-2'>{torrent.seeders}</TableCell>
+                  <TableCell className='truncate p-2'>{torrent.seeders}</TableCell>
                   <TableCell className='p-1 pr-2 text-center'>
-                    <div className='flex justify-end gap-2'>
+                    <div className='no-scrollbar flex max-w-full justify-end gap-2 overflow-auto'>
                       {supportedForStream && (
                         <div
                           className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
