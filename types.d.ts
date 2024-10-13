@@ -129,6 +129,7 @@ interface Torrent {
 interface Source {
   name: string;
   src: string;
+  type: string;
 }
 
 interface Subtitles {

@@ -1,37 +1,25 @@
-'use client';
-
-import { useRef, useState } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
-import { MediaPlayer, MediaPlayerInstance, MediaProvider, Poster, Track, VideoSrc } from '@vidstack/react';
-import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
+import dynamic from 'next/dynamic';
 
 import { Modal } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/useToast';
-import { cn } from '@/lib/utils';
 
-import CaptionsMenu from './components/CaptionsMenu';
-import VideosMenu from './components/VideosMenu';
 import useFiles from './useFiles';
 
-import '@vidstack/react/player/styles/default/theme.css';
-import '@vidstack/react/player/styles/default/layouts/video.css';
+const Player = dynamic(() => import('./Player'));
 
 interface Props extends InstanceProps<void> {
   magnet: string;
   backdrop: string;
+  title: string;
 }
 
-const showPlayer = create(({ onResolve, magnet, backdrop }: Props) => {
-  const [index, setIndex] = useState(0);
-
-  const player = useRef<MediaPlayerInstance>(null);
-
+const showPlayer = create(({ onResolve, magnet, backdrop, title }: Props) => {
   const {
     data: { subtitles, videos },
-    isFetched
+    isFetched,
+    isLoading
   } = useFiles(magnet);
-
-  const source = videos[index];
 
   const { toast } = useToast();
 
@@ -41,42 +29,13 @@ const showPlayer = create(({ onResolve, magnet, backdrop }: Props) => {
   }
 
   return (
-    <Modal
-      className='relative flex items-center justify-center overflow-hidden rounded-lg border-none bg-black p-0'
-      style={{ aspectRatio: '16/9' }}
-      onClose={onResolve}
-    >
-      <MediaPlayer
-        autoPlay
-        load='eager'
-        posterLoad='eager'
-        storage='movie-advisor'
-        aspectRatio='16/9'
-        ref={player}
-        src={(source as VideoSrc) || []}
-        className='size-full'
-        poster={backdrop}
-      >
-        <MediaProvider>
-          <Poster className={cn('vds-poster')} src={backdrop} />
-          {subtitles.map((track) => (
-            <Track key={track.name} src={track.src} kind='subtitles' label={track.name} type='srt' default />
-          ))}
-        </MediaProvider>
-        <DefaultVideoLayout
-          colorScheme='dark'
-          icons={defaultLayoutIcons}
-          slots={{
-            settingsMenu: null,
-            captionButton: null,
-            googleCastButton: null,
-            beforeSettingsMenu: Boolean(videos.length > 1) && (
-              <VideosMenu source={source} sources={videos} onChange={setIndex} />
-            ),
-            afterSettingsMenu: Boolean(subtitles.length) && <CaptionsMenu />
-          }}
-        />
-      </MediaPlayer>
+    <Modal className='overflow-hidden rounded-lg border-none bg-black p-0' onClose={onResolve}>
+      <div className='relative w-full overflow-hidden pt-[56.25%]'>
+        <div className='absolute left-0 top-0 size-full'>
+          <Player subtitles={subtitles} videos={videos} onClose={onResolve} />
+        </div>
+        {isLoading && <img src={backdrop} className='absolute left-0 top-0 size-full' alt={title} />}
+      </div>
     </Modal>
   );
 });

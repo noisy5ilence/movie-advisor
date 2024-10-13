@@ -125,7 +125,7 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
                       {supportedForStream && (
                         <div
                           className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
-                          onClick={() => showPlayer({ magnet: torrent.magnet, backdrop })}
+                          onClick={() => showPlayer({ magnet: torrent.magnet, backdrop, title })}
                           title='Play show'
                         >
                           <Play size={20} />
