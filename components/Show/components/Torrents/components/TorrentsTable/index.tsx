@@ -29,22 +29,24 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
 
   return (
     <Table className='overflow-hidden rounded-xl'>
-      <TableHeader>
-        <TableRow>
-          <TableHead className='hidden px-2 md:table-cell'>Title</TableHead>
-          <TableHead className='hidden px-2 md:table-cell'>Resolution</TableHead>
-          <TableHeadSortable sortable={sortable} title='Size' sort={Sort.size} value={sort} onChange={onChangeSort} />
-          <TableHeadSortable
-            sortable={sortable}
-            title='Seeders'
-            className='max-w-10'
-            sort={Sort.seeds}
-            value={sort}
-            onChange={onChangeSort}
-          />
-          <TableHead className='cursor-pointer select-none px-2' onClick={() => showHostManagerModal()} />
-        </TableRow>
-      </TableHeader>
+      {Boolean(torrents?.length) && (
+        <TableHeader>
+          <TableRow>
+            <TableHead className='hidden px-2 md:table-cell'>Title</TableHead>
+            <TableHead className='hidden px-2 md:table-cell'>Resolution</TableHead>
+            <TableHeadSortable sortable={sortable} title='Size' sort={Sort.size} value={sort} onChange={onChangeSort} />
+            <TableHeadSortable
+              sortable={sortable}
+              title='Seeders'
+              className='max-w-10'
+              sort={Sort.seeds}
+              value={sort}
+              onChange={onChangeSort}
+            />
+            <TableHead className='cursor-pointer select-none px-2' onClick={() => showHostManagerModal()} />
+          </TableRow>
+        </TableHeader>
+      )}
 
       <TableBody>
         {torrents?.map((torrent) => {
