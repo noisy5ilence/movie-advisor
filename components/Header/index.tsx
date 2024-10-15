@@ -2,13 +2,23 @@ import { FC } from 'react';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 import { DesktopNavigation, MobileNavigation } from './components/Navigation';
 import ToggleSearch from './components/Search';
 import ToggleTheme from './components/ThemeToggle';
 
-const Header: FC = () => (
-  <header className='flex justify-center bg-background/95 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+interface Props {
+  className?: string;
+}
+
+const Header: FC<Props> = ({ className }) => (
+  <header
+    className={cn(
+      'flex justify-center bg-background/95 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60',
+      className
+    )}
+  >
     <div className='container'>
       <div className='flex items-center justify-between gap-2 xs:flex-nowrap'>
         <Link shallow href='/'>

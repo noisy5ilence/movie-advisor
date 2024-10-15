@@ -32,9 +32,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
       </head>
       <body style={font.style}>
         <Providers theme={theme}>
-          <div className='sticky top-0 z-20'>
-            <Header />
-          </div>
+          <Header className='sticky top-0 z-20' />
           <main className='container'>{children}</main>
         </Providers>
       </body>

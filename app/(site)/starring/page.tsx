@@ -22,5 +22,3 @@ export default async function Starring({ searchParams }: { searchParams: Record<
     </HydrationBoundary>
   );
 }
-
-export const revalidate = 3600;

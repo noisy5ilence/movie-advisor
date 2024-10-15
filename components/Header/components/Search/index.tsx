@@ -17,6 +17,7 @@ export const showSearchModal = create(({ onResolve }) => {
   const [title, setTitle] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement>;
   const inputRef = useRef<HTMLInputElement>(null);
+  const isFetchedRef = useRef(false);
 
   const query = useDistinctUntilChanged(title);
 
@@ -35,7 +36,13 @@ export const showSearchModal = create(({ onResolve }) => {
     { title: 'Series', data: series, type: 'tv' as const }
   ].filter(({ data: { shows } }) => shows.length);
 
-  const isFetched = movies.isFetched && series.isFetched;
+  if (!isFetchedRef.current && movies.isFetched && series.isFetched) {
+    isFetchedRef.current = true;
+  }
+
+  if (!query) {
+    isFetchedRef.current = false;
+  }
 
   return (
     <Modal className='block max-w-[932px] p-0' onClose={onResolve} scrollRef={scrollRef}>
@@ -59,7 +66,7 @@ export const showSearchModal = create(({ onResolve }) => {
           <XCircle />
         </Button>
       </div>
-      {isFetched && (
+      {isFetchedRef.current && (
         <div className='px-2'>
           {tabs.length > 1 ? (
             <Tabs defaultValue='movie'>

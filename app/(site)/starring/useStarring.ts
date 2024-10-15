@@ -7,9 +7,7 @@ const useStarring = ({ actorId }: { actorId?: string }) =>
   useInfiniteList({
     queryKey: ['starring', actorId],
     enabled: Boolean(actorId),
-    queryFn: ({ page }) => {
-      return topMovies({ page, starring: actorId });
-    }
+    queryFn: ({ page }) => topMovies({ page, starring: actorId })
   });
 
 export default useStarring;
