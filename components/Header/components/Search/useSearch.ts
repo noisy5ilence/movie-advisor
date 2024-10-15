@@ -4,7 +4,7 @@ import { search } from '@/api';
 import useInfiniteList from '@/hooks/useInfiniteList';
 
 const useSearch = ({ query, type }: { query: string; type: Show['type'] }) => {
-  const previous = useRef<Show[]>([]);
+  const previousRef = useRef<Show[]>([]);
 
   const infiniteQuery = useInfiniteList({
     queryKey: ['search', query, type],
@@ -13,16 +13,16 @@ const useSearch = ({ query, type }: { query: string; type: Show['type'] }) => {
   });
 
   if (infiniteQuery.isFetched) {
-    previous.current = infiniteQuery.shows;
+    previousRef.current = infiniteQuery.shows;
   }
 
   if (!query) {
-    previous.current = [];
+    previousRef.current = [];
   }
 
   return {
     ...infiniteQuery,
-    shows: infiniteQuery.isLoading ? previous.current : infiniteQuery.shows
+    shows: infiniteQuery.isLoading ? previousRef.current : infiniteQuery.shows
   };
 };
 

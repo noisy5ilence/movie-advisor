@@ -1,9 +1,8 @@
-import { FC, Fragment, useState } from 'react';
-import { Cast, Copy, ListVideo, Loader, Magnet, Play } from 'lucide-react';
+import { FC, Fragment } from 'react';
+import { Cast, Copy, ListVideo, Magnet, Play } from 'lucide-react';
 
 import { Sort } from '@/api/parsers';
 import { Quality } from '@/api/parsers/yts/models';
-import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useCastMagnet, usePrefix } from '@/hooks/useMagnetHosts';
 
@@ -16,27 +15,13 @@ interface Props {
   title: string;
   backdrop: string;
   torrents: Torrent[];
-  year: number;
-  withYear?: boolean;
   sort: Sort;
   sortable: boolean;
   provider: string;
   onChangeSort: (sort: Sort) => void;
-  onToggleYear: () => void;
 }
 
-const TorrentsTable: FC<Props> = ({
-  title,
-  torrents,
-  backdrop,
-  year,
-  withYear,
-  sort,
-  sortable,
-  provider,
-  onChangeSort,
-  onToggleYear
-}) => {
+const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, provider, onChangeSort }) => {
   const prefix = usePrefix();
   const cast = useCastMagnet();
 
@@ -45,16 +30,6 @@ const TorrentsTable: FC<Props> = ({
   return (
     <Table className='overflow-hidden rounded-xl'>
       <TableHeader>
-        <TableRow className='!border-b-0'>
-          <TableHead className='px-2' colSpan={colSpan}>
-            <div className='grid grid-cols-[1fr_auto] items-center gap-3'>
-              <span className='truncate text-base'>{title}</span>
-              <Button className='h-6 p-2' variant={withYear ? 'default' : 'ghost'} onClick={onToggleYear}>
-                {year}
-              </Button>
-            </div>
-          </TableHead>
-        </TableRow>
         <TableRow>
           <TableHead className='hidden px-2 md:table-cell'>Title</TableHead>
           <TableHead className='hidden px-2 md:table-cell'>Resolution</TableHead>
