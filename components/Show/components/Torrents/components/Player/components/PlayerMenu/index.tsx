@@ -17,7 +17,11 @@ const PlayerMenu: FC<Props> = ({ children, options, isChecked }) => (
     <Menu.Button className={cn('plyr__controls__item plyr__control')} aria-expanded={false}>
       {children}
     </Menu.Button>
-    <Menu.Items className={cn('plyr__menu__container !p-0')} placement='top end' offset={0}>
+    <Menu.Items
+      className={cn('plyr__menu__container !p-0 max-h-52 overflow-auto no-scrollbar')}
+      placement='top end'
+      offset={0}
+    >
       <Menu.RadioGroup>
         {options.map((option) => (
           <Menu.Radio
