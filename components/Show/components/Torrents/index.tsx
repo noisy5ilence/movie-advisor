@@ -57,7 +57,7 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
   }, [providerKey, yts.isFetched, tpb.isFetched]);
 
   return (
-    <Modal className='overflow-hidden rounded-xl p-0 pb-1' onClose={onResolve}>
+    <Modal className='rounded-xl p-0 pb-1' onClose={onResolve}>
       <div className='grid grid-cols-[1fr_auto] items-center gap-3 p-2'>
         <span className='truncate text-base'>{title}</span>
         <Button className='h-6 p-2' variant={withYear ? 'default' : 'ghost'} onClick={() => setWithYear((w) => w)}>
