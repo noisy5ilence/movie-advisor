@@ -14,7 +14,12 @@ const CaptionsMenu = () => {
       options={tracks.map((track) => ({ label: track.label, onClick: () => track.select() }))}
       isChecked={({ label }) => (label === 'Off' ? !track : label === track?.label)}
     >
-      {track ? <ClosedCaptionsOnIcon className={cn('vds-icon')} /> : <ClosedCaptionsIcon className={cn('vds-icon')} />}
+      {track ? (
+        <ClosedCaptionsOnIcon className={cn('vds-icon !transform-none !size-5')} />
+      ) : (
+        <ClosedCaptionsIcon className={cn('vds-icon !transform-none !size-5')} />
+      )}
+      <span className={cn('plyr__tooltip')}>Subtitles</span>
     </PlayerMenu>
   );
 };
