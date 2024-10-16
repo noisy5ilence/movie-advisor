@@ -5,7 +5,7 @@ import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-export default async function Starring({ searchParams }: { searchParams: Record<string, string> }) {
+const Starring = async ({ searchParams }: { searchParams: Record<string, string> }) => {
   const queryClient = getQueryClient();
 
   const { actorId } = searchParams || {};
@@ -21,4 +21,6 @@ export default async function Starring({ searchParams }: { searchParams: Record<
       <Container />
     </HydrationBoundary>
   );
-}
+};
+
+export default Starring;

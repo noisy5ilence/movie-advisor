@@ -1,6 +1,6 @@
 import { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
+import Image from 'next/image';
 
-import Poster from '@/components/Show/components/Poster';
 import Rating from '@/components/Show/components/Rating';
 import { cn } from '@/lib/utils';
 
@@ -26,7 +26,7 @@ const Show: FC<Props> = ({ show, onClick, className, containerProps }) => {
       )}
     >
       <div className='flex size-full'>
-        <Poster title={show.title} poster={show.poster} />
+        <Image unoptimized className='size-full rounded-lg object-cover' fill src={show.poster} alt={show.title} />
       </div>
       <div className='absolute left-0 top-0 flex size-full flex-col justify-between rounded-md bg-vignette p-2 text-white'>
         <Handlers show={show} onClick={onClick} />
