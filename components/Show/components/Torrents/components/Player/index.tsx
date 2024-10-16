@@ -47,7 +47,7 @@ const showPlayer = create(({ onResolve, magnet, backdrop, title }: Props) => {
         </div>
         {(!isReady || isLoading) && (
           <div className='absolute left-0 top-0 size-full'>
-            <Image unoptimized src={backdrop} fill className='absolute left-0 top-0 size-full' alt={title} />
+            <img src={backdrop} className='absolute left-0 top-0 size-full' alt={title} />
             <div className='absolute left-0 top-0 flex size-full items-center justify-center bg-black/80'>
               <div className='animate-spin'>
                 <Loader color='white' />

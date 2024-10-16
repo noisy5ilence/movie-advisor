@@ -26,7 +26,7 @@ const Show: FC<Props> = ({ show, onClick, className, containerProps }) => {
       )}
     >
       <div className='flex size-full'>
-        <Image unoptimized className='size-full rounded-lg object-cover' fill src={show.poster} alt={show.title} />
+        <img className='size-full rounded-lg object-cover' src={show.poster} alt={show.title} />
       </div>
       <div className='absolute left-0 top-0 flex size-full flex-col justify-between rounded-md bg-vignette p-2 text-white'>
         <Handlers show={show} onClick={onClick} />

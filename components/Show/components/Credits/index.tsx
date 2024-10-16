@@ -38,7 +38,7 @@ const Credits: FC<Props> = ({ showId, showType = 'movie', onPersonClick }) => {
                 >
                   <div className='overflow-hidden rounded-lg'>
                     {actor.profile_path ? (
-                      <Image unoptimized height={180} width={120} src={actor.photoUrl} alt={actor.name} />
+                      <img height={180} width={120} src={actor.photoUrl} alt={actor.name} />
                     ) : (
                       <div className='flex h-[180px] w-[120px] items-center justify-center rounded-lg'>
                         <User2 size={120} strokeWidth={1} />
