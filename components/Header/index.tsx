@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { DesktopNavigation, MobileNavigation } from './components/Navigation';
 import ToggleSearch from './components/Search';
 import ToggleTheme from './components/ThemeToggle';
+import User from './components/User';
 
 interface Props {
   className?: string;
@@ -28,6 +29,7 @@ const Header: FC<Props> = ({ className }) => (
         <div className='flex items-center gap-2'>
           <ToggleTheme />
           <ToggleSearch />
+          <User />
           <MobileNavigation />
         </div>
       </div>

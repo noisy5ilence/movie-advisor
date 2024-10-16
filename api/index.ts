@@ -8,6 +8,10 @@ import yts from './parsers/yts';
 import http from './Http';
 import { Sort } from './parsers';
 
+export const createRequestToken = async () => {
+  return http.get<RequestToken>('/authentication/token/new').then(({ request_token }) => request_token);
+};
+
 export const search = async ({
   query,
   page,
