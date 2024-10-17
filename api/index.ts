@@ -9,7 +9,9 @@ import http from './Http';
 import { Sort } from './parsers';
 
 export const createRequestToken = async () => {
-  return http.get<RequestToken>('/authentication/token/new').then(({ request_token }) => request_token);
+  return http
+    .get<RequestToken>('/authentication/token/new', { force: true })
+    .then(({ request_token }) => request_token);
 };
 
 export const search = async ({
