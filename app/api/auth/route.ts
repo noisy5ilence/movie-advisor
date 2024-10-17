@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server';
 
 import broadcaster from '@/lib/broadcaster';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   const headers = new Headers();
 
