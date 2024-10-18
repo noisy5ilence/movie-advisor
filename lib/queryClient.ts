@@ -1,17 +1,29 @@
-import { cache } from 'react';
-import { QueryClient, QueryClientConfig } from '@tanstack/react-query';
+import { defaultShouldDehydrateQuery, isServer, QueryClient } from '@tanstack/react-query';
 
-export const queryClientOptions: QueryClientConfig = {
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      staleTime: Infinity,
-      refetchOnReconnect: false,
-      refetchOnMount: false
+const makeQueryClient = () => {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        staleTime: Infinity,
+        refetchOnReconnect: false,
+        refetchOnMount: false
+      },
+      dehydrate: {
+        shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) || query.state.status === 'pending'
+      }
     }
-  }
+  });
 };
 
-const getQueryClient = cache(() => new QueryClient(queryClientOptions));
+let browserQueryClient: QueryClient | undefined = undefined;
+
+const getQueryClient = () => {
+  if (isServer) return makeQueryClient();
+
+  if (!browserQueryClient) browserQueryClient = makeQueryClient();
+
+  return browserQueryClient;
+};
 
 export default getQueryClient;

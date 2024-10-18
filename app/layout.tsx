@@ -22,7 +22,7 @@ export const viewport: Viewport = {
   userScalable: false
 };
 
-const font = Poppins({ subsets: ['latin'], weight: '400' });
+const font = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
   const theme = cookies().get('theme')?.value as Theme;

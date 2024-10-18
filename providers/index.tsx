@@ -1,11 +1,11 @@
 'use client';
 
-import { FC, ReactNode, useState } from 'react';
+import { FC, ReactNode } from 'react';
 import ModalContainer from 'react-modal-promise';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 
 import { Toaster } from '@/components/ui/toaster';
-import { queryClientOptions } from '@/lib/queryClient';
+import getQueryClient from '@/lib/queryClient';
 
 import ThemeProvider from './Theme';
 
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const Providers: FC<Props> = ({ children, theme }) => {
-  const [queryClient] = useState(() => new QueryClient(queryClientOptions));
+  const queryClient = getQueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>

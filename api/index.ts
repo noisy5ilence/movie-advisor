@@ -7,11 +7,42 @@ import pirateBay from './parsers/pirate-bay';
 import yts from './parsers/yts';
 import http from './Http';
 import { Sort } from './parsers';
+import { cookies } from 'next/headers';
 
 export const createRequestToken = async () => {
+  return http.get<RequestToken>('/authentication/token/new', { preventCache: true }).then(({ request_token }) => ({
+    redirectUrl: `https://www.themoviedb.org/authenticate/${request_token}`,
+    requestToken: request_token
+  }));
+};
+
+export const createSession = async ({ requestToken }: { requestToken: string }) => {
+  return http.post<Session>('/authentication/session/new', {
+    params: { request_token: requestToken },
+    preventCache: true
+  });
+};
+
+export const account = async () => {
+  return http.get<Account>('/account/null', {
+    params: { session_id: cookies().get('session')?.value },
+    preventCache: true
+  });
+};
+
+export const usersShows = async ({
+  showType,
+  listType
+}: {
+  showType: Show['type'];
+  listType: 'favorites' | 'watchlist';
+}): Promise<Pagination<Show>> => {
   return http
-    .get<RequestToken>('/authentication/token/new', { force: true })
-    .then(({ request_token }) => request_token);
+    .get<TMDBPagination<Movie>>(`/account/null/${listType}/${showType === 'tv' ? 'tv' : 'movies'}`, {
+      params: { session_id: cookies().get('session')?.value },
+      preventCache: true
+    })
+    .then((response) => mapMoviesSeriesResponseToShows(response, showType));
 };
 
 export const search = async ({

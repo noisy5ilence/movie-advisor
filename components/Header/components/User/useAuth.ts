@@ -1,35 +1,38 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 
-import { createRequestToken } from '@/api';
+import { createRequestToken, createSession } from '@/api';
+import { useSetSession } from '@/hooks/useSession';
 
 const useAuth = () => {
+  const setSession = useSetSession();
   const tabRef = useRef<Window | null>(null);
 
-  useEffect(() => {
-    const approveSource = new EventSource('/api/auth');
-
-    approveSource.onmessage = (event) => {
-      console.log(event.data);
+  const session = useMutation({
+    retry: 5,
+    mutationFn: createSession,
+    onSuccess({ session_id }) {
+      setSession(session_id);
       tabRef.current?.close();
-      approveSource.close();
-    };
-
-    return () => {
-      approveSource.close();
-    };
-  }, []);
-
-  return useMutation({
-    mutationFn: createRequestToken,
-    onSuccess(requestToken) {
-      const link = `https://www.themoviedb.org/authenticate/${requestToken}?redirect_to=${encodeURIComponent(
-        `${location.origin}/api/approved`
-      )}`;
-
-      tabRef.current = window.open(link, '_blank');
     }
   });
+
+  const requestToken = useMutation({
+    mutationFn: createRequestToken,
+    onMutate() {
+      tabRef.current = window.open('', '_blank');
+      tabRef.current?.focus();
+    },
+    onSuccess({ redirectUrl, requestToken }) {
+      if (!tabRef.current) return;
+
+      tabRef.current.location = redirectUrl;
+
+      session.mutate({ requestToken });
+    }
+  });
+
+  return requestToken;
 };
 
 export default useAuth;

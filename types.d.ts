@@ -171,3 +171,22 @@ interface RequestToken {
   expires_at: string;
   request_token: string;
 }
+
+interface Session {
+  session_id: string;
+}
+
+interface Account {
+  id: number;
+  name: string;
+  username: string;
+  avatar: Avatar;
+}
+
+interface Gravatar {
+  hash: string;
+}
+
+interface Tmdb {
+  avatar_path: null;
+}
