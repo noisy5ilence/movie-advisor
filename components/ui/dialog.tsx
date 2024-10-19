@@ -102,7 +102,7 @@ const DialogContent = React.forwardRef<
 
   return (
     <DialogPortal>
-      <div className='fixed inset-0 z-50 size-full bg-black/80' data-overlay ref={wrapperRef}>
+      <div className='fixed inset-0 z-50 size-full bg-black/65' data-overlay ref={wrapperRef}>
         <DialogOverlay
           ref={(element) => {
             if (!element) return;

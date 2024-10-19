@@ -13,7 +13,7 @@ const Gallery: FC<Props> = ({ shows }) => (
     {(setRef) => (
       <ul
         ref={setRef}
-        className='no-scrollbar flex animate-fade-aside-slide-in snap-x snap-mandatory gap-2 overflow-auto rounded-lg opacity-0'
+        className='no-scrollbar flex animate-fade-aside-slide-in snap-x snap-mandatory gap-2 overflow-auto rounded-xl opacity-0'
       >
         {shows.map((show) => (
           <li key={show.id} className='snap-start'>

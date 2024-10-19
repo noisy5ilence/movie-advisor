@@ -18,10 +18,10 @@ const Poster: FC<Props> = ({ show, onClick, className, rounded, containerProps }
   return (
     <div
       {...(containerProps || {})}
-      className={cn('card-aspect-ratio relative bg-black overflow-hidden rounded-lg text-lg', className, rounded)}
+      className={cn('card-aspect-ratio relative bg-black overflow-hidden rounded-xl text-lg', className, rounded)}
     >
       <div className='flex size-full'>
-        <img className={cn('size-full rounded-lg object-cover', rounded)} src={show.poster} alt={show.title} />
+        <img className={cn('size-full rounded-xl object-cover', rounded)} src={show.poster} alt={show.title} />
       </div>
       <div
         className={cn(

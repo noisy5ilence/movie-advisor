@@ -84,7 +84,7 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
                   <div className='no-scrollbar flex max-w-full justify-end gap-2 overflow-auto'>
                     {supportedForStream && (
                       <div
-                        className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
+                        className='flex size-8 cursor-pointer items-center justify-center rounded-xl border'
                         onClick={() => showPlayer({ magnet: torrent.magnet, backdrop, title })}
                         title='Play show'
                       >
@@ -95,20 +95,20 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
                       href={`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(
                         torrent.magnet
                       )}`}
-                      className='flex size-8 items-center justify-center rounded-lg border'
+                      className='flex size-8 items-center justify-center rounded-xl border'
                       title='Open using you native video player'
                     >
                       <ListVideo size={20} />
                     </a>
                     <a
                       href={torrent.magnet}
-                      className='flex size-8 items-center justify-center rounded-lg border'
+                      className='flex size-8 items-center justify-center rounded-xl border'
                       title='Download magnet'
                     >
                       <Magnet size={20} />
                     </a>
                     <div
-                      className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
+                      className='flex size-8 cursor-pointer items-center justify-center rounded-xl border'
                       onClick={() => navigator.clipboard.writeText(torrent.magnet)}
                       title='Copy magnet into clipboard'
                     >
@@ -117,7 +117,7 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
                     {supportedForCast && (
                       <div
                         onClick={() => cast(torrent.magnet!)}
-                        className='flex size-8 cursor-pointer items-center justify-center rounded-lg border'
+                        className='flex size-8 cursor-pointer items-center justify-center rounded-xl border'
                       >
                         <Cast size={20} />
                       </div>

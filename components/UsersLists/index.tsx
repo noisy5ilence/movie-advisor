@@ -28,7 +28,7 @@ const UsersList: FC<Props> = ({ list, label }) => {
 
   return (
     <Tabs defaultValue='movie' className='flex w-full flex-col items-center'>
-      <TabsList className='grid w-[300px] grid-cols-2'>
+      <TabsList className='grid w-full grid-cols-2 sm:w-[300px]'>
         {tabs.map(({ title, key }) => (
           <TabsTrigger key={key} value={key}>
             {title}

@@ -37,13 +37,7 @@ const Credits: FC<Props> = ({ showId, showType = 'movie', onPersonClick }) => {
                   onClick={() => onPersonClick?.(actor.id.toString())}
                 >
                   <div className='overflow-hidden rounded-lg'>
-                    {actor.profile_path ? (
-                      <img height={180} width={120} src={actor.photoUrl} alt={actor.name} />
-                    ) : (
-                      <div className='flex h-[180px] w-[120px] items-center justify-center rounded-lg'>
-                        <User2 size={120} strokeWidth={1} />
-                      </div>
-                    )}
+                    <img height={180} width={120} src={actor.photoUrl} alt={actor.name} />
                   </div>
                   <div className='absolute left-0 top-0 flex size-full flex-col justify-between rounded-md bg-vignette p-2 py-1 text-sm text-white'>
                     <p className=' truncate'>{actor.name}</p>
