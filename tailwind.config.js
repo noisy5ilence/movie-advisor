@@ -70,15 +70,22 @@ module.exports = {
         fadeAsideSlideIn: {
           '0%': { opacity: 0, transform: 'translate3d(-20px, 0, 0)' },
           '100%': { opacity: 1, transform: 'translate3d(0, 0, 0)' }
+        },
+        glow: {
+          '0%': { backgroundPosition: '0 0' },
+          '50%': { backgroundPosition: '100% 0' },
+          '100%': { backgroundPosition: '0 0' }
         }
       },
       animation: {
+        glow: 'glow 20s linear infinite',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in-slide-in': 'fadeInSlideIn 0.2s ease-in-out forwards',
         'fade-aside-slide-in': 'fadeAsideSlideIn 0.2s ease-in-out forwards'
       },
       backgroundImage: {
+        glow: 'linear-gradient(45deg,rgba(255, 255, 255, 0.2),rgba(255, 255, 255, 0.2),rgba(255, 255, 255, 0.2),rgba(0, 0, 0, 0.4),rgba(0, 0, 0, 0.4),rgba(255, 255, 255, 0.2),rgba(255, 255, 255, 0.2),rgba(255, 255, 255, 0.2))',
         vignette:
           'linear-gradient(rgba(0, 0, 0, 0.4) 0%,rgba(0, 0, 0, 0.396) 2.83%,rgba(0, 0, 0, 0.384) 5.67%,rgba(0, 0, 0, 0.37) 8.5%,rgba(0, 0, 0, 0.34) 11.33%,rgba(0, 0, 0, 0.306) 14.17%,rgba(0, 0, 0, 0.267) 17%,rgba(0, 0, 0, 0.224) 19.83%,rgba(0, 0, 0, 0.176) 22.67%,rgba(0, 0, 0, 0.133) 25.5%,rgba(0, 0, 0, 0.094) 28.33%,rgba(0, 0, 0, 0.06) 31.17%,rgba(0, 0, 0, 0.03) 34%,rgba(0, 0, 0, 0.016) 36.83%,rgba(0, 0, 0, 0.004) 39.67%,rgba(0, 0, 0, 0) 42.5%,rgba(0, 0, 0, 0) 57.5%,rgba(0, 0, 0, 0.004) 60.33%,rgba(0, 0, 0, 0.016) 63.17%,rgba(0, 0, 0, 0.03) 66%,rgba(0, 0, 0, 0.06) 68.83%,rgba(0, 0, 0, 0.094) 71.67%,rgba(0, 0, 0, 0.133) 74.5%,rgba(0, 0, 0, 0.176) 77.33%,rgba(0, 0, 0, 0.224) 80.17%,rgba(0, 0, 0, 0.267) 83%,rgba(0, 0, 0, 0.306) 85.83%,rgba(0, 0, 0, 0.34) 88.67%,rgba(0, 0, 0, 0.37) 91.5%,rgba(0, 0, 0, 0.384) 94.33%,rgba(0, 0, 0, 0.396) 97.17%,rgba(0, 0, 0, 0.4) 100%)'
       }

@@ -15,7 +15,6 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: 'black',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -30,7 +29,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang='en' data-mode={theme}>
       <head>
-        <meta name='theme-color' content='black' />
+        <meta name='theme-color' content={theme === 'dark' ? 'hsl(222.2 84% 4.9%)' : 'white'} />
       </head>
       <body style={{ '--font-family': font.style.fontFamily, ...font.style } as CSSProperties}>
         <Providers theme={theme}>

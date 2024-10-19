@@ -11,8 +11,8 @@ import useTrending from './useTrending';
 const Trending: FC = () => {
   const [active, setActive] = useState(tabs[0]);
 
-  const { data: trending, isFetched } = useTrending({ type: 'trending' });
-  const { data: streaming } = useTrending({ type: 'streaming' });
+  const { data: streaming, isFetched } = useTrending({ type: 'streaming' });
+  const { data: trending } = useTrending({ type: 'trending' });
   const { data: theater } = useTrending({ type: 'theater' });
 
   const shows = { trending, streaming, theater }[active.type] || [];

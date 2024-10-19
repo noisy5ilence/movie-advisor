@@ -12,7 +12,7 @@ const Random = () => {
     <Preview
       show={movie}
       className='rounded-md bg-background'
-      card={<Carousel index={index} shows={movies} onIndexChange={onIndexChange} onEndReached={fetchNextPage} />}
+      poster={<Carousel index={index} shows={movies} onIndexChange={onIndexChange} onEndReached={fetchNextPage} />}
     />
   );
 };

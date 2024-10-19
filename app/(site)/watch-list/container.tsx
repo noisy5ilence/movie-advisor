@@ -2,6 +2,6 @@
 
 import UsersList from '@/components/UsersLists';
 
-const Container = () => <UsersList list='favorite' label='favorites' />;
+const Container = () => <UsersList list='watchlist' label='watch' />;
 
 export default Container;

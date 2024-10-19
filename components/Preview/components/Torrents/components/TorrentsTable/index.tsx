@@ -4,9 +4,9 @@ import { Cast, Copy, ListVideo, Magnet, Play } from 'lucide-react';
 import { Sort } from '@/api/parsers';
 import { Quality } from '@/api/parsers/yts/models';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useCastMagnet, usePrefix } from '@/hooks/useMagnetHosts';
 
 import { providers } from '../../constants';
+import { useCastMagnet, usePrefix } from '../../hooks/useMagnetHosts';
 import showHostManagerModal from '../HostManager';
 import showPlayer from '../Player';
 import TableHeadSortable from '../TableHeadSortable';

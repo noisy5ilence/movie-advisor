@@ -16,7 +16,7 @@ interface Props {
 const Header: FC<Props> = ({ className }) => (
   <header
     className={cn(
-      'flex justify-center bg-background/95 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60',
+      'flex justify-center bg-background/95 md:py-2 py-1 backdrop-blur supports-[backdrop-filter]:bg-background/60',
       className
     )}
   >

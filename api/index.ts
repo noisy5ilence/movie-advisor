@@ -30,15 +30,44 @@ export const account = async () => {
   });
 };
 
+export const accountStates = async ({ showId, showType }: { showId: Show['id']; showType: Show['type'] }) => {
+  return http.get<ShowState>(`/${showType}/${showId}/account_states`, {
+    params: { session_id: cookies().get('session')?.value },
+    preventCache: true
+  });
+};
+
+export const updateAccountStates = async ({
+  showId,
+  showType,
+  list,
+  value
+}: {
+  showId: Show['id'];
+  showType: Show['type'];
+  list: 'favorite' | 'watchlist';
+  value: boolean;
+}) => {
+  http.post(
+    `/account/null/${list}`,
+    { params: { session_id: cookies().get('session')?.value }, preventCache: true },
+    {
+      media_id: showId,
+      media_type: showType,
+      [list]: value
+    }
+  );
+};
+
 export const usersShows = async ({
   showType,
-  listType
+  list
 }: {
   showType: Show['type'];
-  listType: 'favorites' | 'watchlist';
+  list: 'favorite' | 'watchlist';
 }): Promise<Pagination<Show>> => {
   return http
-    .get<TMDBPagination<Movie>>(`/account/null/${listType}/${showType === 'tv' ? 'tv' : 'movies'}`, {
+    .get<TMDBPagination<Movie>>(`/account/null/${list}/${showType === 'tv' ? 'tv' : 'movies'}`, {
       params: { session_id: cookies().get('session')?.value },
       preventCache: true
     })

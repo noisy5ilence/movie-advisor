@@ -7,15 +7,15 @@ import getQueryClient from '@/lib/queryClient';
 import Container from './container';
 
 export const metadata: Metadata = {
-  title: 'My Favorite Shows - Movie Advisor',
+  title: 'My watch list - Movie Advisor',
   description:
     'View your favorite shows on Movie Advisor. Keep track of films you’ve added and revisit your top picks anytime.'
 };
 
-const Favorites = async () => {
+const WatchList = async () => {
   const queryClient = getQueryClient();
 
-  const list = 'favorite';
+  const list = 'watchlist';
   const showType = 'movie';
 
   await queryClient.prefetchInfiniteQuery({
@@ -31,4 +31,4 @@ const Favorites = async () => {
   );
 };
 
-export default Favorites;
+export default WatchList;

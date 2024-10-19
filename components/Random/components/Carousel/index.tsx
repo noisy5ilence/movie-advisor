@@ -3,8 +3,8 @@
 import { FC, ForwardedRef, forwardRef, useLayoutEffect, useRef } from 'react';
 import { Virtuoso, VirtuosoProps } from 'react-virtuoso';
 
+import Poster from '@/components/Poster';
 import ScrollNavigation from '@/components/ScrollNavigation';
-import Card from '@/components/Show';
 import { cn } from '@/lib/utils';
 
 const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
@@ -36,7 +36,7 @@ const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
 
     return (
       <div {...props} ref={ref} className='snap-start'>
-        <Card show={item} />
+        <Poster show={item} />
       </div>
     );
   },

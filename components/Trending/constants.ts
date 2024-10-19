@@ -1,11 +1,11 @@
 export const tabs = [
   {
-    title: 'Trending',
-    type: 'trending'
-  },
-  {
     title: 'Streaming',
     type: 'streaming'
+  },
+  {
+    title: 'Trending',
+    type: 'trending'
   },
   {
     title: 'In theaters',

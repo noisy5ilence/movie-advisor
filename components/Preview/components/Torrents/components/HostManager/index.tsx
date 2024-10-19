@@ -2,7 +2,8 @@ import { create, InstanceProps } from 'react-modal-promise';
 
 import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { usePrefix, useSetPrefix } from '@/hooks/useMagnetHosts';
+
+import { usePrefix, useSetPrefix } from '../../hooks/useMagnetHosts';
 
 const showHostManagerModal = create<InstanceProps<string>>(({ onResolve, onReject }) => {
   const prefix = usePrefix();

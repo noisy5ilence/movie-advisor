@@ -1,4 +1,4 @@
-type Theme = 'light' | 'dark' | 'system';
+type Theme = 'light' | 'dark';
 
 interface TMDBPagination<T> {
   page: number;
@@ -64,6 +64,13 @@ interface Show {
   release: Date;
   rating: number;
   votes: number;
+}
+
+interface ShowState {
+  id: number;
+  favorite: boolean;
+  rated: boolean;
+  watchlist: boolean;
 }
 
 interface Person {

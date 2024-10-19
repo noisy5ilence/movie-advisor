@@ -1,6 +1,7 @@
-import { account } from '@/api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useSession } from './useSession';
+
+import { account } from '@/api';
+import { useSession } from '@/hooks/useSession';
 
 const KEY = ['account'];
 

@@ -35,7 +35,7 @@ const showPlayer = create(({ onResolve, magnet, backdrop, title }: Props) => {
   }
 
   if (isFetched && !videos.length) {
-    toast({ description: 'This torrent doesn\'t contain any compatible video files' });
+    toast({ description: 'This torrent doesn’t contain any compatible video files' });
     onResolve();
   }
 

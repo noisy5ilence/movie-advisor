@@ -22,6 +22,9 @@ const Provider: FC<Props> = ({ children, theme: initialTheme }) => {
     }
 
     document.documentElement.setAttribute('data-mode', theme);
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', theme === 'dark' ? 'hsl(222.2 84% 4.9%)' : 'white');
     Cookies.set('theme', theme);
   }, [theme, setTheme]);
 

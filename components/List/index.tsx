@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { VirtuosoGrid, VirtuosoGridProps } from 'react-virtuoso';
 
+import Poster from '@/components/Poster';
 import { showPreviewModal } from '@/components/Preview';
-import Card from '@/components/Show';
 
 interface Props {
   shows: Show[];
@@ -18,7 +18,7 @@ const components: VirtuosoGridProps<Movie, { shows: Show[]; onClick: (show: Show
 
     if (!show) return null;
 
-    return <Card show={show} onClick={() => onClick?.(show)} />;
+    return <Poster show={show} onClick={() => onClick?.(show)} />;
   }
 };
 

@@ -3,11 +3,10 @@
 import { FC, ReactNode } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 
+import Poster from '@/components/Poster';
+import Credits from '@/components/Preview/components/Credits';
 import useDetails from '@/components/Preview/useDetails';
-import Card from '@/components/Show';
-import Credits from '@/components/Show/components/Credits';
 import { Modal } from '@/components/ui/dialog';
-import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
 import Actions from './components/Actions';
@@ -16,30 +15,47 @@ interface Props {
   show?: Show;
   className?: string;
   onClose?: () => void;
-  children?: ReactNode;
-  card?: ReactNode;
+  poster?: ReactNode;
 }
 
-const Preview: FC<Props> = ({ show: baseShow, className, onClose, children, card }) => {
+const Preview: FC<Props> = ({ show: baseShow, className, onClose, poster }) => {
   const { data: detailedShow } = useDetails({ showId: baseShow?.id, showType: baseShow?.type });
 
   if (!baseShow) return null;
 
   const show: (Show & Partial<Details>) | undefined = detailedShow || baseShow;
 
+  const isModal = Boolean(onClose);
+
   return (
-    <div className={cn('flex flex-col md:flex-row gap-2 rounded-xl', { 'p-2': Boolean(onClose) }, className)}>
-      {card || <Card className='mx-auto' show={show} />}
-      <div className='flex grow flex-col'>
-        {children && <div className='mb-2 flex w-full gap-2 hover-none:hidden max-sm:mb-0'>{children}</div>}
-        <div className='flex w-full gap-2'>
-          <Actions show={show} onClose={onClose} />
+    <div
+      className={cn(
+        'flex flex-col md:flex-row gap-2 rounded-xl',
+        { 'md:pl-0 md:pt-0 md:pb-0 pl-2 pt-2 pb-2 pr-2 border-none gap-0': isModal },
+        className
+      )}
+    >
+      {poster || <Poster className='mx-auto' rounded='md:rounded-none md:rounded-l-xl' show={show} />}
+      <div className={cn('flex grow flex-col', { 'md:pb-2 md:pl-2 pb-0 pl-0 pt-2': isModal })}>
+        <span className='order-3 mb-4 text-3xl md:order-1 md:line-clamp-2'>{show.title}</span>
+
+        <div className='order-3 mb-4 flex w-full flex-wrap gap-5 whitespace-nowrap text-sm md:order-2'>
+          <span>{new Date(show.release).getFullYear()}</span>
+          {show.runtime && <span>{show.runtime} minutes</span>}
+          <span>
+            {show.genres
+              ?.slice(0, 3)
+              .map(({ name }) => name)
+              .join(' | ')}
+          </span>
         </div>
-        <Separator className='my-2' />
-        <p key={show.id} className='mb-3 leading-7'>
+
+        <Actions className='order-1 mb-4 mt-1 md:order-2 md:mt-0' show={show} onClose={onClose} />
+
+        <p key={show.id} className='order-4 md:order-4 md:line-clamp-3' title={show.overview}>
           {show.overview}
         </p>
-        <div className='mt-auto grid grid-cols-1 rounded-lg'>
+        <div className='order-5 mt-5 grid grid-cols-1 rounded-lg md:order-5 md:mt-auto'>
           <Credits showType={show.type} showId={show.id} onPersonClick={onClose} />
         </div>
       </div>
@@ -48,10 +64,9 @@ const Preview: FC<Props> = ({ show: baseShow, className, onClose, children, card
 };
 
 export const showPreviewModal = create(({ onResolve, onClose, show }: Props & InstanceProps<void>) => (
-  <Modal className='block p-0' onClose={onResolve}>
+  <Modal className='block max-w-[932px] p-0' onClose={onResolve}>
     <Preview
       show={show}
-      className='border-none'
       onClose={() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         onClose?.();

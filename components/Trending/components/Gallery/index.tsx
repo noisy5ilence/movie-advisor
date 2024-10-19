@@ -1,8 +1,8 @@
 import { FC } from 'react';
 
+import Poster from '@/components/Poster';
 import { showPreviewModal } from '@/components/Preview';
 import ScrollNavigation from '@/components/ScrollNavigation';
-import Card from '@/components/Show';
 
 interface Props {
   shows: Show[];
@@ -17,7 +17,7 @@ const Gallery: FC<Props> = ({ shows }) => (
       >
         {shows.map((show) => (
           <li key={show.id} className='snap-start'>
-            <Card className='!h-[350px] !w-[230px] text-sm' show={show} onClick={() => showPreviewModal({ show })} />
+            <Poster className='!h-[350px] !w-[230px] text-sm' show={show} onClick={() => showPreviewModal({ show })} />
           </li>
         ))}
       </ul>

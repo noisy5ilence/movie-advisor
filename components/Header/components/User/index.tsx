@@ -1,6 +1,6 @@
 'use client';
 
-import { LogIn,LogOut, User as UserIcon, UserRound } from 'lucide-react';
+import { LogIn, LogOut, User as UserIcon, UserRound } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -11,8 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import useAccount from '@/hooks/useAccount';
 
+import useAccount from './useAccount';
 import useAuth from './useAuth';
 import useLogOut from './useLogOut';
 
