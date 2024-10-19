@@ -1,5 +1,7 @@
 'use server';
 
+import { cookies } from 'next/headers';
+
 import { createUniqueRandomGenerator } from '@/lib/utils';
 
 import mapMoviesSeriesResponseToShows, { mapMovieSeriesToShow } from './dto/Show';
@@ -7,7 +9,6 @@ import pirateBay from './parsers/pirate-bay';
 import yts from './parsers/yts';
 import http from './Http';
 import { Sort } from './parsers';
-import { cookies } from 'next/headers';
 
 export const createRequestToken = async () => {
   return http.get<RequestToken>('/authentication/token/new', { preventCache: true }).then(({ request_token }) => ({
@@ -61,14 +62,16 @@ export const updateAccountStates = async ({
 
 export const usersShows = async ({
   showType,
-  list
+  list,
+  page
 }: {
   showType: Show['type'];
   list: 'favorite' | 'watchlist';
+  page: string;
 }): Promise<Pagination<Show>> => {
   return http
     .get<TMDBPagination<Movie>>(`/account/null/${list}/${showType === 'tv' ? 'tv' : 'movies'}`, {
-      params: { session_id: cookies().get('session')?.value },
+      params: { page, session_id: cookies().get('session')?.value },
       preventCache: true
     })
     .then((response) => mapMoviesSeriesResponseToShows(response, showType));

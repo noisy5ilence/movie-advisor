@@ -20,7 +20,7 @@ const WatchList = async () => {
 
   await queryClient.prefetchInfiniteQuery({
     queryKey: [`users-${list}`, showType],
-    queryFn: () => usersShows({ showType, list }),
+    queryFn: () => usersShows({ showType, list, page: '1' }),
     initialPageParam: '1'
   });
 

@@ -1,7 +1,8 @@
 import { usersShows } from '@/api';
+
 import useInfiniteList from './useInfiniteList';
-import { useSession } from './useSession';
 import { useFavorites, useWatchList } from './useLocalUsersLists';
+import { useSession } from './useSession';
 
 export const KEY = ({ list, showType }: { showType: Show['type']; list: 'favorite' | 'watchlist' }) => [
   `users-${list}`,
@@ -16,7 +17,7 @@ const useUsersShows = ({ showType, list = 'favorite' }: { showType: Show['type']
 
   const query = useInfiniteList({
     queryKey: KEY({ list, showType }),
-    queryFn: () => usersShows({ showType, list }),
+    queryFn: ({ page }) => usersShows({ showType, list, page }),
     enabled: Boolean(session)
   });
 
