@@ -70,7 +70,7 @@ const Preview: FC<Props> = ({ show: baseShow, className, onClose, poster }) => {
 };
 
 export const showPreviewModal = create(({ onResolve, onClose, show }: Props & InstanceProps<void>) => (
-  <Modal className='block max-w-[932px] bg-background p-0 md:bg-black' onClose={onResolve}>
+  <Modal className='block max-w-[932px] bg-black p-0 sm:bg-background md:bg-black' onClose={onResolve}>
     <Preview
       show={show}
       onClose={() => {
