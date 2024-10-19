@@ -7,7 +7,7 @@ const Container = () => (
       <Random />
       <div className='h-2 w-full' />
     </div>
-    <div className='hidden w-full rounded-xl xs:block'>
+    <div className='hidden w-full rounded-lg xs:block'>
       <Trending />
       <div className='h-2 w-full' />
     </div>

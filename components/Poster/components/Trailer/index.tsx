@@ -21,7 +21,7 @@ const showTrailerModal = create(({ trailerKey, onResolve }: { trailerKey?: strin
       <iframe
         allowFullScreen
         allow='autoplay'
-        className='rounded-xl border-none'
+        className='rounded-lg border-none'
         width='100%'
         height='100%'
         src={`//www.youtube.com/embed/${trailerKey}?autoplay=1`}

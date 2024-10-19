@@ -31,18 +31,12 @@ const Preview: FC<Props> = ({ show: baseShow, className, onClose, poster }) => {
     <div
       className={cn(
         'flex flex-col md:flex-row gap-2 rounded-xl overflow-hidden',
-        { 'gap-0 xs:pt-2 md:pt-0 pt-0': isModal },
+        { 'gap-0 md:p-0 p-2': isModal },
         className
       )}
     >
-      {poster || (
-        <Poster
-          className='mx-auto'
-          rounded='rounded-none rounded-t-xl md:rounded-xl sm:rounded-xl md:rounded-none md:rounded-l-xl'
-          show={show}
-        />
-      )}
-      <div className={cn('flex grow flex-col bg-background', { 'p-2': isModal })}>
+      {poster || <Poster className='mx-auto' rounded='md:rounded-none md:rounded-l-xl' show={show} />}
+      <div className={cn('flex grow flex-col bg-background', { 'p-0 pt-1 md:p-2': isModal })}>
         <span className='order-3 mb-4 text-3xl md:order-1 md:line-clamp-2'>{show.title}</span>
 
         <div className='order-3 mb-4 flex w-full flex-wrap gap-5 whitespace-nowrap text-sm md:order-2'>
@@ -70,7 +64,7 @@ const Preview: FC<Props> = ({ show: baseShow, className, onClose, poster }) => {
 };
 
 export const showPreviewModal = create(({ onResolve, onClose, show }: Props & InstanceProps<void>) => (
-  <Modal className='block max-w-[932px] bg-black p-0 sm:bg-background md:bg-black' onClose={onResolve}>
+  <Modal className='block bg-background p-0 md:bg-black' onClose={onResolve}>
     <Preview
       show={show}
       onClose={() => {
