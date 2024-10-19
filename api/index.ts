@@ -71,7 +71,7 @@ export const usersShows = async ({
 }): Promise<Pagination<Show>> => {
   return http
     .get<TMDBPagination<Movie>>(`/account/null/${list}/${showType === 'tv' ? 'tv' : 'movies'}`, {
-      params: { page, session_id: cookies().get('session')?.value },
+      params: { page, sort_by: 'created_at.desc', session_id: cookies().get('session')?.value },
       preventCache: true
     })
     .then((response) => mapMoviesSeriesResponseToShows(response, showType));

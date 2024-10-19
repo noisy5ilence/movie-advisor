@@ -81,6 +81,7 @@
     outline: none;
     outline-color: transparent;
   }
+
   ::-moz-selection {
     color: hsl(var(--secondary));
     background: hsl(var(--secondary-foreground));
@@ -89,8 +90,21 @@
     color: hsl(var(--secondary));
     background: hsl(var(--secondary-foreground));
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+  body [data-overlay]:not(:last-of-type) {
+    background: none;
+  }
+
+  button,
+  input[type='button'],
+  input[type='reset'],
+  input[type='submit'] {
+    -webkit-appearance: button;
+    background-color: transparent;
+    background-image: none;
   }
 }
 
@@ -122,15 +136,6 @@
       }
     }
   }
-}
-
-button,
-input[type='button'],
-input[type='reset'],
-input[type='submit'] {
-  -webkit-appearance: button;
-  background-color: transparent;
-  background-image: none;
 }
 
 .plyr {
