@@ -56,7 +56,7 @@ const Preview: FC<Props> = ({ show: baseShow, className, onClose, poster }) => {
           {show.overview}
         </p>
         <div className='order-5 mt-5 grid grid-cols-1 rounded-lg md:order-5 md:mt-auto'>
-          <Credits showType={show.type} showId={show.id} onPersonClick={onClose} />
+          <Credits showType={show.type} showId={show.id} onClick={onClose} />
         </div>
       </div>
     </div>

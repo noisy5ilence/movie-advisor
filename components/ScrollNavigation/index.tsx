@@ -9,8 +9,15 @@ interface Props<E extends HTMLElement> {
   backClassName?: string;
   nextClassName?: string;
   iconClassName?: string;
+  slideWidth?: number;
   gap?: number;
-  children: (setScrollElement: (element: E) => void, isArrowHovered: boolean) => ReactNode;
+  children: ({
+    setScrollElement,
+    isArrowHovered
+  }: {
+    setScrollElement: (element: E) => void;
+    isArrowHovered: boolean;
+  }) => ReactNode;
 }
 
 function ScrollNavigation<E extends HTMLElement>({
@@ -19,28 +26,36 @@ function ScrollNavigation<E extends HTMLElement>({
   backClassName,
   nextClassName,
   iconClassName,
+  slideWidth: initialSlideWidth,
   gap = 0,
   children
 }: Props<E>) {
   const [scrollElement, setScrollElement] = useState<E | null>(null);
+
   const [isShowBack, setIsShowBack] = useState(true);
   const [isShowNext, setIsShowNext] = useState(true);
-  const [childWidth, setChildWidth] = useState(0);
+
   const [isArrowHovered, setIsArrowHovered] = useState(false);
+
+  const [childWidth, setChildWidth] = useState(0);
+
+  const slideWidth = initialSlideWidth ?? childWidth + gap;
 
   useEffect(() => {
     if (!scrollElement) return;
 
     let timeout: NodeJS.Timeout;
 
-    if (scrollElement.firstChild) {
-      setChildWidth((scrollElement.firstChild as HTMLElement).clientWidth + gap);
+    const slide = scrollElement.firstChild as HTMLElement;
+
+    if (!initialSlideWidth && slide) {
+      setChildWidth(slide.clientWidth);
     }
 
     const handleScroll = () => {
       clearTimeout(timeout);
 
-      const DELAY = 100;
+      const DELAY = 50;
 
       timeout = setTimeout(() => {
         setIsShowBack(Boolean(scrollElement.scrollLeft));
@@ -55,17 +70,20 @@ function ScrollNavigation<E extends HTMLElement>({
     return () => {
       scrollElement.removeEventListener('scroll', handleScroll);
     };
-  }, [scrollElement, gap]);
+  }, [scrollElement, initialSlideWidth]);
 
   const handleScrollNext = (direction: 1 | -1) => () => {
     if (!scrollElement) return;
 
-    scrollElement.scrollTo({ left: scrollElement.scrollLeft + childWidth * direction, behavior: 'smooth' });
+    scrollElement.scrollTo({
+      left: scrollElement.scrollLeft + slideWidth * direction,
+      behavior: 'smooth'
+    });
   };
 
   return (
     <div className={cn('relative group', className)}>
-      {children(setScrollElement, isArrowHovered)}
+      {children({ setScrollElement, isArrowHovered })}
       {[
         {
           Arrow: ChevronLeft,

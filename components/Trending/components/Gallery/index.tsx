@@ -10,9 +10,9 @@ interface Props {
 
 const Gallery: FC<Props> = ({ shows }) => (
   <ScrollNavigation<HTMLUListElement>>
-    {(setRef) => (
+    {({ setScrollElement }) => (
       <ul
-        ref={setRef}
+        ref={setScrollElement}
         className='no-scrollbar flex animate-fade-aside-slide-in snap-x snap-mandatory gap-2 overflow-auto rounded-lg opacity-0'
       >
         {shows.map((show) => (

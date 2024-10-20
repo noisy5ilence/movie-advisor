@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import { Loader } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 
 import { Modal } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/useToast';
@@ -48,7 +47,7 @@ const showPlayer = create(({ onResolve, magnet, backdrop, title }: Props) => {
         {(!isReady || isLoading) && (
           <div className='absolute left-0 top-0 size-full'>
             <img src={backdrop} className='absolute left-0 top-0 size-full' alt={title} />
-            <div className='absolute left-0 top-0 flex size-full items-center justify-center bg-black/80'>
+            <div className='absolute left-0 top-0 flex size-full items-center justify-center bg-black/60'>
               <div className='animate-spin'>
                 <Loader color='white' />
               </div>

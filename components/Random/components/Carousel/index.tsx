@@ -1,14 +1,46 @@
 'use client';
 
-import { FC, ForwardedRef, forwardRef, useLayoutEffect, useRef } from 'react';
+import { FC, ForwardedRef, forwardRef, useLayoutEffect, useMemo, useRef } from 'react';
 import { Virtuoso, VirtuosoProps } from 'react-virtuoso';
 
 import Poster from '@/components/Poster';
 import ScrollNavigation from '@/components/ScrollNavigation';
 import { cn } from '@/lib/utils';
 
-const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
-  Item: ({ item, children, context: onIndexChange, ...props }) => {
+interface Context {
+  onIndexChange: (index: number) => void;
+  gap?: number;
+}
+
+interface Props extends Context {
+  index: number;
+  shows?: Show[];
+  onEndReached?: () => void;
+}
+
+const Carousel: FC<Props> = ({ index, shows, gap = 8, onIndexChange, onEndReached }) => {
+  const initialIndex = useRef(index);
+
+  const context = useMemo(() => ({ onIndexChange, gap }), [onIndexChange, gap]);
+
+  return (
+    <div className='card-aspect-ratio mx-auto'>
+      <Virtuoso
+        horizontalDirection
+        skipAnimationFrameInResizeObserver
+        data={shows}
+        context={context}
+        endReached={onEndReached}
+        initialTopMostItemIndex={initialIndex.current}
+        components={components}
+        increaseViewportBy={1000}
+      />
+    </div>
+  );
+};
+
+const components: VirtuosoProps<Show, Context>['components'] = {
+  Item: ({ item, children, context, ...props }) => {
     const ref = useRef<HTMLDivElement>(null);
     const index = props['data-index'];
 
@@ -22,7 +54,7 @@ const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
 
-            onIndexChange?.(index);
+            context?.onIndexChange?.(index);
           }),
         {
           threshold: 0.7
@@ -32,7 +64,7 @@ const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
       observer.observe(container);
 
       return () => observer.disconnect();
-    }, [onIndexChange, index]);
+    }, [context, index]);
 
     return (
       <div {...props} ref={ref} className='snap-start'>
@@ -41,11 +73,9 @@ const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
     );
   },
   List: forwardRef(function List({ context, ...props }, ref) {
-    return <div {...props} ref={ref} style={{ ...props.style, display: 'flex' }} className='gap-2' />;
+    return <div {...props} ref={ref} style={{ ...props.style, display: 'flex', gap: context?.gap }} />;
   }),
   Scroller: forwardRef(function Scroller({ context, ...props }, ref) {
-    const GAP_BETWEEN_SLIDES = 8; // gap-2 = 0.5rem = 8px
-
     const handleRef =
       (ref: ForwardedRef<HTMLDivElement>, setRef: (element: HTMLDivElement) => void) =>
       (element: HTMLDivElement | null) => {
@@ -62,12 +92,12 @@ const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
         arrowsClassName='h-20 bg-secondary'
         backClassName='rounded-none rounded-r-full'
         nextClassName='rounded-none rounded-l-full'
-        gap={GAP_BETWEEN_SLIDES}
+        gap={context?.gap}
       >
-        {(setRef, isArrowHovered) => (
+        {({ setScrollElement, isArrowHovered }) => (
           <div
             {...props}
-            ref={handleRef(ref, setRef)}
+            ref={handleRef(ref, setScrollElement)}
             className={cn('no-scrollbar h-full overflow-hidden rounded-lg', {
               'snap-x snap-mandatory ': !isArrowHovered
             })}
@@ -76,32 +106,6 @@ const components: VirtuosoProps<Show, (index: number) => void>['components'] = {
       </ScrollNavigation>
     );
   })
-};
-
-interface Props {
-  index: number;
-  shows?: Show[];
-  onIndexChange: (index: number) => void;
-  onEndReached?: () => void;
-}
-
-const Carousel: FC<Props> = ({ index, shows, onIndexChange, onEndReached }) => {
-  const initialIndex = useRef(index);
-
-  return (
-    <div className='card-aspect-ratio mx-auto'>
-      <Virtuoso
-        data={shows}
-        context={onIndexChange}
-        endReached={onEndReached}
-        initialTopMostItemIndex={initialIndex.current}
-        components={components}
-        horizontalDirection
-        skipAnimationFrameInResizeObserver
-        increaseViewportBy={1000}
-      />
-    </div>
-  );
 };
 
 export default Carousel;
