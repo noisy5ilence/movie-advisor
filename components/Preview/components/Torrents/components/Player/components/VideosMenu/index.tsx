@@ -22,6 +22,7 @@ const VideosMenu: FC<Props> = ({ sources, source, onChange }) => {
         value: index.toString(),
         onSelect: () => onChange(index)
       }))}
+      className='max-h-80'
     >
       <PlaylistIcon className={cn('vds-icon !transform-none')} />
       <span className={cn('plyr__tooltip')}>Playlist</span>

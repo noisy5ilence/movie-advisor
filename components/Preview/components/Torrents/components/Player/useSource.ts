@@ -17,12 +17,12 @@ const useSource = ({ magnet }: { magnet: string }) => {
   const user = account?.username ?? 'local';
 
   const setIndex = useCallback(
-    (index: number) => {
+    (update: number | ((index: number) => number)) => {
       setSource((state) => ({
         ...state,
         [user]: {
           ...(state[user] || {}),
-          [magnet]: index
+          [magnet]: typeof update === 'function' ? update(state[user]?.[magnet] ?? 0) : update
         }
       }));
     },

@@ -1,8 +1,19 @@
 'use client';
 
-import { FC, useRef } from 'react';
-import { MediaPlayer, MediaPlayerInstance, MediaProvider, Track, VideoSrc } from '@vidstack/react';
+import { FC, useEffect, useRef } from 'react';
+import {
+  MediaPlayer,
+  MediaPlayerInstance,
+  MediaProvider,
+  PlayButton,
+  Track,
+  useMediaState,
+  VideoSrc
+} from '@vidstack/react';
+import { NextIcon } from '@vidstack/react/icons';
 import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr';
+
+import { cn } from '@/lib/utils';
 
 import CaptionsMenu from './components/CaptionsMenu';
 import VideosMenu from './components/VideosMenu';
@@ -17,7 +28,18 @@ interface Props {
 
 const Player: FC<Props> = ({ videos, subtitles, magnet, onReady }) => {
   const { index, setIndex } = useSource({ magnet });
+
   const player = useRef<MediaPlayerInstance>(null);
+
+  const isEnded = useMediaState('ended', player);
+
+  const hasNext = index + 1 < videos?.length;
+
+  useEffect(() => {
+    if (!isEnded || !hasNext) return;
+
+    setIndex((index) => index + 1);
+  }, [isEnded, hasNext, setIndex]);
 
   const source = videos[index];
 
@@ -40,13 +62,19 @@ const Player: FC<Props> = ({ videos, subtitles, magnet, onReady }) => {
         icons={plyrLayoutIcons}
         slots={{
           playLargeButton: null,
+          settingsMenu: null,
+          captionsButton: null,
+          afterPlayButton: hasNext && (
+            <PlayButton onClick={() => setIndex(index + 1)} className={cn('plyr__controls__item plyr__control')}>
+              <NextIcon className={cn('vds-icon')} />
+              <span className={cn('plyr__tooltip')}>Next</span>
+            </PlayButton>
+          ),
           afterVolumeSlider: <ul className='w-2' />,
           beforeSettings: Boolean(subtitles.length) && <CaptionsMenu />,
           settings: videos.length > 1 && (
             <VideosMenu key={source?.src} source={source} sources={videos} onChange={setIndex} />
-          ),
-          settingsMenu: null,
-          captionsButton: null
+          )
         }}
       />
     </MediaPlayer>
