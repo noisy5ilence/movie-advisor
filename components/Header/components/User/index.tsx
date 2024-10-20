@@ -12,7 +12,8 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
-import useAccount from './useAccount';
+import useAccount from '../../../../hooks/useAccount';
+
 import useAuth from './useAuth';
 import useLogOut from './useLogOut';
 

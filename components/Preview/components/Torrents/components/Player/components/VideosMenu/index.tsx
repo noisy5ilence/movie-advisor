@@ -11,14 +11,22 @@ interface Props {
   onChange: (index: number) => void;
 }
 
-const VideosMenu: FC<Props> = ({ sources, source, onChange }) => (
-  <PlayerMenu
-    options={sources.map(({ name }, index) => ({ label: name, onClick: () => onChange(index) }))}
-    isChecked={({ label }) => source.name === label}
-  >
-    <PlaylistIcon className={cn('vds-icon !transform-none')} />
-    <span className={cn('plyr__tooltip')}>Playlist</span>
-  </PlayerMenu>
-);
+const VideosMenu: FC<Props> = ({ sources, source, onChange }) => {
+  const value = sources.findIndex(({ name }) => source.name === name);
+
+  return (
+    <PlayerMenu
+      value={value.toString()}
+      options={sources.map(({ name }, index) => ({
+        label: name,
+        value: index.toString(),
+        onSelect: () => onChange(index)
+      }))}
+    >
+      <PlaylistIcon className={cn('vds-icon !transform-none')} />
+      <span className={cn('plyr__tooltip')}>Playlist</span>
+    </PlayerMenu>
+  );
+};
 
 export default VideosMenu;

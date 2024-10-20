@@ -1,42 +1,50 @@
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useRef } from 'react';
 import { Menu } from '@vidstack/react';
-import { CheckIcon } from '@vidstack/react/icons';
 
 import { cn } from '@/lib/utils';
 
-type Option = { onClick: () => void; label: string };
+type Option = { onSelect: (value: string) => void; value: string; label: string };
 
 interface Props {
   children: ReactNode;
   options: Option[];
-  isChecked: (option: Option) => boolean;
+  value: string;
 }
 
-const PlayerMenu: FC<Props> = ({ children, options, isChecked }) => (
-  <Menu.Root className={cn('plyr__menu')}>
-    <Menu.Button className={cn('plyr__controls__item plyr__control')} aria-expanded={false}>
-      {children}
-    </Menu.Button>
-    <Menu.Items
-      className={cn('plyr__menu__container !p-0 max-h-52 overflow-auto no-scrollbar')}
-      placement='top end'
-      offset={0}
+const PlayerMenu: FC<Props> = ({ children, options, value }) => {
+  const scrollRef = useRef<HTMLElement>(null);
+  const refs = useRef<Record<string, HTMLElement>>({});
+
+  return (
+    <Menu.Root
+      className={cn('plyr__menu')}
+      onOpen={() => scrollRef.current?.scrollTo({ top: refs.current[value].offsetTop - 8 })}
     >
-      <Menu.RadioGroup>
-        {options.map((option) => (
-          <Menu.Radio
-            key={option.label}
-            title={option.label}
-            className='!m-0 flex w-64 cursor-pointer items-center gap-2 truncate p-2'
-            onClick={option.onClick}
-          >
-            <CheckIcon className={cn('vds-icon shrink-0', { invisible: !isChecked(option) })} size={16} />
-            <span className='truncate'>{option.label}</span>
-          </Menu.Radio>
-        ))}
-      </Menu.RadioGroup>
-    </Menu.Items>
-  </Menu.Root>
-);
+      <Menu.Button className={cn('plyr__controls__item plyr__control')}>{children}</Menu.Button>
+      <Menu.Items
+        ref={scrollRef}
+        className={cn('plyr__menu__container max-h-52 max-w-64 rounded-lg overflow-auto !bg-background after:hidden')}
+        placement='top end'
+      >
+        <Menu.RadioGroup className='flex flex-col gap-2 p-2' value={value}>
+          {options.map((option) => (
+            <Menu.Radio
+              ref={(element) => element && (refs.current[option.value] = element)}
+              key={option.value}
+              title={option.label}
+              onClick={() => option.onSelect(option.value)}
+              className={cn(
+                '!m-0 cursor-pointer whitespace-normal break-words rounded-sm bg-secondary !px-2 !py-1 text-foreground',
+                { 'bg-secondary-foreground text-secondary': value === option.value }
+              )}
+            >
+              {option.label}
+            </Menu.Radio>
+          ))}
+        </Menu.RadioGroup>
+      </Menu.Items>
+    </Menu.Root>
+  );
+};
 
 export default PlayerMenu;

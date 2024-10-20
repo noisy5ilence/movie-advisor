@@ -86,14 +86,30 @@
     color: hsl(var(--secondary));
     background: hsl(var(--secondary-foreground));
   }
+
   ::selection {
     color: hsl(var(--secondary));
     background: hsl(var(--secondary-foreground));
   }
 
+  ::-webkit-scrollbar {
+    width: 6px;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background-color: hsl(var(--foreground));
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground));
+  }
+
   body {
     @apply bg-background text-foreground;
   }
+
   body [data-overlay]:not(:last-of-type) {
     background: none;
   }
@@ -139,7 +155,6 @@
 }
 
 .plyr {
-  --plyr-menu-background: hsl(var(--card-foreground));
   --plyr-menu-color: hsl(var(--secondary));
   --plyr-video-control-background-hover: hsl(var(--secondary-foreground));
   --plyr-video-control-color-hover: hsl(var(--secondary));

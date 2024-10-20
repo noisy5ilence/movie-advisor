@@ -42,7 +42,7 @@ const showPlayer = create(({ onResolve, magnet, backdrop, title }: Props) => {
     <Modal className='overflow-hidden border-none bg-black p-0' onClose={onResolve}>
       <div className='relative w-full overflow-hidden pt-[56.25%]'>
         <div className='absolute left-0 top-0 size-full'>
-          <Player subtitles={subtitles} videos={videos} onReady={() => setIsReady(true)} />
+          <Player magnet={magnet} subtitles={subtitles} videos={videos} onReady={() => setIsReady(true)} />
         </div>
         {(!isReady || isLoading) && (
           <div className='absolute left-0 top-0 size-full'>
