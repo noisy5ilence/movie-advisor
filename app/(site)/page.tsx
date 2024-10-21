@@ -10,7 +10,7 @@ const Random = async () => {
 
   await queryClient.prefetchInfiniteQuery({
     queryKey: ['random-movie'],
-    queryFn: () => randomMovies(),
+    queryFn: randomMovies,
     initialPageParam: '1'
   });
 

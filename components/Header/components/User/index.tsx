@@ -26,7 +26,7 @@ const User = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='ghost' size='icon'>
+        <Button aria-label='Account menu' variant='ghost' size='icon'>
           <UserRound size={20} />
         </Button>
       </DropdownMenuTrigger>

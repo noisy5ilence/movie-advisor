@@ -213,7 +213,7 @@ export const credits = async ({
   showId,
   showType = 'movie'
 }: {
-  showId: Show['id'];
+  showId?: Show['id'];
   showType?: Show['type'];
 }): Promise<Array<Actor>> => {
   return http

@@ -6,13 +6,13 @@ import Carousel from './components/Carousel';
 import useRandomMovie from './useRandomMovie';
 
 const Random = () => {
-  const { movies, movie, index, onIndexChange, fetchNextPage } = useRandomMovie();
+  const { movie, movies, onIndexChange, fetchNextPage } = useRandomMovie();
 
   return (
     <Preview
       show={movie}
       className='rounded-md bg-background'
-      poster={<Carousel index={index} shows={movies} onIndexChange={onIndexChange} onEndReached={fetchNextPage} />}
+      poster={<Carousel shows={movies} onIndexChange={onIndexChange} onEndReached={fetchNextPage} />}
     />
   );
 };

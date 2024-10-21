@@ -1,11 +1,13 @@
 'use client';
 
-import { FC, ForwardedRef, forwardRef, useLayoutEffect, useMemo, useRef } from 'react';
+import { ForwardedRef, forwardRef, memo, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Virtuoso, VirtuosoProps } from 'react-virtuoso';
 
 import Poster from '@/components/Poster';
 import ScrollNavigation from '@/components/ScrollNavigation';
 import { cn } from '@/lib/utils';
+
+import { useSilentIndex } from '../../useRandomMovie';
 
 interface Context {
   onIndexChange: (index: number) => void;
@@ -13,31 +15,41 @@ interface Context {
 }
 
 interface Props extends Context {
-  index: number;
   shows?: Show[];
   onEndReached?: () => void;
 }
 
-const Carousel: FC<Props> = ({ index, shows, gap = 8, onIndexChange, onEndReached }) => {
-  const initialIndex = useRef(index);
+const Carousel = memo(
+  function Carousel({ shows, gap = 8, onIndexChange, onEndReached }: Props) {
+    const index = useSilentIndex();
 
-  const context = useMemo(() => ({ onIndexChange, gap }), [onIndexChange, gap]);
+    const [isFirstRender, setIsFirstRender] = useState(true);
 
-  return (
-    <div className='card-aspect-ratio mx-auto'>
-      <Virtuoso
-        horizontalDirection
-        skipAnimationFrameInResizeObserver
-        data={shows}
-        context={context}
-        endReached={onEndReached}
-        initialTopMostItemIndex={initialIndex.current}
-        components={components}
-        increaseViewportBy={1000}
-      />
-    </div>
-  );
-};
+    const context = useMemo(() => ({ onIndexChange, gap }), [onIndexChange, gap]);
+
+    return (
+      <div className='card-aspect-ratio relative mx-auto'>
+        {isFirstRender && (
+          <div className='absolute left-0 top-0 size-full'>
+            <Poster show={shows?.[index]} />
+          </div>
+        )}
+        <Virtuoso
+          horizontalDirection
+          skipAnimationFrameInResizeObserver
+          data={shows}
+          itemsRendered={() => isFirstRender && setIsFirstRender(false)}
+          context={context}
+          endReached={onEndReached}
+          initialTopMostItemIndex={index}
+          components={components}
+          increaseViewportBy={1000}
+        />
+      </div>
+    );
+  },
+  (prev, next) => prev.shows === next.shows
+);
 
 const components: VirtuosoProps<Show, Context>['components'] = {
   Item: ({ item, children, context, ...props }) => {

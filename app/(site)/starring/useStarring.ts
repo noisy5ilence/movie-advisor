@@ -5,6 +5,7 @@ import useInfiniteList from '@/hooks/useInfiniteList';
 
 const useStarring = ({ actorId }: { actorId?: string }) =>
   useInfiniteList({
+    suspense: true,
     queryKey: ['starring', actorId],
     enabled: Boolean(actorId),
     queryFn: ({ page }) => topMovies({ page, starring: actorId })

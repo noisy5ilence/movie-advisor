@@ -25,7 +25,7 @@ const Actions = ({ onClose, show, className }: Props) => {
   return (
     <div className={cn('flex gap-2 flex-wrap md:flex-grow-0 flex-grow', className)}>
       <div className={cn(groupClassName, 'pointer-events-none')}>
-        <Button className={leftClassName} variant='outline'>
+        <Button aria-label='Show rating' className={leftClassName} variant='outline'>
           <Star size={14} />
         </Button>
         <Button className={rightClassName} variant='outline'>
@@ -34,6 +34,7 @@ const Actions = ({ onClose, show, className }: Props) => {
       </div>
       <div className={groupClassName}>
         <Button
+          aria-label='Toggle favorite'
           className={leftClassName}
           variant='outline'
           disabled={toggle.list === 'favorite' && toggle.isPending}
@@ -42,6 +43,7 @@ const Actions = ({ onClose, show, className }: Props) => {
           <Heart size={14} className={cn({ 'fill-secondary-foreground': state?.favorite })} />
         </Button>
         <Button
+          aria-label='Toggle watch list'
           className={rightClassName}
           variant='outline'
           disabled={toggle.list === 'watchlist' && toggle.isPending}
@@ -56,12 +58,13 @@ const Actions = ({ onClose, show, className }: Props) => {
           href={`/similar?id=${show.id}&title=${encodeURIComponent(show.title)}&type=${show.type}`}
           onClick={onClose}
         >
-          <Button className={leftClassName} variant='outline'>
+          <Button aria-label='Similar show' className={leftClassName} variant='outline'>
             <Copy size={14} />
             Similar
           </Button>
         </Link>
         <Button
+          aria-label='Watch show'
           className={cn(rightClassName, 'bg-red-600')}
           variant='destructive'
           onClick={() =>

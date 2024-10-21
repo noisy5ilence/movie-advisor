@@ -10,6 +10,7 @@ interface Props {
 
 const useSimilar = ({ showId, showType = 'movie' }: Props) =>
   useInfiniteList({
+    suspense: true,
     enabled: Boolean(showId),
     queryKey: ['similar', showId, showType],
     queryFn: ({ page }) => similarShows({ page, showId, showType })

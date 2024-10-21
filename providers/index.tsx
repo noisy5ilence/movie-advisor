@@ -3,6 +3,7 @@
 import { FC, ReactNode } from 'react';
 import ModalContainer from 'react-modal-promise';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { Toaster } from '@/components/ui/toaster';
 import getQueryClient from '@/lib/queryClient';
@@ -22,6 +23,7 @@ const Providers: FC<Props> = ({ children, theme }) => {
       <ThemeProvider theme={theme}>{children}</ThemeProvider>
       <ModalContainer exitTimeout={500} enterTimeout={0} />
       <Toaster />
+      <ReactQueryDevtools initialIsOpen={true} />
     </QueryClientProvider>
   );
 };

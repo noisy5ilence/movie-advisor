@@ -53,6 +53,7 @@ const components: VirtuosoProps<Actor, Context>['components'] = {
         className='relative shrink-0 cursor-pointer snap-start self-end bg-card text-card-foreground transition-shadow hover:shadow-lg'
       >
         <Link
+          prefetch={false}
           href={`/starring?actorId=${actor.id}&title=${encodeURIComponent(actor.name)}`}
           onClick={() => context?.onClick?.(actor.id.toString())}
         >

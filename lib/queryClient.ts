@@ -4,10 +4,10 @@ const makeQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        refetchOnWindowFocus: false,
         staleTime: Infinity,
         refetchOnReconnect: false,
-        refetchOnMount: false
+        refetchOnMount: false,
+        refetchOnWindowFocus: false
       },
       dehydrate: {
         shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) || query.state.status === 'pending'

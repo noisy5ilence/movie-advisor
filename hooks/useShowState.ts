@@ -1,8 +1,9 @@
-import { accountStates, updateAccountStates } from '@/api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { accountStates, updateAccountStates } from '@/api';
+
 import { useFavorites, useFavoritesStateToggle, useWatchList, useWatchListStateToggle } from './useLocalUsersLists';
 import { useSession } from './useSession';
-
 import { KEY as USERS_SHOWS_KEY } from './useUsersShows';
 
 const KEY = ['show-state'];
@@ -49,7 +50,7 @@ export const useMutateShowState = (show: Show) => {
       queryClient.setQueryData<ShowState>(key, snapshot);
     },
     onSuccess(_, { list, showType }) {
-      queryClient.invalidateQueries({ queryKey: USERS_SHOWS_KEY({ list, showType }) });
+      queryClient.invalidateQueries({ queryKey: USERS_SHOWS_KEY({ list, showType }), refetchType: 'all' });
     }
   });
 

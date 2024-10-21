@@ -106,7 +106,7 @@ export const showSearchModal = create(({ onResolve }) => {
 });
 
 const ToggleSearch = () => (
-  <Button variant='ghost' size='icon' onClick={() => showSearchModal()}>
+  <Button aria-label='Search show' variant='ghost' size='icon' onClick={() => showSearchModal()}>
     <SearchIcon size={19} />
   </Button>
 );

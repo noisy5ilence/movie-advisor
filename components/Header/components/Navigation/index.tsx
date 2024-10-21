@@ -18,7 +18,7 @@ export const MobileNavigation = () => {
     <div className='flex md:hidden'>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant='ghost' size='icon'>
+          <Button aria-label='Navigation toggle' variant='ghost' size='icon'>
             <Menu size={19} />
           </Button>
         </DropdownMenuTrigger>
