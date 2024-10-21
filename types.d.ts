@@ -60,7 +60,7 @@ interface Show {
   title: string;
   overview: string;
   backdrop: string;
-  poster: string;
+  poster: { '1x': string; '1.5x': string; '2x': string };
   release: Date;
   rating: number;
   votes: number;

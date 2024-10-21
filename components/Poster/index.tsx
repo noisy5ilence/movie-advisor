@@ -22,12 +22,16 @@ const Poster: FC<Props> = ({ show, onClick, className, rounded, containerProps, 
       className={cn('card-aspect-ratio relative bg-black overflow-hidden rounded-lg text-lg', className, rounded)}
     >
       <div className='flex size-full'>
-        <img
-          className={cn('size-full rounded-lg object-cover', rounded)}
-          loading={lazy ? 'lazy' : 'eager'}
-          src={show.poster}
-          alt={show.title}
-        />
+        <picture>
+          <source srcSet={show.poster['1x']} media='(min-width: 601px)' />
+          <source srcSet={show.poster['2x']} media='(max-width: 600px)' />
+          <img
+            className={cn('size-full rounded-lg object-cover', rounded)}
+            loading={lazy ? 'lazy' : 'eager'}
+            src={show.poster['1x']}
+            alt={show.title}
+          />
+        </picture>
       </div>
       <div
         className={cn(

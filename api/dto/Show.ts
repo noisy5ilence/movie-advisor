@@ -7,8 +7,14 @@ export const mapMovieSeriesToShow = (
   overview,
   rating: vote_average,
   votes: vote_count,
-  backdrop: backdrop_path ? `https://image.tmdb.org/t/p/w1280/${backdrop_path}` : '',
-  poster: poster_path ? `https://image.tmdb.org/t/p/w342/${poster_path}` : '',
+  backdrop: backdrop_path ? `https://image.tmdb.org/t/p/w1280${backdrop_path}` : '',
+  poster: poster_path
+    ? {
+        '1x': `https://image.tmdb.org/t/p/w342${poster_path}`,
+        '1.5x': `https://image.tmdb.org/t/p/w500${poster_path}`,
+        '2x': `https://image.tmdb.org/t/p/w780${poster_path}`
+      }
+    : { '1x': '', '1.5x': '', '2x': '' },
   release: 'release_date' in item ? item.release_date : item.first_air_date,
   title: 'release_date' in item ? item.title : item.name
 });

@@ -4,11 +4,12 @@ import { cn } from '@/lib/utils';
 
 type Tab = { title: string };
 
-type CursorProps = { left: number; width: number; opacity: number };
+type CursorProps = { left: number; width: number; opacity: number; onTransitionEnd: () => void };
 
-const Cursor: FC<CursorProps> = ({ width, left, opacity }) => (
+const Cursor: FC<CursorProps> = ({ width, left, opacity, onTransitionEnd }) => (
   <li
     className='pointer-events-none absolute z-0 h-full rounded-2xl bg-primary transition-all'
+    onTransitionEnd={onTransitionEnd}
     style={{ width, left, opacity }}
   />
 );
@@ -23,12 +24,14 @@ export type NavProps<T extends Tab> = {
 
 function Nav<T extends Tab>({ tabs, active, className, children, onChange }: NavProps<T>) {
   const [cursor, setCursor] = useState({ left: 0, width: 0, opacity: 0 });
+  const [transitionEnded, setTransitionEnded] = useState(false);
   const currentRef = useRef<HTMLLIElement>(null);
 
   useLayoutEffect(() => {
     const link = currentRef.current;
 
     setCursor({ width: link?.clientWidth || 0, left: link?.offsetLeft || 0, opacity: link ? 1 : 0 });
+    setTransitionEnded(false);
   }, [active?.title]);
 
   return (
@@ -43,16 +46,16 @@ function Nav<T extends Tab>({ tabs, active, className, children, onChange }: Nav
             key={title}
             ref={isActive ? currentRef : undefined}
             onClick={() => onChange?.(tab)}
-            className={cn(
-              'mix-blend-difference text-white z-10 px-2.5 py-0.5 font-normal cursor-default',
-              !isActive && 'cursor-pointer'
-            )}
+            className={cn('z-10 px-2.5 py-0.5 font-normal cursor-pointer', {
+              'cursor-default text-secondary': isActive,
+              'mix-blend-difference text-white': !transitionEnded
+            })}
           >
             {children?.(tab) || <div>{title}</div>}
           </li>
         );
       })}
-      <Cursor {...cursor} />
+      <Cursor {...cursor} onTransitionEnd={() => setTransitionEnded(true)} />
     </ul>
   );
 }
