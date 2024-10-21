@@ -65,7 +65,7 @@ const Actions = ({ onClose, show, className }: Props) => {
         </Link>
         <Button
           aria-label='Watch show'
-          className={cn(rightClassName, 'bg-red-600')}
+          className={cn(rightClassName, 'bg-red-700')}
           variant='destructive'
           onClick={() =>
             showTorrentsModal({

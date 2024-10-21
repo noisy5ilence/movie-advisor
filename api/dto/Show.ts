@@ -8,7 +8,7 @@ export const mapMovieSeriesToShow = (
   rating: vote_average,
   votes: vote_count,
   backdrop: backdrop_path ? `https://image.tmdb.org/t/p/w1280/${backdrop_path}` : '',
-  poster: poster_path ? `https://image.tmdb.org/t/p/w500/${poster_path}` : '',
+  poster: poster_path ? `https://image.tmdb.org/t/p/w342/${poster_path}` : '',
   release: 'release_date' in item ? item.release_date : item.first_air_date,
   title: 'release_date' in item ? item.title : item.name
 });
@@ -20,7 +20,7 @@ const mapMoviesSeriesResponseToShows = (
   page,
   total: total_pages,
   results: results
-    .map(show => mapMovieSeriesToShow(show, type))
+    .map((show) => mapMovieSeriesToShow(show, type))
     .filter((show) => show.votes && show.release && show.backdrop && show.poster)
 });
 

@@ -5,10 +5,10 @@ import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-const Random = async () => {
+const Random = () => {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchInfiniteQuery({
+  queryClient.prefetchInfiniteQuery({
     queryKey: ['random-movie'],
     queryFn: randomMovies,
     initialPageParam: '1'

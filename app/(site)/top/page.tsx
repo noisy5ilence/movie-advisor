@@ -12,10 +12,10 @@ export const metadata: Metadata = {
     'Discover the top-rated movies on Movie Advisor. Find the highest-rated films and make informed viewing choices.'
 };
 
-const Top = async () => {
+const Top = () => {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchInfiniteQuery({
+  queryClient.prefetchInfiniteQuery({
     queryKey: ['top'],
     queryFn: () => topMovies(),
     initialPageParam: '1'

@@ -58,7 +58,7 @@ const components: VirtuosoProps<Actor, Context>['components'] = {
           onClick={() => context?.onClick?.(actor.id.toString())}
         >
           <div className='overflow-hidden rounded-lg'>
-            <img height={180} width={120} src={actor.photoUrl} alt={actor.name} />
+            <img height={180} width={120} loading='lazy' src={actor.photoUrl} alt={actor.name} />
           </div>
           <div className='absolute left-0 top-0 flex size-full flex-col justify-between rounded-md bg-vignette p-2 py-1 text-sm text-white'>
             <p className=' truncate'>{actor.name}</p>

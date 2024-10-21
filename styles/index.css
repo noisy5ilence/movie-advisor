@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '@vidstack/react/player/styles/base.css';
+@import '@vidstack/react/player/styles/plyr/theme.css';
+
 @layer base {
   :root {
     --background: 0 0% 100%;

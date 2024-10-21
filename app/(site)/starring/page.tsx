@@ -5,12 +5,12 @@ import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-const Starring = async ({ searchParams }: { searchParams: Record<string, string> }) => {
+const Starring = ({ searchParams }: { searchParams: Record<string, string> }) => {
   const queryClient = getQueryClient();
 
   const { actorId } = searchParams || {};
 
-  await queryClient.prefetchInfiniteQuery({
+  queryClient.prefetchInfiniteQuery({
     queryKey: ['starring', actorId],
     queryFn: () => topMovies({ starring: actorId }),
     initialPageParam: '1'

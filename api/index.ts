@@ -10,6 +10,8 @@ import yts from './parsers/yts';
 import http from './Http';
 import { Sort } from './parsers';
 
+const session = () => cookies().get('session')?.value;
+
 export const createRequestToken = async () => {
   return http.get<RequestToken>('/authentication/token/new', { preventCache: true }).then(({ request_token }) => ({
     redirectUrl: `https://www.themoviedb.org/authenticate/${request_token}`,
@@ -26,14 +28,14 @@ export const createSession = async ({ requestToken }: { requestToken: string }) 
 
 export const account = async () => {
   return http.get<Account>('/account/null', {
-    params: { session_id: cookies().get('session')?.value },
+    params: { session_id: session() },
     preventCache: true
   });
 };
 
 export const accountStates = async ({ showId, showType }: { showId: Show['id']; showType: Show['type'] }) => {
   return http.get<ShowState>(`/${showType}/${showId}/account_states`, {
-    params: { session_id: cookies().get('session')?.value },
+    params: { session_id: session() },
     preventCache: true
   });
 };
@@ -51,7 +53,7 @@ export const updateAccountStates = async ({
 }) => {
   http.post(
     `/account/null/${list}`,
-    { params: { session_id: cookies().get('session')?.value }, preventCache: true },
+    { params: { session_id: session() }, preventCache: true },
     {
       media_id: showId,
       media_type: showType,
@@ -71,7 +73,7 @@ export const usersShows = async ({
 }): Promise<Pagination<Show>> => {
   return http
     .get<TMDBPagination<Movie>>(`/account/null/${list}/${showType === 'tv' ? 'tv' : 'movies'}`, {
-      params: { page, sort_by: 'created_at.desc', session_id: cookies().get('session')?.value },
+      params: { page, sort_by: 'created_at.desc', session_id: session() },
       preventCache: true
     })
     .then((response) => mapMoviesSeriesResponseToShows(response, showType));
@@ -224,7 +226,7 @@ export const credits = async ({
       return cast
         .filter((person) => person.profile_path)
         .map((actor) => {
-          const photoUrl = `https://image.tmdb.org/t/p/w500/${actor.profile_path}`;
+          const photoUrl = `https://image.tmdb.org/t/p/w185${actor.profile_path}`;
 
           if ('character' in actor) return { ...actor, photoUrl };
 

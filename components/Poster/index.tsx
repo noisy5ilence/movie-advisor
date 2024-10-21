@@ -9,10 +9,11 @@ interface Props {
   onClick?: () => void;
   className?: string;
   rounded?: string;
+  lazy?: boolean;
   containerProps?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 }
 
-const Poster: FC<Props> = ({ show, onClick, className, rounded, containerProps }) => {
+const Poster: FC<Props> = ({ show, onClick, className, rounded, containerProps, lazy = true }) => {
   if (!show) return null;
 
   return (
@@ -21,7 +22,12 @@ const Poster: FC<Props> = ({ show, onClick, className, rounded, containerProps }
       className={cn('card-aspect-ratio relative bg-black overflow-hidden rounded-lg text-lg', className, rounded)}
     >
       <div className='flex size-full'>
-        <img className={cn('size-full rounded-lg object-cover', rounded)} src={show.poster} alt={show.title} />
+        <img
+          className={cn('size-full rounded-lg object-cover', rounded)}
+          loading={lazy ? 'lazy' : 'eager'}
+          src={show.poster}
+          alt={show.title}
+        />
       </div>
       <div
         className={cn(

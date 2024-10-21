@@ -1,3 +1,5 @@
+'use client';
+
 import { usersShows } from '@/api';
 
 import useInfiniteList from './useInfiniteList';
@@ -17,8 +19,7 @@ const useUsersShows = ({ showType, list = 'favorite' }: { showType: Show['type']
 
   const query = useInfiniteList({
     queryKey: KEY({ list, showType }),
-    queryFn: ({ page }) => usersShows({ showType, list, page }),
-    enabled: Boolean(session)
+    queryFn: ({ page }) => usersShows({ showType, list, page })
   });
 
   return session

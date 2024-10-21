@@ -1,6 +1,6 @@
 'use client';
 
-import { ForwardedRef, forwardRef, memo, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { ForwardedRef, forwardRef, memo, useLayoutEffect, useMemo, useRef } from 'react';
 import { Virtuoso, VirtuosoProps } from 'react-virtuoso';
 
 import Poster from '@/components/Poster';
@@ -23,22 +23,15 @@ const Carousel = memo(
   function Carousel({ shows, gap = 8, onIndexChange, onEndReached }: Props) {
     const index = useSilentIndex();
 
-    const [isFirstRender, setIsFirstRender] = useState(true);
-
     const context = useMemo(() => ({ onIndexChange, gap }), [onIndexChange, gap]);
 
     return (
       <div className='card-aspect-ratio relative mx-auto'>
-        {isFirstRender && (
-          <div className='absolute left-0 top-0 size-full'>
-            <Poster show={shows?.[index]} />
-          </div>
-        )}
         <Virtuoso
+          initialItemCount={1}
           horizontalDirection
           skipAnimationFrameInResizeObserver
           data={shows}
-          itemsRendered={() => isFirstRender && setIsFirstRender(false)}
           context={context}
           endReached={onEndReached}
           initialTopMostItemIndex={index}
@@ -80,7 +73,7 @@ const components: VirtuosoProps<Show, Context>['components'] = {
 
     return (
       <div {...props} ref={ref} className='snap-start'>
-        <Poster show={item} />
+        <Poster lazy={false} show={item} />
       </div>
     );
   },

@@ -12,10 +12,10 @@ export const metadata: Metadata = {
     'Check out the most popular movies right now on Movie Advisor. See what’s trending and don’t miss out on the latest hits.'
 };
 
-const Popular = async () => {
+const Popular = () => {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchInfiniteQuery({
+  queryClient.prefetchInfiniteQuery({
     queryKey: ['popular'],
     queryFn: () => popularMovies(),
     initialPageParam: '1'

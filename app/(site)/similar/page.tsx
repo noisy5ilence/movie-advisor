@@ -5,12 +5,12 @@ import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-const Similar = async ({ searchParams }: { searchParams: Record<string, string> }) => {
+const Similar = ({ searchParams }: { searchParams: Record<string, string> }) => {
   const queryClient = getQueryClient();
 
   const { id, type } = searchParams || {};
 
-  await queryClient.prefetchInfiniteQuery({
+  queryClient.prefetchInfiniteQuery({
     queryKey: ['similar', id, type],
     queryFn: () => similarShows({ showId: id, showType: type as Show['type'] }),
     initialPageParam: '1'
