@@ -19,7 +19,6 @@ import CaptionsMenu from './components/CaptionsMenu';
 import VideosMenu from './components/VideosMenu';
 import useSource from './useSource';
 
-import '@vidstack/react/player/styles/base.css';
 import '@vidstack/react/player/styles/plyr/theme.css';
 
 interface Props {

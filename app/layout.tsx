@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { Poppins } from 'next/font/google';
 import { cookies } from 'next/headers';
@@ -18,7 +18,7 @@ export const viewport: Viewport = {
   width: 'device-width'
 };
 
-const font = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
+const font = Poppins({ subsets: ['latin'], weight: ['400', '500'] });
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
   const theme = cookies().get('theme')?.value as Theme;
@@ -28,7 +28,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
       <head>
         <meta name='theme-color' content={theme === 'dark' ? 'hsl(222.2 84% 4.9%)' : 'white'} />
       </head>
-      <body style={{ '--font-family': font.style.fontFamily, ...font.style } as CSSProperties}>
+      <body className={font.className}>
         <Providers theme={theme}>
           <Header className='sticky top-0 z-20' />
           <main className='container'>{children}</main>
