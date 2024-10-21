@@ -23,8 +23,10 @@ const Poster: FC<Props> = ({ show, onClick, className, rounded, containerProps, 
     >
       <div className='flex size-full'>
         <picture>
-          <source srcSet={show.poster['1x']} media='(min-width: 601px)' />
-          <source srcSet={show.poster['2x']} media='(max-width: 600px)' />
+          <source srcSet={show.poster['1x']} media='(max-resolution: 191dpi)' />
+          <source srcSet={show.poster['1x']} media='(max-device-pixel-ratio: 1.99)' />
+          <source srcSet={show.poster['1.5x']} media='(min-resolution: 192dpi)' />
+          <source srcSet={show.poster['1.5x']} media='(min-device-pixel-ratio: 2)' />
           <img
             className={cn('size-full rounded-lg object-cover', rounded)}
             loading={lazy ? 'lazy' : 'eager'}
