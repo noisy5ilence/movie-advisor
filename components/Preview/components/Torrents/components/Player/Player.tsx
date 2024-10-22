@@ -53,11 +53,11 @@ const Player: FC<Props> = ({ videos, subtitles, magnet, onReady }) => {
       storage='movie-advisor'
       ref={player}
       src={(source as VideoSrc) || []}
-      className='size-full'
+      className='relative size-full select-none'
     >
-      <MediaProvider>
-        {subtitles.map((track) => (
-          <Track key={track.name} src={track.src} kind='subtitles' label={track.name} type='srt' default />
+      <MediaProvider className='relative flex size-full justify-center [&>video]:!h-full'>
+        {subtitles.map((track, index) => (
+          <Track key={track.name} src={track.src} kind='subtitles' label={track.name} type='srt' default={!index} />
         ))}
       </MediaProvider>
       <PlyrLayout

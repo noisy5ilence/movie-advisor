@@ -68,9 +68,7 @@
 
     --ring: 0;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
     -webkit-tap-highlight-color: transparent;
@@ -157,25 +155,4 @@
   --plyr-video-control-color-hover: hsl(var(--secondary));
   --plyr-video-control-color: white;
   --plyr-color-main: white;
-}
-
-[data-media-provider] {
-  display: flex;
-  position: relative;
-  box-sizing: border-box;
-  border-radius: inherit;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: inherit;
-  justify-content: center;
-  overflow: hidden;
-}
-
-[data-media-player] {
-  width: 100%;
-  display: inline-flex;
-  position: relative;
-  contain: style;
-  justify-content: center;
-  user-select: none;
 }
