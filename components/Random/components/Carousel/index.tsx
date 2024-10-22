@@ -104,7 +104,7 @@ const components: VirtuosoProps<Show, Context>['components'] = {
             {...props}
             ref={handleRef(ref, setScrollElement)}
             className={cn('no-scrollbar h-full overflow-hidden rounded-lg', {
-              'snap-x snap-mandatory ': !isArrowHovered
+              'snap-x snap-mandatory': !isArrowHovered
             })}
           />
         )}
