@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { providers } from '../../constants';
 import { useCastMagnet, usePrefix } from '../../hooks/useMagnetHosts';
 import showHostManagerModal from '../HostManager';
-// import showPlayer from '../Player';
+import showPlayer from '../Player';
 import TableHeadSortable from '../TableHeadSortable';
 
 interface Props {
@@ -85,7 +85,7 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
                     {supportedForStream && (
                       <div
                         className='flex size-8 cursor-pointer items-center justify-center rounded-md border'
-                        // onClick={() => showPlayer({ magnet: torrent.magnet, backdrop, title })}
+                        onClick={() => showPlayer({ magnet: torrent.magnet, backdrop, title })}
                         title='Play show'
                       >
                         <Play size={20} />
