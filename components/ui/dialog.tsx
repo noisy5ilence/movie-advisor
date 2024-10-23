@@ -175,6 +175,16 @@ const Modal: React.FC<{
 }> = ({ children, onClose, className, style, scrollRef }) => {
   const [open, setOpen] = useState(true);
 
+  React.useLayoutEffect(() => {
+    const viewport = document.querySelector('[name="viewport"]');
+
+    viewport?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+
+    return () => {
+      viewport?.setAttribute('content', 'width=device-width, initial-scale=1.0');
+    };
+  }, []);
+
   const handleClose = () => {
     onClose?.();
     setOpen(false);
