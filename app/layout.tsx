@@ -9,6 +9,7 @@ import Providers from '@/providers';
 import '@/styles/index.css';
 
 const title = 'Movie Advisor';
+const productionUrl = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`;
 
 export const metadata: Metadata = {
   title: `${title} | Discover Your Next Favorite Movie`,
@@ -38,17 +39,17 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <link rel='manifest' href='/manifest.json' />
 
         <meta name='twitter:card' content={metadata.description!} />
-        <meta name='twitter:url' content={process.env.NEXT_PUBLIC_VERCEL_URL} />
+        <meta name='twitter:url' content={productionUrl} />
         <meta name='twitter:title' content={title} />
         <meta name='twitter:description' content={metadata.description!} />
-        <meta name='twitter:image' content={`${process.env.NEXT_PUBLIC_VERCEL_URL}/web-app-manifest-512x512.png`} />
+        <meta name='twitter:image' content={`${productionUrl}/web-app-manifest-512x512.png`} />
         <meta name='twitter:creator' content='https://github.com/noisy5ilence' />
         <meta property='og:type' content='website' />
         <meta property='og:title' content={title} />
         <meta property='og:description' content={metadata.description!} />
         <meta property='og:site_name' content={title} />
-        <meta property='og:url' content={process.env.NEXT_PUBLIC_VERCEL_URL} />
-        <meta property='og:image' content={`${process.env.NEXT_PUBLIC_VERCEL_URL}/apple-touch-icon.png`} />
+        <meta property='og:url' content={productionUrl} />
+        <meta property='og:image' content={`${productionUrl}/apple-touch-icon.png`} />
       </head>
       <body className={font.className}>
         <Providers theme={theme}>
