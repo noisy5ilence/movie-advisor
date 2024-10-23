@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="512" height="512"><svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="512" height="512" preserveAspectRatio="xMidYMid meet">
+<g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
+<path d="M120 2560 l0 -1920 2440 0 2440 0 0 1920 0 1920 -2440 0 -2440 0 0
+-1920z m740 1205 l0 -475 -240 0 -240 0 0 475 0 475 240 0 240 0 0 -475z
+m3880 0 l0 -475 -240 0 -240 0 0 475 0 475 240 0 240 0 0 -475z m-2544 -385
+c319 -191 1241 -779 1257 -801 40 -56 32 -136 -20 -195 -15 -17 -635 -410
+-1206 -764 -143 -88 -181 -97 -253 -55 -33 20 -51 39 -65 70 -19 42 -19 74
+-17 872 l3 828 23 33 c30 42 86 71 138 72 32 0 61 -12 140 -60z m-1336 -815
+l0 -475 -240 0 -240 0 0 475 0 475 240 0 240 0 0 -475z m3880 0 l0 -475 -240
+0 -240 0 0 475 0 475 240 0 240 0 0 -475z m-3880 -1200 l0 -475 -240 0 -240 0
+0 475 0 475 240 0 240 0 0 -475z m3880 0 l0 -475 -240 0 -240 0 0 475 0 475
+240 0 240 0 0 -475z"></path>
+</g>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>

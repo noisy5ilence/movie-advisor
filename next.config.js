@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: { optimizeCss: true },
+  experimental: {
+    optimizeCss: true
+  },
   images: {
     remotePatterns: [
       {
@@ -11,4 +13,8 @@ const nextConfig = {
   }
 };
 
-module.exports = nextConfig;
+const withPWA = require('next-pwa')({
+  dest: 'public'
+});
+
+module.exports = withPWA(nextConfig);

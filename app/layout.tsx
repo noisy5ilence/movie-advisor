@@ -27,6 +27,12 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
     <html lang='en' data-mode={theme}>
       <head>
         <meta name='theme-color' content={theme === 'dark' ? 'hsl(222.2 84% 4.9%)' : 'white'} />
+        <link rel='icon' type='image/png' href='/favicon-48x48.png' sizes='48x48' />
+        <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+        <link rel='shortcut icon' href='/favicon.ico' />
+        <link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
+        <meta name='apple-mobile-web-app-title' content='Movie Advisor' />
+        <link rel='manifest' href='/site.webmanifest' />
       </head>
       <body className={font.className}>
         <Providers theme={theme}>
