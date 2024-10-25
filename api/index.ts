@@ -6,6 +6,7 @@ import { createUniqueRandomGenerator } from '@/lib/utils';
 
 import mapMoviesSeriesResponseToShows, { mapMovieSeriesToShow } from './dto/Show';
 import pirateBay from './parsers/pirate-bay';
+import toloka from './parsers/toloka';
 import yts from './parsers/yts';
 import http from './Http';
 import { Sort } from './parsers';
@@ -275,3 +276,16 @@ export const TPBTorrents = async ({ query, sort }: { imdbID: string; query: stri
     return [];
   }
 };
+
+export const TLKTorrents = async ({ query, sort }: { imdbID: string; query: string; sort: Sort }) => {
+  try {
+    return toloka.search({
+      query,
+      sort
+    });
+  } catch (error) {
+    return [];
+  }
+};
+
+export const fetchTLKMagnet = async (url: string) => toloka.magnet(url);

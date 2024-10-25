@@ -131,6 +131,7 @@ interface Torrent {
   codec?: string;
   container?: string;
   year?: string;
+  download?: string;
 }
 
 interface Source {

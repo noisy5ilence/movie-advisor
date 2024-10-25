@@ -1,18 +1,12 @@
 import { FC, Fragment } from 'react';
-import { Cast, ListVideo, Magnet, Play } from 'lucide-react';
 
 import { Sort } from '@/api/parsers';
-import { Quality } from '@/api/parsers/yts/models';
-import { Button } from '@/components/ui/button';
-import ButtonsGroup from '@/components/ui/buttons-group';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { cn } from '@/lib/utils';
 
-import { providers } from '../../constants';
-import { useCastMagnet, usePrefix } from '../../hooks/useMagnetHosts';
 import showHostManagerModal from '../HostManager';
-import showPlayer from '../Player';
 import TableHeadSortable from '../TableHeadSortable';
+
+import Actions from './components/Actions';
 
 interface Props {
   title: string;
@@ -26,9 +20,6 @@ interface Props {
 }
 
 const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, provider, year, onChangeSort }) => {
-  const prefix = usePrefix();
-  const cast = useCastMagnet();
-
   const colSpan = 5;
 
   return (
@@ -54,15 +45,6 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
 
       <TableBody>
         {torrents?.map((torrent) => {
-          const supportedForStream = Boolean(
-            (provider === providers.yts.key &&
-              torrent.seeders &&
-              [Quality.The1080P, Quality.The720P].includes(torrent.quality as Quality)) ||
-              torrent.container?.includes('mp4')
-          );
-
-          const supportedForCast = prefix && !prefix.includes('{host}');
-
           const yearView = torrent.year && year.toString() != torrent.year && `[${torrent.year}]`;
 
           return (
@@ -87,40 +69,7 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
                 </TableCell>
                 <TableCell className='truncate p-2'>{torrent.seeders}</TableCell>
                 <TableCell className='p-1 pr-2 text-center'>
-                  <ButtonsGroup className='ml-auto w-fit grow-0'>
-                    {supportedForStream && (
-                      <Button
-                        variant='destructive'
-                        className={cn('flex-grow-0 px-3 bg-red-600')}
-                        onClick={() => showPlayer({ magnet: torrent.magnet, backdrop, title })}
-                        title='Play'
-                      >
-                        <Play size={15} />
-                      </Button>
-                    )}
-                    <Button
-                      variant='outline'
-                      className='relative grow-0 px-3'
-                      title='Play using your native video player'
-                    >
-                      <a
-                        className='absolute left-0 top-0 size-full'
-                        href={`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(
-                          torrent.magnet
-                        )}`}
-                      />
-                      <ListVideo size={20} />
-                    </Button>
-                    <Button className='relative grow-0 px-3' variant='outline' title='Download magnet'>
-                      <a className='absolute left-0 top-0 size-full' href={torrent.magnet} />
-                      <Magnet size={20} />
-                    </Button>
-                    {supportedForCast && (
-                      <Button className='grow-0 px-3' variant='outline' onClick={() => cast(torrent.magnet!)}>
-                        <Cast size={20} />
-                      </Button>
-                    )}
-                  </ButtonsGroup>
+                  <Actions title={title} backdrop={backdrop} torrent={torrent} provider={provider} />
                 </TableCell>
               </TableRow>
             </Fragment>

@@ -34,6 +34,13 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
     key: providers.tpb.key,
     imdbID
   });
+  const tlk = useTorrents({
+    query: withYear ? `${title} ${year}` : title,
+    queryFn: providers.tlk.queryFn,
+    sort,
+    key: providers.tlk.key,
+    imdbID
+  });
 
   const tabs = [
     {
@@ -43,6 +50,10 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
     {
       query: tpb,
       provider: providers.tpb
+    },
+    {
+      query: tlk,
+      provider: providers.tlk
     }
   ];
 
@@ -65,7 +76,7 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
         </Button>
       </div>
       <Tabs value={providerKey} className='w-full rounded-none'>
-        <TabsList className='grid w-full grid-cols-2'>
+        <TabsList className='grid w-full grid-cols-3'>
           {tabs.map(({ provider, query }) => (
             <TabsTrigger
               disabled={checkIsEmpty(query)}
