@@ -27,31 +27,35 @@ export class Toloka {
       const html = parse(data);
       const rows = html?.querySelectorAll('.prow1, .prow2');
 
-      return rows?.map((row) => {
-        const originalTitle = row.querySelector('td:nth-child(3)')?.innerText;
-        const size = row.querySelector('td:nth-child(7)')?.innerText;
-        const seeders = row.querySelector('td:nth-child(10)')?.innerText;
-        const download = row.querySelector('td:nth-child(6) a')?.getAttribute('href');
+      console.log(data);
 
-        const { year, source, codec, container, title, season, episode, resolution } = torrentTitle.parse(
-          originalTitle || ''
-        );
+      return rows?.length
+        ? (rows?.map((row) => {
+            const originalTitle = row.querySelector('td:nth-child(3)')?.innerText;
+            const size = row.querySelector('td:nth-child(7)')?.innerText;
+            const seeders = row.querySelector('td:nth-child(10)')?.innerText;
+            const download = row.querySelector('td:nth-child(6) a')?.getAttribute('href');
 
-        return {
-          year,
-          source,
-          codec,
-          container,
-          originalTitle,
-          title: `${title}${season && episode ? ` [S${season}:E${episode}]` : ''}`,
-          id: originalTitle,
-          size,
-          seeders: parseInt(seeders || '0'),
-          quality: resolution,
-          magnet: '',
-          download
-        };
-      }) as Torrent[];
+            const { year, source, codec, container, title, season, episode, resolution } = torrentTitle.parse(
+              originalTitle || ''
+            );
+
+            return {
+              year,
+              source,
+              codec,
+              container,
+              originalTitle,
+              title: `${title}${season && episode ? ` [S${season}:E${episode}]` : ''}`,
+              id: originalTitle,
+              size,
+              seeders: parseInt(seeders || '0'),
+              quality: resolution,
+              magnet: '',
+              download
+            };
+          }) as Torrent[])
+        : data;
     });
   }
 
