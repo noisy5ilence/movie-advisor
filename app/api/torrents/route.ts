@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import { Sort } from '@/api/parsers';
 import pirateBay from '@/api/parsers/pirate-bay';
@@ -14,8 +14,8 @@ export async function GET({ nextUrl: { searchParams } }: NextRequest) {
   const providers = { yts: yts, tpb: pirateBay, tlk: toloka };
 
   try {
-    return Response.json(await providers[key].search({ imdbID, query, sort }));
+    return NextResponse.json(await providers[key].search({ imdbID, query, sort }));
   } catch (_) {
-    return Response.json([]);
+    return NextResponse.json([]);
   }
 }
