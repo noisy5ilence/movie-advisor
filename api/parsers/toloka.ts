@@ -18,7 +18,7 @@ export class Toloka {
     this.host = host;
     this.client = axios.create({
       baseURL: this.host,
-      headers: { Cookie: 'toloka_sid=0504c23f6b4fc00d39530cfa78f8d767; toloka_ssl=1' }
+      headers: { Cookie: 'toloka_sid=e9693224d00c5b60af50c2596d1b880d; toloka_ssl=1' }
     });
   }
 

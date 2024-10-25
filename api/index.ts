@@ -5,11 +5,8 @@ import { cookies } from 'next/headers';
 import { createUniqueRandomGenerator } from '@/lib/utils';
 
 import mapMoviesSeriesResponseToShows, { mapMovieSeriesToShow } from './dto/Show';
-import pirateBay from './parsers/pirate-bay';
 import toloka from './parsers/toloka';
-import yts from './parsers/yts';
 import http from './Http';
-import { Sort } from './parsers';
 
 const session = () => cookies().get('session')?.value;
 
@@ -236,56 +233,6 @@ export const credits = async ({
           return { ...actor, character, photoUrl };
         });
     });
-};
-
-export const trailers = async ({
-  showId,
-  showType
-}: {
-  showId: Show['id'];
-  showType?: Show['type'];
-}): Promise<Trailer[]> => {
-  return http
-    .get<{ id: number; results: Trailer[] }>(`/${showType}/${showId}/videos`, {
-      params: {
-        language: 'en-US'
-      }
-    })
-    .then((data) => data.results);
-};
-
-export const YTSTorrents = async ({ query, sort, imdbID }: { imdbID: string; query: string; sort: Sort }) => {
-  try {
-    return yts.search({
-      imdbID,
-      query,
-      sort
-    });
-  } catch (error) {
-    return [];
-  }
-};
-
-export const TPBTorrents = async ({ query, sort }: { imdbID: string; query: string; sort: Sort }) => {
-  try {
-    return pirateBay.search({
-      query,
-      sort
-    });
-  } catch (error) {
-    return [];
-  }
-};
-
-export const TLKTorrents = async ({ query, sort }: { imdbID: string; query: string; sort: Sort }) => {
-  try {
-    return toloka.search({
-      query,
-      sort
-    });
-  } catch (error) {
-    return [];
-  }
 };
 
 export const fetchTLKMagnet = async (url: string) => toloka.magnet(url);
