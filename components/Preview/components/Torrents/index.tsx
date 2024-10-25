@@ -89,6 +89,7 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
           return (
             <TabsContent className='pb-1' key={provider.key} value={provider.key}>
               <TorrentsTable
+                year={year}
                 title={title}
                 backdrop={backdrop}
                 sort={sort}

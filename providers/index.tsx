@@ -21,9 +21,9 @@ const Providers: FC<Props> = ({ children, theme }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>{children}</ThemeProvider>
-      <ModalContainer exitTimeout={500} enterTimeout={0} />
+      <ModalContainer exitTimeout={0} enterTimeout={0} />
       <Toaster />
-      <ReactQueryDevtools initialIsOpen={true} />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };

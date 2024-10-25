@@ -41,13 +41,17 @@ const Preview: FC<Props> = ({ show: baseShow, className, onClose, poster }) => {
 
         <div className='order-3 mb-4 flex w-full flex-wrap gap-5 whitespace-nowrap text-sm md:order-2'>
           <span>{new Date(show.release).getFullYear()}</span>
-          {show.runtime && <span>{show.runtime} minutes</span>}
-          <span>
-            {show.genres
-              ?.slice(0, 3)
-              .map(({ name }) => name)
-              .join(' | ')}
-          </span>
+          {Boolean(show.runtime) && (
+            <span className='animate-fade-aside-slide-in opacity-0'>{show.runtime} minutes</span>
+          )}
+          {Boolean(show.genres) && (
+            <span className='animate-fade-aside-slide-in opacity-0'>
+              {show.genres
+                ?.slice(0, 3)
+                .map(({ name }) => name)
+                .join(' | ')}
+            </span>
+          )}
         </div>
 
         <Actions className='order-1 mb-4 mt-1 md:order-2 md:mt-0' show={show} onClose={onClose} />
@@ -68,9 +72,9 @@ export const showPreviewModal = create(({ onResolve, onClose, show }: Props & In
     <Preview
       show={show}
       onClose={() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
         onClose?.();
         onResolve();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }}
     />
   </Modal>

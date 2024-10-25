@@ -1,9 +1,12 @@
 import { FC, Fragment } from 'react';
-import { Cast, Copy, ListVideo, Magnet, Play } from 'lucide-react';
+import { Cast, ListVideo, Magnet, Play } from 'lucide-react';
 
 import { Sort } from '@/api/parsers';
 import { Quality } from '@/api/parsers/yts/models';
+import { Button } from '@/components/ui/button';
+import ButtonsGroup from '@/components/ui/buttons-group';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 
 import { providers } from '../../constants';
 import { useCastMagnet, usePrefix } from '../../hooks/useMagnetHosts';
@@ -18,10 +21,11 @@ interface Props {
   sort: Sort;
   sortable: boolean;
   provider: string;
+  year: number;
   onChangeSort: (sort: Sort) => void;
 }
 
-const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, provider, onChangeSort }) => {
+const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, provider, year, onChangeSort }) => {
   const prefix = usePrefix();
   const cast = useCastMagnet();
 
@@ -31,7 +35,7 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
     <Table className='overflow-hidden rounded-xl'>
       {Boolean(torrents?.length) && (
         <TableHeader>
-          <TableRow>
+          <TableRow className='hover:bg-transparent'>
             <TableHead className='hidden px-2 md:table-cell'>Title</TableHead>
             <TableHead className='hidden px-2 md:table-cell'>Resolution</TableHead>
             <TableHeadSortable sortable={sortable} title='Size' sort={Sort.size} value={sort} onChange={onChangeSort} />
@@ -59,18 +63,20 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
 
           const supportedForCast = prefix && !prefix.includes('{host}');
 
+          const yearView = torrent.year && year.toString() != torrent.year && `[${torrent.year}]`;
+
           return (
             <Fragment key={torrent.magnet + torrent.id}>
-              <TableRow className='table-row border-b-0 md:hidden'>
+              <TableRow className='table-row border-b-0 hover:bg-transparent md:hidden'>
                 <TableCell className='break-all p-2' colSpan={colSpan}>
                   <span className='flex w-full flex-wrap items-center gap-3'>
-                    {torrent.title} {torrent.year && `[${torrent.year}]`} {torrent.quality && `[${torrent.quality}]`}
+                    {torrent.title} {yearView} {torrent.quality && `[${torrent.quality}]`}
                   </span>
                 </TableCell>
               </TableRow>
-              <TableRow>
+              <TableRow className='hover:bg-transparent'>
                 <TableCell className='hidden break-all p-2 md:table-cell' title={torrent.originalTitle}>
-                  {torrent.title} {torrent.year && `[${torrent.year}]`}{' '}
+                  {torrent.title} {yearView}{' '}
                   <span className='uppercase'>{torrent.source && `[${torrent.source}]`}</span>
                 </TableCell>
                 <TableCell className='hidden p-2 md:table-cell'>
@@ -81,48 +87,40 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
                 </TableCell>
                 <TableCell className='truncate p-2'>{torrent.seeders}</TableCell>
                 <TableCell className='p-1 pr-2 text-center'>
-                  <div className='no-scrollbar flex max-w-full justify-end gap-2 overflow-auto'>
+                  <ButtonsGroup className='ml-auto w-fit grow-0'>
                     {supportedForStream && (
-                      <div
-                        className='flex size-8 cursor-pointer items-center justify-center rounded-md border'
+                      <Button
+                        variant='destructive'
+                        className={cn('flex-grow-0 px-3 bg-red-600')}
                         onClick={() => showPlayer({ magnet: torrent.magnet, backdrop, title })}
-                        title='Play show'
+                        title='Play'
                       >
-                        <Play size={20} />
-                      </div>
+                        <Play size={15} />
+                      </Button>
                     )}
-                    <a
-                      href={`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(
-                        torrent.magnet
-                      )}`}
-                      className='flex size-8 items-center justify-center rounded-md border'
-                      title='Open using you native video player'
+                    <Button
+                      variant='outline'
+                      className='relative grow-0 px-3'
+                      title='Play using your native video player'
                     >
+                      <a
+                        className='absolute left-0 top-0 size-full'
+                        href={`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(
+                          torrent.magnet
+                        )}`}
+                      />
                       <ListVideo size={20} />
-                    </a>
-                    <a
-                      href={torrent.magnet}
-                      className='flex size-8 items-center justify-center rounded-md border'
-                      title='Download magnet'
-                    >
+                    </Button>
+                    <Button className='relative grow-0 px-3' variant='outline' title='Download magnet'>
+                      <a className='absolute left-0 top-0 size-full' href={torrent.magnet} />
                       <Magnet size={20} />
-                    </a>
-                    <div
-                      className='flex size-8 cursor-pointer items-center justify-center rounded-md border'
-                      onClick={() => navigator.clipboard.writeText(torrent.magnet)}
-                      title='Copy magnet into clipboard'
-                    >
-                      <Copy size={20} />
-                    </div>
+                    </Button>
                     {supportedForCast && (
-                      <div
-                        onClick={() => cast(torrent.magnet!)}
-                        className='flex size-8 cursor-pointer items-center justify-center rounded-md border'
-                      >
+                      <Button className='grow-0 px-3' variant='outline' onClick={() => cast(torrent.magnet!)}>
                         <Cast size={20} />
-                      </div>
+                      </Button>
                     )}
-                  </div>
+                  </ButtonsGroup>
                 </TableCell>
               </TableRow>
             </Fragment>
