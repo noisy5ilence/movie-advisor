@@ -1,14 +1,9 @@
 'use client';
 
-import { topMovies } from '@/api';
+import popularQuery from '@/api/queries/popular';
 import useInfiniteList from '@/hooks/useInfiniteList';
 
 const useStarring = ({ actorId }: { actorId?: string }) =>
-  useInfiniteList({
-    suspense: true,
-    queryKey: ['starring', actorId],
-    enabled: Boolean(actorId),
-    queryFn: ({ page }) => topMovies({ page, starring: actorId })
-  });
+  useInfiniteList(popularQuery({ sortBy: 'vote_average.desc', starring: actorId }));
 
 export default useStarring;

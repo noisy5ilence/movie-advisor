@@ -1,25 +1,19 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { account } from '@/api';
 import { useSession } from '@/hooks/useSession';
-
-const KEY = ['account'];
+import accountQuery from '@/api/queries/account';
 
 const useAccount = () => {
   const queryClient = useQueryClient();
   const session = useSession();
 
-  const query = useQuery({
-    enabled: Boolean(session),
-    staleTime: Infinity,
-    notifyOnChangeProps: ['data'],
-    queryKey: KEY,
-    queryFn: () => account()
-  });
+  const options = accountQuery({ session });
+
+  const query = useQuery(options);
 
   if (session === null) {
-    queryClient.removeQueries({ queryKey: KEY });
-    queryClient.resetQueries({ queryKey: KEY });
+    queryClient.removeQueries({ queryKey: options.queryKey });
+    queryClient.resetQueries({ queryKey: options.queryKey });
   }
 
   return session ? query.data : undefined;

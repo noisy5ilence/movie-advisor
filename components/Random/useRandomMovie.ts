@@ -3,7 +3,7 @@
 import { startTransition, useCallback } from 'react';
 import { atom, getDefaultStore, useAtom } from 'jotai';
 
-import { randomMovies } from '@/api';
+import randomQuery from '@/api/queries/random';
 import useInfiniteList from '@/hooks/useInfiniteList';
 
 const indexAtom = atom(0);
@@ -13,11 +13,7 @@ export const useSilentIndex = () => getDefaultStore().get(indexAtom);
 const useRandomMovie = () => {
   const [index, setIndex] = useAtom(indexAtom);
 
-  const { shows: movies, fetchNextPage } = useInfiniteList({
-    suspense: true,
-    queryKey: ['random-movie'],
-    queryFn: randomMovies
-  });
+  const { shows: movies, fetchNextPage } = useInfiniteList(randomQuery());
 
   if (movies.length && !movies[index]) {
     setIndex(0);

@@ -5,7 +5,7 @@ interface Props {
   suspense?: boolean;
   queryKey: QueryKey;
   enabled?: boolean;
-  queryFn: ({ page }: { page: string }) => Promise<Pagination<Show>>;
+  queryFn: ({ pageParam }: { pageParam: string }) => Promise<Pagination<Show>>;
 }
 
 const useInfiniteList = ({ queryKey, queryFn, enabled, suspense }: Props) => {
@@ -14,7 +14,7 @@ const useInfiniteList = ({ queryKey, queryFn, enabled, suspense }: Props) => {
   )({
     enabled,
     queryKey,
-    queryFn: ({ pageParam }) => queryFn({ page: pageParam }),
+    queryFn: ({ pageParam }) => queryFn({ pageParam }),
     getNextPageParam(pagination) {
       if (!pagination || pagination.page === pagination.total) return undefined;
 

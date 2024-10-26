@@ -1,7 +1,10 @@
 type Search = Record<string, string | number | boolean | null | undefined>;
 
 class Http {
-  private readonly base = 'https://api.themoviedb.org/3';
+  constructor(
+    private base: string,
+    private authorization?: string
+  ) {}
 
   private async request<T, B = unknown>({
     method,
@@ -31,7 +34,7 @@ class Http {
       const response = await fetch(`${base}${url}?${serializedParams}`, {
         method,
         headers: {
-          Authorization: `Bearer ${process.env.MOVIE_DB_TOKEN}`,
+          Authorization: this.authorization || '',
           'Content-Type': 'application/json'
         },
         body: body ? JSON.stringify(body) : undefined,
@@ -82,6 +85,4 @@ class Http {
   }
 }
 
-const http = new Http();
-
-export default http;
+export default Http;

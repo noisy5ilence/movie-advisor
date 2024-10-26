@@ -1,6 +1,6 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
-import { topMovies } from '@/api';
+import popularQuery from '@/api/queries/popular';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
@@ -10,11 +10,7 @@ const Starring = ({ searchParams }: { searchParams: Record<string, string> }) =>
 
   const { actorId } = searchParams || {};
 
-  queryClient.prefetchInfiniteQuery({
-    queryKey: ['starring', actorId],
-    queryFn: () => topMovies({ starring: actorId }),
-    initialPageParam: '1'
-  });
+  queryClient.prefetchInfiniteQuery(popularQuery({ sortBy: 'vote_average.desc', starring: actorId }));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

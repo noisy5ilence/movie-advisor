@@ -1,6 +1,6 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
-import { similarShows } from '@/api';
+import similarQuery from '@/api/queries/similar';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
@@ -10,11 +10,7 @@ const Similar = ({ searchParams }: { searchParams: Record<string, string> }) => 
 
   const { id, type } = searchParams || {};
 
-  queryClient.prefetchInfiniteQuery({
-    queryKey: ['similar', id, type],
-    queryFn: () => similarShows({ showId: id, showType: type as Show['type'] }),
-    initialPageParam: '1'
-  });
+  queryClient.prefetchInfiniteQuery(similarQuery({ showId: id, showType: type as Show['type'] }));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -1,13 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { popularByType, trendingMovies } from '@/api';
+import trendingQuery, { TrendingQueryProps } from '@/api/queries/trending';
 
-const useTrending = ({ type, enabled }: { enabled?: boolean; type: 'trending' | 'streaming' | 'theater' | 'rent' }) => {
-  return useQuery({
-    enabled,
-    queryKey: ['trending', type],
-    queryFn: () => (type === 'trending' ? trendingMovies() : popularByType({ type }))
-  });
-};
+const useTrending = ({ type }: TrendingQueryProps) => useQuery(trendingQuery({ type }));
 
 export default useTrending;

@@ -1,8 +1,8 @@
 'use client';
 
-import { popularMovies } from '@/api';
+import popularQuery from '@/api/queries/popular';
 import useInfiniteList from '@/hooks/useInfiniteList';
 
-const usePopular = () => useInfiniteList({ suspense: true, queryKey: ['popular'], queryFn: popularMovies });
+const usePopular = () => useInfiniteList(popularQuery());
 
 export default usePopular;

@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
 
-import { topMovies } from '@/api';
+import popularQuery from '@/api/queries/popular';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
@@ -15,11 +15,7 @@ export const metadata: Metadata = {
 const Top = () => {
   const queryClient = getQueryClient();
 
-  queryClient.prefetchInfiniteQuery({
-    queryKey: ['top'],
-    queryFn: () => topMovies(),
-    initialPageParam: '1'
-  });
+  queryClient.prefetchInfiniteQuery(popularQuery({ sortBy: 'vote_average.desc' }));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

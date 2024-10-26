@@ -1,22 +1,18 @@
 import { useRef } from 'react';
 
-import { search } from '@/api';
+import searchQuery, { SearchQueryProps } from '@/api/queries/search';
 import useInfiniteList from '@/hooks/useInfiniteList';
 
-const useSearch = ({ query, type }: { query: string; type: Show['type'] }) => {
+const useSearch = (props: SearchQueryProps) => {
   const previousRef = useRef<Show[]>([]);
 
-  const infiniteQuery = useInfiniteList({
-    queryKey: ['search', query, type],
-    queryFn: ({ page }) => search({ query, page, type }),
-    enabled: Boolean(query)
-  });
+  const infiniteQuery = useInfiniteList(searchQuery(props));
 
   if (infiniteQuery.isFetched) {
     previousRef.current = infiniteQuery.shows;
   }
 
-  if (!query) {
+  if (!props.query) {
     previousRef.current = [];
   }
 
