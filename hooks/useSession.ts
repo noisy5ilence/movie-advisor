@@ -1,6 +1,6 @@
+import { useCallback } from 'react';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import Cookies from 'js-cookie';
-import { useCallback } from 'react';
 
 const sessionAtom = atom<string | null>(Cookies.get('session') as string);
 

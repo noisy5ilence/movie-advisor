@@ -6,8 +6,11 @@ import { YTSResponse } from './models';
 
 export class YTS {
   private client: AxiosInstance;
+  private host: string;
 
-  constructor(private host: string = process.env.YTS_HOST || 'https://yts.mx/api/v2/list_movies.json') {
+  constructor() {
+    this.host = process.env.YTS_HOST || 'https://yts.mx/api/v2/list_movies.json';
+
     this.client = axios.create({
       baseURL: this.host
     });

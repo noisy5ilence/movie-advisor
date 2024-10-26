@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
+import { ArrowDownIcon } from 'lucide-react';
 
 import { Sort } from '@/api/parsers';
 import { TableHead } from '@/components/ui/table';
@@ -21,8 +21,7 @@ const TableHeadSortable: FC<Props> = ({ title, sort, value, sortable, className,
     <TableHead onClick={handleSort} className={cn('select-none px-2', sortable && 'cursor-pointer', className)}>
       <div className='flex items-center gap-1'>
         <span>{title}</span>
-        {sortable &&
-          (sort === value ? <ArrowDownIcon className='ml-2 size-4' /> : <ArrowUpIcon className='ml-2 size-4' />)}
+        {sortable && sort === value && <ArrowDownIcon className='ml-2 size-4 shrink-0' />}
       </div>
     </TableHead>
   );

@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 import { createUniqueRandomGenerator } from '@/lib/utils';
 
 import mapMoviesSeriesResponseToShows, { mapMovieSeriesToShow } from './dto/Show';
-import toloka from './parsers/toloka';
+import tlk from './parsers/tlk';
 import http from './Http';
 
 const session = () => cookies().get('session')?.value;
@@ -235,4 +235,4 @@ export const credits = async ({
     });
 };
 
-export const fetchTLKMagnet = async (url: string) => toloka.magnet(url);
+export const fetchTLKMagnet = async (url: string) => tlk.magnet(url);

@@ -124,7 +124,7 @@ interface Torrent {
   title: string;
   originalTitle?: string;
   seeders: number;
-  size: string;
+  size?: string;
   magnet: string;
   quality?: string;
   source?: string;
