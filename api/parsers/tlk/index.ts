@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from 'axios';
-import parseTorrent from 'parse-torrent';
 import torrentTitle from 'parse-torrent-title';
 import { load } from 'cheerio';
 
@@ -15,8 +14,6 @@ export class Toloka {
     [Sort.size]: 7,
     [Sort.seeds]: 10
   };
-
-  private magnets: Record<string, string> = {};
 
   cookieJar = new CookieJar();
 
@@ -64,6 +61,8 @@ export class Toloka {
           const seeders = $(row).find('td:nth-child(10)').text();
           const download = $(row).find('td:nth-child(6) a').attr('href');
 
+          const sid = this.cookieJar.toJSON()?.cookies.find(({ key }) => key === 'toloka_sid')?.value;
+
           const { year, source, codec, container, title, season, episode, resolution } = torrentTitle.parse(
             originalTitle || ''
           );
@@ -80,7 +79,7 @@ export class Toloka {
             seeders: parseInt(seeders || '0'),
             quality: resolution,
             magnet: '',
-            download
+            download: sid ? `${this.host}/${download}&sid=${sid}` : ''
           };
         })
         .get();
@@ -95,24 +94,6 @@ export class Toloka {
     page = await fetchPage();
 
     return parseTorrents(page.data);
-  }
-
-  async magnet(url: string): Promise<string> {
-    if (this.magnets[url]) return this.magnets[url];
-
-    const { data } = await this.client.get(`/${url}`, {
-      responseType: 'arraybuffer'
-    });
-
-    const torrent = await parseTorrent(data);
-
-    const magnet = `magnet:?xt=urn:btih:${torrent.infoHash}&dn=${encodeURIComponent(
-      torrent.name as string
-    )}&tr=${torrent.announce?.join('&tr=')}`;
-
-    this.magnets[url] = magnet;
-
-    return magnet;
   }
 }
 

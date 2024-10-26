@@ -10,8 +10,6 @@ import { providers } from '../../../../constants';
 import { useCastMagnet, usePrefix } from '../../../../hooks/useMagnetHosts';
 import showPlayer from '../../../Player';
 
-import useMagnet from './useMagnet';
-
 interface Props {
   torrent: Torrent;
   backdrop: string;
@@ -22,7 +20,6 @@ interface Props {
 const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
   const prefix = usePrefix();
   const cast = useCastMagnet();
-  const { mutateAsync, isPending } = useMagnet();
 
   const supportedForStream = Boolean(
     (provider === providers.yts.key &&
@@ -33,55 +30,37 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
 
   const supportedForCast = prefix && !prefix.includes('{host}');
 
-  const prefetchMagnet = (handler: (magnet: string) => void) => () => {
-    if (!torrent.download) return handler(torrent.magnet);
-
-    return mutateAsync(torrent.download).then((magnet) => {
-      console.log('magnet', magnet);
-      return handler(magnet);
-    });
-  };
-
   return (
     <ButtonsGroup className='ml-auto w-fit grow-0'>
       {supportedForStream && (
         <Button
-          disabled={isPending}
           variant='destructive'
           className={cn('flex-grow-0 px-3 bg-red-600')}
-          onClick={prefetchMagnet((magnet) => showPlayer({ magnet, backdrop, title }))}
+          onClick={() => showPlayer({ magnet: torrent.download || torrent.magnet, backdrop, title })}
           title='Play'
         >
           <Play size={15} />
         </Button>
       )}
-      <Button
-        disabled={isPending}
-        variant='outline'
-        className='relative grow-0 px-3'
-        title='Play using your native video player'
-        onClick={prefetchMagnet((magnet) => {
-          window.open(`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(magnet)}`);
-        })}
-      >
+      <Button variant='outline' className='relative grow-0 px-3' title='Play using your native video player'>
+        <a
+          className='absolute left-0 top-0 size-full'
+          href={`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(
+            torrent.download || torrent.magnet
+          )}`}
+        />
         <ListVideo size={20} />
       </Button>
       <Button
-        disabled={isPending}
         className='relative grow-0 px-3'
         variant='outline'
-        onClick={prefetchMagnet((magnet) => window.open(magnet))}
-        title='Download magnet'
+        title={`Download ${torrent.download ? 'torrent' : 'magnet'}`}
       >
+        <a className='absolute left-0 top-0 size-full' href={torrent.download || torrent.magnet} />
         <Magnet size={20} />
       </Button>
       {supportedForCast && (
-        <Button
-          disabled={isPending}
-          className='grow-0 px-3'
-          variant='outline'
-          onClick={prefetchMagnet((magnet) => cast(magnet))}
-        >
+        <Button className='grow-0 px-3' variant='outline' onClick={() => cast(torrent.download || torrent.magnet)}>
           <Cast size={20} />
         </Button>
       )}

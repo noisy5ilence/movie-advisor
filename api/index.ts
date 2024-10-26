@@ -234,5 +234,3 @@ export const credits = async ({
         });
     });
 };
-
-export const fetchTLKMagnet = async (url: string) => tlk.magnet(url);
