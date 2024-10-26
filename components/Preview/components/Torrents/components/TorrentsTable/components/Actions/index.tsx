@@ -36,7 +36,10 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
   const prefetchMagnet = (handler: (magnet: string) => void) => () => {
     if (!torrent.download) return handler(torrent.magnet);
 
-    return mutateAsync(torrent.download).then((magnet) => handler(magnet));
+    return mutateAsync(torrent.download).then((magnet) => {
+      console.log('magnet', magnet);
+      return handler(magnet);
+    });
   };
 
   return (
