@@ -23,7 +23,9 @@ const Header: FC<Props> = ({ className }) => (
     <div className='container'>
       <div className='flex items-center justify-between gap-2 xs:flex-nowrap'>
         <Link shallow href='/'>
-          <Badge className='cursor-pointer whitespace-nowrap font-normal'>Movie advisor</Badge>
+          <Badge className='cursor-pointer whitespace-nowrap text-[15px] font-normal leading-[18px]'>
+            Movie advisor
+          </Badge>
         </Link>
         <DesktopNavigation />
         <div className='flex items-center gap-2'>

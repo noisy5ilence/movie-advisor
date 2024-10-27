@@ -50,7 +50,7 @@ const Actions = ({ onClose, show, className }: Props) => {
           <Bookmark size={14} className={cn({ 'fill-secondary-foreground': state?.watchlist })} />
         </Button>
       </ButtonsGroup>
-      <ButtonsGroup className='gap-0'>
+      <ButtonsGroup>
         <Button
           onClick={() => {
             onClose?.();
@@ -64,7 +64,10 @@ const Actions = ({ onClose, show, className }: Props) => {
         </Button>
         <Button
           aria-label='Watch'
-          className={cn({ 'bg-red-600': theme === 'light', 'bg-red-700': theme === 'dark' })}
+          className={cn('hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600', {
+            'bg-red-600': theme === 'light',
+            'bg-red-700': theme === 'dark'
+          })}
           variant='destructive'
           onClick={() =>
             showTorrentsModal({

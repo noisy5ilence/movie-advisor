@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Cast, ChevronLeft,ListVideo, Magnet, Play } from 'lucide-react';
+import { Cast, Download, ListVideo, Loader, Magnet, Play } from 'lucide-react';
 
 import { Quality } from '@/api/parsers/yts/models';
 import { Button } from '@/components/ui/button';
@@ -36,44 +36,57 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
 
   const supportedForCast = prefix && !prefix.includes('{host}');
 
-  if (!magnet)
-    return (
-      <ButtonsGroup className='ml-auto justify-end bg-transparent'>
-        <Button className='grow-0 px-2' disabled={fetchMagnet.isPending} onClick={() => fetchMagnet.mutate()}>
-          <ChevronLeft size={15} />
-        </Button>
-      </ButtonsGroup>
-    );
-
   return (
-    <ButtonsGroup className='ml-auto w-fit grow-0'>
-      {supportedForStream && (
+    <div className='relative ml-auto w-fit grow-0'>
+      <ButtonsGroup>
+        {supportedForStream && (
+          <Button
+            variant='destructive'
+            className={cn(
+              'flex-grow-0 px-3 bg-red-600',
+              'hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600'
+            )}
+            onClick={() => showPlayer({ magnet, backdrop, title })}
+            title='Play'
+          >
+            <Play size={15} />
+          </Button>
+        )}
+        <Button variant='outline' className='relative grow-0 px-3' title='Download m3u playlist'>
+          <a
+            className='absolute left-0 top-0 size-full'
+            href={`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(magnet)}`}
+          />
+          <ListVideo size={20} />
+        </Button>
+        <Button className='relative grow-0 px-3' variant='outline' title='Download magnet'>
+          <a className='absolute left-0 top-0 size-full' href={magnet} />
+          <Magnet size={20} />
+        </Button>
+        {supportedForCast && (
+          <Button className='grow-0 px-3' variant='outline' onClick={() => cast(magnet)}>
+            <Cast size={20} />
+          </Button>
+        )}
+      </ButtonsGroup>
+      {!magnet && (
         <Button
-          variant='destructive'
-          className={cn('flex-grow-0 px-3 bg-red-600')}
-          onClick={() => showPlayer({ magnet, backdrop, title })}
-          title='Play'
+          title='Fetch files'
+          variant='outline'
+          disabled={fetchMagnet.isPending}
+          onClick={() => fetchMagnet.mutate()}
+          className={cn('z-10 h-8 absolute size-full left-0 top-0 rounded-md disabled:opacity-100')}
         >
-          <Play size={15} />
+          {fetchMagnet.isPending ? (
+            <div className='animate-spin'>
+              <Loader size={18} />
+            </div>
+          ) : (
+            <Download size={18} />
+          )}
         </Button>
       )}
-      <Button variant='outline' className='relative grow-0 px-3' title='Play using your native video player'>
-        <a
-          className='absolute left-0 top-0 size-full'
-          href={`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(magnet)}`}
-        />
-        <ListVideo size={20} />
-      </Button>
-      <Button className='relative grow-0 px-3' variant='outline' title='Download magnet'>
-        <a className='absolute left-0 top-0 size-full' href={magnet} />
-        <Magnet size={20} />
-      </Button>
-      {supportedForCast && (
-        <Button className='grow-0 px-3' variant='outline' onClick={() => cast(magnet)}>
-          <Cast size={20} />
-        </Button>
-      )}
-    </ButtonsGroup>
+    </div>
   );
 };
 
