@@ -1,5 +1,7 @@
 import { Sort } from '@/api/parsers';
 
+export const STREAM_URL = `${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?link=`;
+
 type Options = { query: string; sort: Sort; imdbID: string };
 
 const queryFn = ({ query, sort, imdbID, key }: Options & { key: keyof typeof providers }) =>

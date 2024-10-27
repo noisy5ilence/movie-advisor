@@ -1,10 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { STREAM_URL as BASE_STREAM_URL } from '../../constants';
+
 export type Source = { name: string; src: string; type: string };
 type Sources = { subtitles: Source[]; videos: Source[] };
 
 const useFiles = (magnet: string) => {
-  const STREAM_URL = `${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?link=${encodeURIComponent(magnet)}`;
+  const STREAM_URL = `${BASE_STREAM_URL}${encodeURIComponent(magnet)}`;
 
   const query = useQuery<Stream>({
     queryKey: ['files', magnet],

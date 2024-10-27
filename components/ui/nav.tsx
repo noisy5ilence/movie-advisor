@@ -46,7 +46,7 @@ function Nav<T extends Tab>({ tabs, active, className, children, onChange }: Nav
             key={title}
             ref={isActive ? currentRef : undefined}
             onClick={() => onChange?.(tab)}
-            className={cn('z-10 px-2.5 py-0.5 font-normal cursor-pointer', {
+            className={cn('z-10 px-2.5 py-0.5 font-normal text-[15px] leading-[20px] cursor-pointer', {
               'cursor-default text-secondary': isActive,
               'mix-blend-difference text-white': !transitionEnded
             })}

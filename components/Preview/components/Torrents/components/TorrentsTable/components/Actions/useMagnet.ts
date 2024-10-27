@@ -1,9 +1,20 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { fetchTLKMagnet } from '@/api';
+const useMagnet = (torrent: Torrent) => {
+  return useMutation({
+    retry: 4,
+    mutationFn: async () => {
+      try {
+        const response = await fetch(`/api/magnet?url=${torrent.download}`);
 
-const useMagnet = () => {
-  return useMutation({ mutationFn: fetchTLKMagnet });
+        if (!response.ok) return Promise.reject();
+
+        return response.json();
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    }
+  });
 };
 
 export default useMagnet;

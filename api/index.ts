@@ -3,7 +3,6 @@
 import { cookies } from 'next/headers';
 
 import mapMoviesSeriesResponseToShows from './dto/Show';
-import tlk from './parsers/tlk';
 import http from './clients/theMovieDb';
 
 export const session = () => cookies().get('session')?.value;
@@ -74,5 +73,3 @@ export const usersShows = async ({
     })
     .then((response) => mapMoviesSeriesResponseToShows(response, showType));
 };
-
-export const fetchTLKMagnet = async (url: string) => tlk.magnet(url);

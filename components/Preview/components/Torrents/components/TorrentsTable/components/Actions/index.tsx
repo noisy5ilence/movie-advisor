@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Cast, ListVideo, Magnet, Play } from 'lucide-react';
+import { Cast, Download, ListVideo, Loader, Magnet, Play } from 'lucide-react';
 
 import { Quality } from '@/api/parsers/yts/models';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,6 @@ interface Props {
 const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
   const prefix = usePrefix();
   const cast = useCastMagnet();
-  const { mutateAsync, isPending } = useMagnet();
 
   const supportedForStream = Boolean(
     (provider === providers.yts.key &&
@@ -31,58 +30,63 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
       torrent.container?.includes('mp4')
   );
 
+  const fetchMagnet = useMagnet(torrent);
+
+  const magnet = fetchMagnet.data || torrent.magnet;
+
   const supportedForCast = prefix && !prefix.includes('{host}');
 
-  const prefetchMagnet = (handler: (magnet: string) => void) => () => {
-    if (!torrent.download) return handler(torrent.magnet);
-
-    return mutateAsync(torrent.download).then((magnet) => handler(magnet));
-  };
-
   return (
-    <ButtonsGroup className='ml-auto w-fit grow-0'>
-      {supportedForStream && (
-        <Button
-          disabled={isPending}
-          variant='destructive'
-          className={cn('flex-grow-0 px-3 bg-red-600')}
-          onClick={prefetchMagnet((magnet) => showPlayer({ magnet, backdrop, title }))}
-          title='Play'
-        >
-          <Play size={15} />
+    <div className='relative ml-auto w-fit grow-0'>
+      <ButtonsGroup>
+        {supportedForStream && (
+          <Button
+            variant='destructive'
+            className={cn(
+              'flex-grow-0 px-3 bg-red-600',
+              'hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600'
+            )}
+            onClick={() => showPlayer({ magnet, backdrop, title })}
+            title='Play'
+          >
+            <Play size={15} />
+          </Button>
+        )}
+        <Button variant='outline' className='relative grow-0 px-3' title='Download m3u playlist'>
+          <a
+            className='absolute left-0 top-0 size-full'
+            href={`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(magnet)}`}
+          />
+          <ListVideo size={20} />
         </Button>
-      )}
-      <Button
-        disabled={isPending}
-        variant='outline'
-        className='relative grow-0 px-3'
-        title='Play using your native video player'
-        onClick={prefetchMagnet((magnet) => {
-          window.open(`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(magnet)}`);
-        })}
-      >
-        <ListVideo size={20} />
-      </Button>
-      <Button
-        disabled={isPending}
-        className='relative grow-0 px-3'
-        variant='outline'
-        onClick={prefetchMagnet((magnet) => window.open(magnet))}
-        title='Download magnet'
-      >
-        <Magnet size={20} />
-      </Button>
-      {supportedForCast && (
+        <Button className='relative grow-0 px-3' variant='outline' title='Download magnet'>
+          <a className='absolute left-0 top-0 size-full' href={magnet} />
+          <Magnet size={20} />
+        </Button>
+        {supportedForCast && (
+          <Button className='grow-0 px-3' variant='outline' onClick={() => cast(magnet)}>
+            <Cast size={20} />
+          </Button>
+        )}
+      </ButtonsGroup>
+      {!magnet && (
         <Button
-          disabled={isPending}
-          className='grow-0 px-3'
+          title='Fetch files'
           variant='outline'
-          onClick={prefetchMagnet((magnet) => cast(magnet))}
+          disabled={fetchMagnet.isPending}
+          onClick={() => fetchMagnet.mutate()}
+          className={cn('z-10 h-8 absolute size-full left-0 top-0 rounded-md disabled:opacity-100')}
         >
-          <Cast size={20} />
+          {fetchMagnet.isPending ? (
+            <div className='animate-spin'>
+              <Loader size={18} />
+            </div>
+          ) : (
+            <Download size={18} />
+          )}
         </Button>
       )}
-    </ButtonsGroup>
+    </div>
   );
 };
 

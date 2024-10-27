@@ -4,7 +4,7 @@ import { atomWithStorage } from 'jotai/utils';
 
 import showHostManagerModal from '@/components/Preview/components/Torrents/components/HostManager';
 
-const magnetPrefixAtom = atomWithStorage<string>('magnet-prefix', 'http://{host}:65220/playuri?uri=', undefined, {
+const magnetPrefixAtom = atomWithStorage<string>('magnet-prefix', 'http://{host}:9090/magnet?magnet=', undefined, {
   unstable_getOnInit: true
 });
 
