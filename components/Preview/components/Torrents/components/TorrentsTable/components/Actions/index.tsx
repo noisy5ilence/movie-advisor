@@ -4,11 +4,14 @@ import { Cast, ListVideo, Magnet, Play } from 'lucide-react';
 import { Quality } from '@/api/parsers/yts/models';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
+import { toast, useToast } from '@/hooks/useToast';
 import { cn } from '@/lib/utils';
 
 import { providers } from '../../../../constants';
 import { useCastMagnet, usePrefix } from '../../../../hooks/useMagnetHosts';
 import showPlayer from '../../../Player';
+
+import useMagnet from './useMagnet';
 
 interface Props {
   torrent: Torrent;
@@ -21,12 +24,16 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
   const prefix = usePrefix();
   const cast = useCastMagnet();
 
+  const { toast } = useToast();
+
   const supportedForStream = Boolean(
     (provider === providers.yts.key &&
       torrent.seeders &&
       [Quality.The1080P, Quality.The720P].includes(torrent.quality as Quality)) ||
       torrent.container?.includes('mp4')
   );
+
+  const magnet = useMagnet(torrent);
 
   const supportedForCast = prefix && !prefix.includes('{host}');
 
@@ -42,6 +49,14 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
           <Play size={15} />
         </Button>
       )}
+      <Button
+        variant='outline'
+        className='relative grow-0 px-3'
+        disabled={magnet.isPending}
+        onClick={() => magnet.mutateAsync().then((magnet) => toast({ description: magnet }))}
+      >
+        Get magnet
+      </Button>
       <Button variant='outline' className='relative grow-0 px-3' title='Play using your native video player'>
         <a
           className='absolute left-0 top-0 size-full'
