@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
-import { Poppins } from 'next/font/google';
+import { Jost } from 'next/font/google';
 import { cookies } from 'next/headers';
 
 import Header from '@/components/Header';
@@ -20,7 +20,7 @@ export const viewport: Viewport = {
   width: 'device-width'
 };
 
-const font = Poppins({ subsets: ['latin'], weight: ['400', '500'] });
+const font = Jost({ subsets: ['latin', 'cyrillic'], weight: ['400'] });
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
   const theme = cookies().get('theme')?.value as Theme;
