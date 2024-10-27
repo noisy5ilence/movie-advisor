@@ -7,8 +7,7 @@ export async function GET({ nextUrl: { searchParams } }: NextRequest) {
 
   try {
     return NextResponse.json(await tlk.magnet(url));
-  } catch (_) {
-    console.log('error', _);
-    return NextResponse.json([]);
+  } catch (error) {
+    return NextResponse.error();
   }
 }

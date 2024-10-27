@@ -1,10 +1,9 @@
 import { FC } from 'react';
-import { Cast, ListVideo, Magnet, Play } from 'lucide-react';
+import { Cast, ChevronLeft,ListVideo, Magnet, Play } from 'lucide-react';
 
 import { Quality } from '@/api/parsers/yts/models';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
-import { toast, useToast } from '@/hooks/useToast';
 import { cn } from '@/lib/utils';
 
 import { providers } from '../../../../constants';
@@ -24,8 +23,6 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
   const prefix = usePrefix();
   const cast = useCastMagnet();
 
-  const { toast } = useToast();
-
   const supportedForStream = Boolean(
     (provider === providers.yts.key &&
       torrent.seeders &&
@@ -33,9 +30,20 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
       torrent.container?.includes('mp4')
   );
 
-  const magnet = useMagnet(torrent);
+  const fetchMagnet = useMagnet(torrent);
+
+  const magnet = fetchMagnet.data || torrent.magnet;
 
   const supportedForCast = prefix && !prefix.includes('{host}');
+
+  if (!magnet)
+    return (
+      <ButtonsGroup className='ml-auto justify-end bg-transparent'>
+        <Button className='grow-0 px-2' disabled={fetchMagnet.isPending} onClick={() => fetchMagnet.mutate()}>
+          <ChevronLeft size={15} />
+        </Button>
+      </ButtonsGroup>
+    );
 
   return (
     <ButtonsGroup className='ml-auto w-fit grow-0'>
@@ -43,39 +51,25 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
         <Button
           variant='destructive'
           className={cn('flex-grow-0 px-3 bg-red-600')}
-          onClick={() => showPlayer({ magnet: torrent.download || torrent.magnet, backdrop, title })}
+          onClick={() => showPlayer({ magnet, backdrop, title })}
           title='Play'
         >
           <Play size={15} />
         </Button>
       )}
-      <Button
-        variant='outline'
-        className='relative grow-0 px-3'
-        disabled={magnet.isPending}
-        onClick={() => magnet.mutateAsync().then((magnet) => toast({ description: magnet }))}
-      >
-        Get magnet
-      </Button>
       <Button variant='outline' className='relative grow-0 px-3' title='Play using your native video player'>
         <a
           className='absolute left-0 top-0 size-full'
-          href={`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(
-            torrent.download || torrent.magnet
-          )}`}
+          href={`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(magnet)}`}
         />
         <ListVideo size={20} />
       </Button>
-      <Button
-        className='relative grow-0 px-3'
-        variant='outline'
-        title={`Download ${torrent.download ? 'torrent' : 'magnet'}`}
-      >
-        <a className='absolute left-0 top-0 size-full' href={torrent.download || torrent.magnet} />
+      <Button className='relative grow-0 px-3' variant='outline' title='Download magnet'>
+        <a className='absolute left-0 top-0 size-full' href={magnet} />
         <Magnet size={20} />
       </Button>
       {supportedForCast && (
-        <Button className='grow-0 px-3' variant='outline' onClick={() => cast(torrent.download || torrent.magnet)}>
+        <Button className='grow-0 px-3' variant='outline' onClick={() => cast(magnet)}>
           <Cast size={20} />
         </Button>
       )}

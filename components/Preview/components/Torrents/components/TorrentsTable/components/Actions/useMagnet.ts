@@ -2,8 +2,18 @@ import { useMutation } from '@tanstack/react-query';
 
 const useMagnet = (torrent: Torrent) => {
   return useMutation({
-    mutationFn: async () =>
-      torrent.magnet ? torrent.magnet : fetch(`/api/magnet?url=${torrent.download}`).then((response) => response.json())
+    retry: 4,
+    mutationFn: async () => {
+      try {
+        const response = await fetch(`/api/magnet?url=${torrent.download}`);
+
+        if (!response.ok) return Promise.reject();
+
+        return response.json();
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    }
   });
 };
 
