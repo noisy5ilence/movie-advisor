@@ -1,7 +1,7 @@
-import { MOVIE_DB_TOKEN } from '@/env';
+import { MOVIE_DB_API_URL, MOVIE_DB_TOKEN } from '@/env';
 
 import Http from './Http';
 
-const theMovieDb = new Http('https://api.themoviedb.org/3', `Bearer ${MOVIE_DB_TOKEN}`);
+const theMovieDB = new Http(MOVIE_DB_API_URL, `Bearer ${MOVIE_DB_TOKEN}`);
 
-export default theMovieDb;
+export default theMovieDB;

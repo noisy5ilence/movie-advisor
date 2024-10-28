@@ -1,13 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import statesMutation from '@/data/mutations/accountStates';
+import statesQuery from '@/data/queries/accountStates';
 import { KEY as USERS_SHOWS_KEY } from '@/data/queries/usersShows';
-
-import { accountStates, updateAccountStates } from '../data';
 
 import { useFavorites, useFavoritesStateToggle, useWatchList, useWatchListStateToggle } from './useLocalUsersLists';
 import { useSession } from './useSession';
-
-const KEY = ['show-state'];
 
 const useShowState = ({ showId, showType = 'movie' }: { showId?: Show['id']; showType?: Show['type'] }) => {
   const session = useSession();
@@ -15,13 +13,7 @@ const useShowState = ({ showId, showType = 'movie' }: { showId?: Show['id']; sho
   const { map: favorites } = useFavorites();
   const { map: watchList } = useWatchList();
 
-  const query = useQuery({
-    enabled: Boolean(session && showId && showType),
-    queryKey: KEY.concat(showId!.toString(), showType),
-    queryFn: () => accountStates({ showId: showId!, showType }),
-    notifyOnChangeProps: ['data'],
-    staleTime: Infinity
-  });
+  const query = useQuery(statesQuery({ showId, showType, session }));
 
   return session ? query.data : { id: showId, watchlist: watchList.has(showId!), favorite: favorites.has(showId!) };
 };
@@ -35,9 +27,9 @@ export const useMutateShowState = (show: Show) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: updateAccountStates,
+    ...statesMutation({ session }),
     onMutate({ showId, showType, list, value }) {
-      const key = KEY.concat(showId.toString(), showType);
+      const key = statesQuery({ showId, showType, session }).queryKey;
 
       const snapshot = queryClient.getQueryData<ShowState>(key);
 
@@ -46,7 +38,7 @@ export const useMutateShowState = (show: Show) => {
       return snapshot;
     },
     onError(_, { showId, showType }, snapshot) {
-      const key = KEY.concat(showId.toString(), showType);
+      const key = statesQuery({ showId, showType, session }).queryKey;
 
       queryClient.setQueryData<ShowState>(key, snapshot);
     },

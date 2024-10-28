@@ -5,7 +5,10 @@ const BASE =
     ? process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL
     : process.env.NEXT_PUBLIC_VERCEL_URL;
 export const SITE_URL = `${BASE?.startsWith('http') ? BASE : `https://${BASE}`}`;
+
 export const MOVIE_DB_TOKEN = process.env.MOVIE_DB_TOKEN;
+export const MOVIE_DB_API_URL = process.env.MOVIE_DB_API_URL || 'https://api.themoviedb.org/3';
+
 export const STREAM_URL = `${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream`;
 
 export const TOLOKA_HOST = process.env.TOLOKA_HOST;

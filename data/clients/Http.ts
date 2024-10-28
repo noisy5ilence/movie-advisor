@@ -1,3 +1,7 @@
+import { isServer } from '@tanstack/react-query';
+
+import { SITE_URL } from '@/env';
+
 type Search = Record<string, string | number | boolean | null | undefined>;
 
 class Http {
