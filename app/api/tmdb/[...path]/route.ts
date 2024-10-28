@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { MOVIE_DB_TOKEN } from '@/env';
+
 type TMDBParams = {
   params: {
     path: string[];
@@ -11,7 +13,7 @@ export async function GET({ nextUrl: { searchParams } }: NextRequest, { params: 
     const response = await fetch(`https://api.themoviedb.org/3/${path.join('/')}?${searchParams.toString()}`, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.MOVIE_DB_TOKEN}`
+        Authorization: `Bearer ${MOVIE_DB_TOKEN}`
       }
     });
 

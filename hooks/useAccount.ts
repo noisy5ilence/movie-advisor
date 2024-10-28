@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
+import accountQuery from '@/data/queries/account';
 import { useSession } from '@/hooks/useSession';
-import accountQuery from '@/api/queries/account';
 
 const useAccount = () => {
   const queryClient = useQueryClient();

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import detailsQuery from '@/api/queries/details';
+import detailsQuery from '@/data/queries/details';
 
 interface Props {
   showId?: Show['id'];

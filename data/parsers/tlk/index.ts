@@ -1,11 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
-import torrentTitle from 'parse-torrent-title';
-import { load } from 'cheerio';
-
-import parseTorrent, { Instance } from 'parse-torrent';
-
-import { CookieJar } from 'tough-cookie';
 import { wrapper } from 'axios-cookiejar-support';
+import { load } from 'cheerio';
+import parseTorrent, { Instance } from 'parse-torrent';
+import torrentTitle from 'parse-torrent-title';
+import { CookieJar } from 'tough-cookie';
+
+import { TOLOKA_HOST, TOLOKA_PASSWORD, TOLOKA_USERNAME } from '@/env';
 
 import { Sort } from '../index';
 
@@ -22,7 +22,7 @@ export class Toloka {
   private magnets: Record<string, string> = {};
 
   constructor() {
-    this.host = process.env.TOLOKA_HOST || 'https://toloka.to';
+    this.host = TOLOKA_HOST || 'https://toloka.to';
 
     this.client = wrapper(
       axios.create({
@@ -40,8 +40,8 @@ export class Toloka {
   private async auth() {
     const data = new FormData();
 
-    data.append('username', process.env.TOLOKA_USERNAME as string);
-    data.append('password', process.env.TOLOKA_PASSWORD as string);
+    data.append('username', TOLOKA_USERNAME as string);
+    data.append('password', TOLOKA_PASSWORD as string);
     data.append('autologin', 'on');
     data.append('ssl', 'on');
     data.append('login', 'Вхід');

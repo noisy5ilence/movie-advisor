@@ -1,8 +1,9 @@
 import { useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 
-import { createRequestToken, createSession } from '@/api';
 import { useSetSession } from '@/hooks/useSession';
+
+import { createRequestToken, createSession } from '../../../../data';
 
 const useAuth = () => {
   const setSession = useSetSession();

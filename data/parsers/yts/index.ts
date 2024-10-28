@@ -1,5 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
+import { YTS_HOST } from '@/env';
+
 import { Sort } from '../index';
 
 import { YTSResponse } from './models';
@@ -9,7 +11,7 @@ export class YTS {
   private host: string;
 
   constructor() {
-    this.host = process.env.YTS_HOST || 'https://yts.mx/api/v2/list_movies.json';
+    this.host = YTS_HOST || 'https://yts.mx/api/v2/list_movies.json';
 
     this.client = axios.create({
       baseURL: this.host

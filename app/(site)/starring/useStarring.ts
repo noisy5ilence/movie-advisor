@@ -1,6 +1,6 @@
 'use client';
 
-import popularQuery from '@/api/queries/popular';
+import popularQuery from '@/data/queries/popular';
 import useInfiniteList from '@/hooks/useInfiniteList';
 
 const useStarring = ({ actorId }: { actorId?: string }) =>

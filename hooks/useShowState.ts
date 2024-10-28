@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { accountStates, updateAccountStates } from '@/api';
+import { KEY as USERS_SHOWS_KEY } from '@/data/queries/usersShows';
+
+import { accountStates, updateAccountStates } from '../data';
 
 import { useFavorites, useFavoritesStateToggle, useWatchList, useWatchListStateToggle } from './useLocalUsersLists';
 import { useSession } from './useSession';
-import { KEY as USERS_SHOWS_KEY } from '@/api/queries/usersShows';
 
 const KEY = ['show-state'];
 

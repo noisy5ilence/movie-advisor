@@ -4,20 +4,20 @@ import { Jost } from 'next/font/google';
 import { cookies } from 'next/headers';
 
 import Header from '@/components/Header';
+import { SITE_URL, TITLE } from '@/env';
 import Providers from '@/providers';
 
 import '@/styles/index.css';
 
-const title = 'Movie Advisor';
-const productionUrl = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`;
-
 export const metadata: Metadata = {
-  title: `${title} | Discover Your Next Favorite Movie`,
-  description: `Explore a diverse selection of movies with ${title}. Get random movie recommendations and find out top-rated, popular, and user-favorite films.`
+  title: `${TITLE} | Discover Your Next Favorite Movie`,
+  description: `Explore a diverse selection of movies with ${TITLE}. Get random movie recommendations and find out top-rated, popular, and user-favorite films.`
 };
 
 export const viewport: Viewport = {
-  width: 'device-width'
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover'
 };
 
 const font = Jost({ subsets: ['latin', 'cyrillic'], weight: ['400'] });
@@ -34,22 +34,22 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
         <link rel='shortcut icon' href='/favicon.ico' />
         <link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
-        <meta name='apple-mobile-web-app-title' content='Movie Advisor' />
+        <meta name='apple-mobile-web-app-title' content={TITLE} />
 
         <link rel='manifest' href='/manifest.json' />
 
         <meta name='twitter:card' content={metadata.description!} />
-        <meta name='twitter:url' content={productionUrl} />
-        <meta name='twitter:title' content={title} />
+        <meta name='twitter:url' content={SITE_URL} />
+        <meta name='twitter:title' content={TITLE} />
         <meta name='twitter:description' content={metadata.description!} />
-        <meta name='twitter:image' content={`${productionUrl}/web-app-manifest-512x512.png`} />
+        <meta name='twitter:image' content={`${SITE_URL}/web-app-manifest-512x512.png`} />
         <meta name='twitter:creator' content='https://github.com/noisy5ilence' />
         <meta property='og:type' content='website' />
-        <meta property='og:title' content={title} />
+        <meta property='og:title' content={TITLE} />
         <meta property='og:description' content={metadata.description!} />
-        <meta property='og:site_name' content={title} />
-        <meta property='og:url' content={productionUrl} />
-        <meta property='og:image' content={`${productionUrl}/apple-touch-icon.png`} />
+        <meta property='og:site_name' content={TITLE} />
+        <meta property='og:url' content={SITE_URL} />
+        <meta property='og:image' content={`${SITE_URL}/apple-touch-icon.png`} />
       </head>
       <body className={font.className}>
         <Providers theme={theme}>

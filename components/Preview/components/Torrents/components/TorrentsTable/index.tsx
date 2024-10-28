@@ -1,7 +1,7 @@
 import { FC, Fragment } from 'react';
 
-import { Sort } from '@/api/parsers';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Sort } from '@/data/parsers';
 
 import showHostManagerModal from '../HostManager';
 import TableHeadSortable from '../TableHeadSortable';

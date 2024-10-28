@@ -3,7 +3,7 @@
 import { startTransition, useCallback } from 'react';
 import { atom, getDefaultStore, useAtom } from 'jotai';
 
-import randomQuery from '@/api/queries/random';
+import randomQuery from '@/data/queries/random';
 import useInfiniteList from '@/hooks/useInfiniteList';
 
 const indexAtom = atom(0);

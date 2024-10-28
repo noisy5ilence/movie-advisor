@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { ArrowDownIcon } from 'lucide-react';
 
-import { Sort } from '@/api/parsers';
 import { TableHead } from '@/components/ui/table';
+import { Sort } from '@/data/parsers';
 import { cn } from '@/lib/utils';
 
 interface Props {

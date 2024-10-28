@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { Sort } from '@/api/parsers';
+import { Sort } from '@/data/parsers';
 
 const useTorrents = ({
   query,

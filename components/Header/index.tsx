@@ -2,6 +2,7 @@ import { FC } from 'react';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
+import { TITLE } from '@/env';
 import { cn } from '@/lib/utils';
 
 import { DesktopNavigation, MobileNavigation } from './components/Navigation';
@@ -23,9 +24,7 @@ const Header: FC<Props> = ({ className }) => (
     <div className='container'>
       <div className='flex items-center justify-between gap-2 xs:flex-nowrap'>
         <Link shallow href='/'>
-          <Badge className='cursor-pointer whitespace-nowrap text-[15px] font-normal leading-[18px]'>
-            Movie advisor
-          </Badge>
+          <Badge className='cursor-pointer whitespace-nowrap text-[15px] font-normal leading-[18px]'>{TITLE}</Badge>
         </Link>
         <DesktopNavigation />
         <div className='flex items-center gap-2'>

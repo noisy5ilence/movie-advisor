@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-import searchQuery, { SearchQueryProps } from '@/api/queries/search';
+import searchQuery, { SearchQueryProps } from '@/data/queries/search';
 import useInfiniteList from '@/hooks/useInfiniteList';
 
 const useSearch = (props: SearchQueryProps) => {

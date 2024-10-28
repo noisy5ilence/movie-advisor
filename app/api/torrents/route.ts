@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { Sort } from '@/api/parsers';
-import tlk from '@/api/parsers/tlk';
-import tpb from '@/api/parsers/tpb';
-import yts from '@/api/parsers/yts';
+import { Sort } from '@/data/parsers';
+import tlk from '@/data/parsers/tlk';
+import tpb from '@/data/parsers/tpb';
+import yts from '@/data/parsers/yts';
 
 export async function GET({ nextUrl: { searchParams } }: NextRequest) {
   const key = searchParams.get('key') as keyof typeof providers;

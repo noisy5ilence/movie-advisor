@@ -2,6 +2,8 @@ import axios, { AxiosInstance } from 'axios';
 import { load } from 'cheerio';
 import torrentTitle from 'parse-torrent-title';
 
+import { PIRATE_BAY_HOST } from '@/env';
+
 import { Sort } from '../index';
 
 export class PirateBay {
@@ -13,7 +15,7 @@ export class PirateBay {
   };
 
   constructor() {
-    this.host = process.env.PIRATE_BAY_HOST || 'https://thepiratebay10.info';
+    this.host = PIRATE_BAY_HOST || 'https://thepiratebay10.info';
 
     this.client = axios.create({
       baseURL: this.host

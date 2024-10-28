@@ -3,10 +3,10 @@ import { create, InstanceProps } from 'react-modal-promise';
 import { TabsContent } from '@radix-ui/react-tabs';
 import { Loader } from 'lucide-react';
 
-import { Sort } from '@/api/parsers';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/dialog';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Sort } from '@/data/parsers';
 
 import TorrentsTable from './components/TorrentsTable';
 import { providers } from './constants';

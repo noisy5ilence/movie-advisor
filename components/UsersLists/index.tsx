@@ -3,7 +3,6 @@
 import { FC } from 'react';
 
 import List from '@/components/List';
-import useMounted from '@/hooks/useMounted';
 import useUsersShows from '@/hooks/useUsersShows';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
@@ -11,20 +10,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 interface Props {
   list: 'favorite' | 'watchlist';
   label: string;
+  session?: string;
 }
 
-const UsersList: FC<Props> = ({ list, label }) => {
-  const isMounted = useMounted();
-
-  const movies = useUsersShows({ list, showType: 'movie' });
-  const series = useUsersShows({ list, showType: 'tv' });
+const UsersList: FC<Props> = ({ list, label, session }) => {
+  const movies = useUsersShows({ list, showType: 'movie', session });
+  const series = useUsersShows({ list, showType: 'tv', session });
 
   const tabs = [
     { query: movies, title: 'Movies', key: 'movie' as const },
     { query: series, title: 'Series', key: 'tv' as const }
   ];
-
-  if (!isMounted) return null;
 
   return (
     <Tabs defaultValue='movie' className='flex w-full flex-col items-center'>

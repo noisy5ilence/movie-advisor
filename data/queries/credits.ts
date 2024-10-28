@@ -10,9 +10,9 @@ const creditsQuery = ({ showId, showType }: CreditsQueryProps) => ({
   queryKey: ['credits', showId, showType],
   queryFn: () =>
     movieAdvisor
-      .get<{ cast: Array<Actor | AggregatedActor> }>(
-        `/${showType}/${showId}/${showType === 'tv' ? 'aggregate_credits' : 'credits'}`
-      )
+      .get<{
+        cast: Array<Actor | AggregatedActor>;
+      }>(`/${showType}/${showId}/${showType === 'tv' ? 'aggregate_credits' : 'credits'}`)
       .then(({ cast }) => {
         return cast
           .filter((person) => person.profile_path)

@@ -1,6 +1,6 @@
 'use client';
 
-import similarQuery from '@/api/queries/similar';
+import similarQuery from '@/data/queries/similar';
 import useInfiniteList from '@/hooks/useInfiniteList';
 
 interface Props {

@@ -1,12 +1,18 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:tailwindcss/recommended"],
-  "plugins": ["simple-import-sort", "tailwindcss"],
+  "extends": ["next/core-web-vitals", "plugin:tailwindcss/recommended", "prettier"],
+  "plugins": ["prettier", "simple-import-sort", "tailwindcss"],
   "rules": {
     "@next/next/no-img-element": "off",
     "tailwindcss/classnames-order": "error",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
-    "quotes": ["error", "single"]
+    "quotes": ["error", "single"],
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "auto"
+      }
+    ]
   },
   "settings": {
     "tailwindcss": {

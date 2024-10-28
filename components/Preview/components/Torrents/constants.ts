@@ -1,6 +1,4 @@
-import { Sort } from '@/api/parsers';
-
-export const STREAM_URL = `${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?link=`;
+import { Sort } from '@/data/parsers';
 
 type Options = { query: string; sort: Sort; imdbID: string };
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import tlk from '@/api/parsers/tlk';
+import tlk from '@/data/parsers/tlk';
 
 export async function GET({ nextUrl: { searchParams } }: NextRequest) {
   const url = searchParams.get('url') as string;

@@ -1,29 +1,31 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
 
-import { session } from '@/api';
-import usersShowsQuery from '@/api/queries/usersShows';
+import UsersList from '@/components/UsersLists';
+import { session as getSession } from '@/data';
+import usersShowsQuery from '@/data/queries/usersShows';
+import { TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
 
-import Container from './container';
-
 export const metadata: Metadata = {
-  title: 'My Favorite Shows - Movie Advisor',
-  description:
-    'View your favorite shows on Movie Advisor. Keep track of films you’ve added and revisit your top picks anytime.'
+  title: `My Favorite Shows - ${TITLE}`,
+  description: `View your favorite shows on ${TITLE}. Keep track of films you’ve added and revisit your top picks anytime.`
 };
 
-const Favorites = () => {
+const Favorites = async () => {
+  const session = await getSession();
   const queryClient = getQueryClient();
 
   const list = 'favorite';
   const showType = 'movie';
 
-  queryClient.prefetchInfiniteQuery(usersShowsQuery({ showType, list, session: session() }));
+  if (session) {
+    await queryClient.prefetchInfiniteQuery(usersShowsQuery({ showType, list, session }));
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Container />
+      <UsersList session={session} list={list} label='favorites' />
     </HydrationBoundary>
   );
 };

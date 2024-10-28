@@ -178,11 +178,10 @@ const Modal: React.FC<{
   React.useLayoutEffect(() => {
     const viewport = document.querySelector('[name="viewport"]');
 
-    viewport?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-
-    return () => {
-      viewport?.setAttribute('content', 'width=device-width, initial-scale=1.0');
-    };
+    viewport?.setAttribute(
+      'content',
+      'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
+    );
   }, []);
 
   const handleClose = () => {

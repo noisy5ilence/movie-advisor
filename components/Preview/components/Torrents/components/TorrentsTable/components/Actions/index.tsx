@@ -1,9 +1,10 @@
 import { FC } from 'react';
 import { Cast, Download, ListVideo, Loader, Magnet, Play } from 'lucide-react';
 
-import { Quality } from '@/api/parsers/yts/models';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
+import { Quality } from '@/data/parsers/yts/models';
+import { STREAM_URL } from '@/env';
 import { cn } from '@/lib/utils';
 
 import { providers } from '../../../../constants';
@@ -55,7 +56,7 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
         <Button variant='outline' className='relative grow-0 px-3' title='Download m3u playlist'>
           <a
             className='absolute left-0 top-0 size-full'
-            href={`${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream?m3u&link=${encodeURIComponent(magnet)}`}
+            href={`${STREAM_URL}?m3u&link=${encodeURIComponent(magnet)}`}
           />
           <ListVideo size={20} />
         </Button>
