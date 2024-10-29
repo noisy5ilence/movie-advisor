@@ -10,7 +10,6 @@ export type UsersShowsQueryProps = {
 export const KEY = ({ list, showType, session }: UsersShowsQueryProps) => [`users-${list}`, showType, session];
 
 const usersShowsQuery = ({ showType, list, session }: UsersShowsQueryProps) => ({
-  suspense: true,
   queryKey: KEY({ list, showType, session }),
   initialPageParam: '1',
   queryFn: ({ pageParam = '1' }: { pageParam?: string }) =>

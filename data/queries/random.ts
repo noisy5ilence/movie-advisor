@@ -9,10 +9,10 @@ export const generatePage = createUniqueRandomGenerator(TOTAL_PAGES);
 
 export type RandomQueryProps = {
   page: number;
+  suspense: boolean;
 };
 
 const randomQuery = ({ page }: RandomQueryProps) => ({
-  suspense: true,
   queryKey: ['random-movie'],
   initialPageParam: page.toString(),
   getNextPageParam: () => generatePage().toString(),

@@ -7,7 +7,6 @@ export type PopularQueryProps = {
 };
 
 const popularQuery = ({ sortBy = 'popularity.desc', starring }: PopularQueryProps = {}) => ({
-  suspense: true,
   queryKey: ['popular', sortBy, starring],
   initialPageParam: '1',
   queryFn: ({ pageParam = '1' }: { pageParam?: string }) =>

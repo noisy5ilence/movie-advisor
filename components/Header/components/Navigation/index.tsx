@@ -25,7 +25,7 @@ export const MobileNavigation = () => {
         <DropdownMenuContent className='flex w-44 flex-col gap-2 p-2'>
           {paths.map(({ path, title }) => (
             <DropdownMenuItem key={path} asChild>
-              <Link href={path}>
+              <Link href={path} prefetch={path !== '/'}>
                 <div>
                   <Button className='relative w-full' variant={currentPath === path ? 'default' : 'outline'}>
                     {title}
@@ -47,7 +47,7 @@ export const DesktopNavigation = () => {
   return (
     <Nav tabs={paths} active={active || paths[0]}>
       {({ path, title }) => (
-        <Link href={path}>
+        <Link href={path} prefetch={path !== '/'}>
           <div>{title}</div>
         </Link>
       )}
