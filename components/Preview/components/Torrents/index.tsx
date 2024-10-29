@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import { TabsContent } from '@radix-ui/react-tabs';
 import { Loader } from 'lucide-react';
@@ -22,9 +22,6 @@ interface Props extends InstanceProps<void> {
 const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: Props) => {
   const [sort, setSort] = useState<Sort>(Sort.seeds);
   const [withYear, setWithYear] = useState(true);
-  const [providerKey, setProviderKey] = useState(providers.yts.key);
-
-  const nextProviderKeyRef = useRef<string | null>(null);
 
   const yts = useTorrents({ query: title, queryFn: providers.yts.queryFn, sort, key: providers.yts.key, imdbID });
   const tpb = useTorrents({
@@ -60,13 +57,6 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
   const checkIsEmpty = (query: (typeof tabs)[number]['query']) =>
     query.isFetched && !query.isLoading && !query.data?.length;
 
-  useEffect(() => {
-    if (!nextProviderKeyRef.current || providerKey === nextProviderKeyRef.current) return;
-
-    setProviderKey(nextProviderKeyRef.current);
-    nextProviderKeyRef.current = null;
-  }, [providerKey, yts.isFetched, tpb.isFetched]);
-
   return (
     <Modal className='rounded-xl p-0' onClose={onResolve}>
       <div className='grid grid-cols-[1fr_auto] items-center gap-3 p-2'>
@@ -75,27 +65,16 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
           {year}
         </Button>
       </div>
-      <Tabs value={providerKey} className='w-full rounded-none'>
+      <Tabs defaultValue={providers.yts.key} className='w-full rounded-none'>
         <TabsList className='grid w-full grid-cols-3'>
           {tabs.map(({ provider, query }) => (
-            <TabsTrigger
-              disabled={checkIsEmpty(query)}
-              key={provider.key}
-              value={provider.key}
-              onClick={() => setProviderKey(provider.key)}
-            >
-              {provider.label}
+            <TabsTrigger key={provider.key} value={provider.key}>
+              {query.isLoading ? <Loader className='animate-spin' size={14} /> : provider.label}
             </TabsTrigger>
           ))}
         </TabsList>
         {tabs.map(({ provider, query }, index) => {
-          const nextIndex = index + 1;
-
           const isEmpty = checkIsEmpty(query);
-
-          if (isEmpty && tabs[nextIndex]) {
-            nextProviderKeyRef.current = tabs[nextIndex].provider.key;
-          }
 
           return (
             <TabsContent className='pb-1' key={provider.key} value={provider.key}>
