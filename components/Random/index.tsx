@@ -1,12 +1,18 @@
 'use client';
 
+import { FC } from 'react';
+
 import Preview from '../Preview';
 
 import Carousel from './components/Carousel';
 import useRandomMovie from './useRandomMovie';
 
-const Random = () => {
-  const { movie, movies, onIndexChange, fetchNextPage } = useRandomMovie();
+interface Props {
+  page: number;
+}
+
+const Random: FC<Props> = ({ page }) => {
+  const { movie, movies, onIndexChange, fetchNextPage } = useRandomMovie({ page });
 
   return (
     <Preview

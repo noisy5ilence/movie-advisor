@@ -10,10 +10,14 @@ const indexAtom = atom(0);
 
 export const useSilentIndex = () => getDefaultStore().get(indexAtom);
 
-const useRandomMovie = () => {
+interface Props {
+  page: number;
+}
+
+const useRandomMovie = ({ page }: Props) => {
   const [index, setIndex] = useAtom(indexAtom);
 
-  const { shows: movies, fetchNextPage } = useInfiniteList(randomQuery());
+  const { shows: movies, fetchNextPage } = useInfiniteList(randomQuery({ page }));
 
   if (movies.length && !movies[index]) {
     setIndex(0);

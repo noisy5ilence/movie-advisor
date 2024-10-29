@@ -4,7 +4,7 @@ const makeQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: Infinity,
+        staleTime: 3600 * 1000,
         refetchOnReconnect: false,
         refetchOnMount: false,
         refetchOnWindowFocus: false
