@@ -1,5 +1,3 @@
-import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
-
 import popularQuery from '@/data/queries/popular';
 import getQueryClient from '@/lib/queryClient';
 
@@ -12,11 +10,7 @@ const Starring = ({ searchParams }: { searchParams: Record<string, string> }) =>
 
   queryClient.prefetchInfiniteQuery(popularQuery({ sortBy: 'vote_average.desc', starring: actorId }));
 
-  return (
-    <ReactQueryStreamedHydration>
-      <Container />
-    </ReactQueryStreamedHydration>
-  );
+  return <Container />;
 };
 
 export default Starring;

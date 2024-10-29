@@ -10,11 +10,7 @@ const Random = () => {
 
   queryClient.prefetchInfiniteQuery(randomQuery());
 
-  return (
-    <ReactQueryStreamedHydration>
-      <Container />
-    </ReactQueryStreamedHydration>
-  );
+  return <Container />;
 };
 
 export default Random;

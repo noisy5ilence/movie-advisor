@@ -1,4 +1,3 @@
-import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
 import { Metadata } from 'next';
 
 import popularQuery from '@/data/queries/popular';
@@ -17,11 +16,7 @@ const Top = () => {
 
   queryClient.prefetchInfiniteQuery(popularQuery({ sortBy: 'vote_average.desc' }));
 
-  return (
-    <ReactQueryStreamedHydration>
-      <Container />
-    </ReactQueryStreamedHydration>
-  );
+  return <Container />;
 };
 
 export default Top;

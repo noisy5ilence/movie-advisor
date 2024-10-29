@@ -1,4 +1,3 @@
-import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
 import { Metadata } from 'next';
 
 import UsersList from '@/components/UsersLists';
@@ -23,11 +22,7 @@ const Favorites = async () => {
     queryClient.prefetchInfiniteQuery(usersShowsQuery({ showType, list, session }));
   }
 
-  return (
-    <ReactQueryStreamedHydration>
-      <UsersList session={session} list={list} label='favorites' />
-    </ReactQueryStreamedHydration>
-  );
+  return <UsersList session={session} list={list} label='favorites' />;
 };
 
 export default Favorites;

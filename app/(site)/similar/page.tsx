@@ -1,5 +1,3 @@
-import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
-
 import similarQuery from '@/data/queries/similar';
 import getQueryClient from '@/lib/queryClient';
 
@@ -12,11 +10,7 @@ const Similar = ({ searchParams }: { searchParams: Record<string, string> }) => 
 
   queryClient.prefetchInfiniteQuery(similarQuery({ showId: id, showType: type as Show['type'] }));
 
-  return (
-    <ReactQueryStreamedHydration>
-      <Container />
-    </ReactQueryStreamedHydration>
-  );
+  return <Container />;
 };
 
 export default Similar;

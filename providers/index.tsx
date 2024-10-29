@@ -4,6 +4,7 @@ import { FC, ReactNode } from 'react';
 import ModalContainer from 'react-modal-promise';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
 
 import { Toaster } from '@/components/ui/toaster';
 import getQueryClient from '@/lib/queryClient';
@@ -20,7 +21,9 @@ const Providers: FC<Props> = ({ children, theme }) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      <ReactQueryStreamedHydration>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      </ReactQueryStreamedHydration>
       <ModalContainer exitTimeout={0} enterTimeout={0} />
       <Toaster />
       <ReactQueryDevtools initialIsOpen={false} />
