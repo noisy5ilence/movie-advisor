@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import { TabsContent } from '@radix-ui/react-tabs';
 import { Loader } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import ButtonsGroup from '@/components/ui/buttons-group';
 import { Modal } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Sort } from '@/data/parsers';
 
@@ -19,20 +22,31 @@ interface Props extends InstanceProps<void> {
   backdrop: string;
 }
 
-const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: Props) => {
+const showTorrentsModal = create(({ title: initialTitle, year, imdbID, backdrop, onResolve }: Props) => {
   const [sort, setSort] = useState<Sort>(Sort.seeds);
-  const [withYear, setWithYear] = useState(true);
 
-  const yts = useTorrents({ query: title, queryFn: providers.yts.queryFn, sort, key: providers.yts.key, imdbID });
+  const initialQuery = `${initialTitle} ${year}`;
+
+  const [title, setTitle] = useState(initialQuery);
+
+  const [query, setQuery] = useState(title);
+
+  const yts = useTorrents({
+    query: initialTitle,
+    queryFn: providers.yts.queryFn,
+    sort,
+    key: providers.yts.key,
+    imdbID
+  });
   const tpb = useTorrents({
-    query: withYear ? `${title} ${year}` : title,
+    query,
     queryFn: providers.tpb.queryFn,
     sort,
     key: providers.tpb.key,
     imdbID
   });
   const tlk = useTorrents({
-    query: withYear ? `${title} ${year}` : title,
+    query,
     queryFn: providers.tlk.queryFn,
     sort,
     key: providers.tlk.key,
@@ -54,21 +68,33 @@ const showTorrentsModal = create(({ title, year, imdbID, backdrop, onResolve }: 
     }
   ];
 
+  const handleSearch = (event: FormEvent) => {
+    event.preventDefault();
+
+    setQuery(title || initialQuery);
+  };
+
   const checkIsEmpty = (query: (typeof tabs)[number]['query']) =>
     query.isFetched && !query.isLoading && !query.data?.length;
 
   return (
     <Modal className='rounded-xl p-0' onClose={onResolve}>
-      <div className='grid grid-cols-[1fr_auto] items-center gap-3 p-2'>
-        <span className='truncate text-base'>{title}</span>
-        <Button className='h-6 p-2' variant={withYear ? 'default' : 'ghost'} onClick={() => setWithYear((w) => !w)}>
-          {year}
-        </Button>
-      </div>
+      <form className='p-2' onSubmit={handleSearch}>
+        <ButtonsGroup>
+          <Input value={title} onChange={({ target }) => setTitle(target.value)} placeholder='Start typing title...' />
+          <Button
+            type='submit'
+            className='!px-3 transition-all duration-200 hover:bg-secondary-foreground hover:shadow-lg hover:shadow-secondary-foreground/60'
+            disabled={initialQuery === title || tpb.isPending || tlk.isPending}
+          >
+            <Search size={14} />
+          </Button>
+        </ButtonsGroup>
+      </form>
       <Tabs defaultValue={providers.yts.key} className='w-full rounded-none'>
         <TabsList className='grid w-full grid-cols-3'>
           {tabs.map(({ provider, query }) => (
-            <TabsTrigger key={provider.key} value={provider.key}>
+            <TabsTrigger key={provider.key} value={provider.key} className='min-h-8'>
               {query.isLoading ? <Loader className='animate-spin' size={14} /> : provider.label}
             </TabsTrigger>
           ))}

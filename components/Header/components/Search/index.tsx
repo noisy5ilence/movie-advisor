@@ -2,10 +2,11 @@
 
 import { ChangeEvent, MutableRefObject, useRef, useState } from 'react';
 import { create } from 'react-modal-promise';
-import { Search as SearchIcon, XCircle } from 'lucide-react';
+import { Search as SearchIcon, X } from 'lucide-react';
 
 import List from '@/components/List';
 import { Button } from '@/components/ui/button';
+import ButtonsGroup from '@/components/ui/buttons-group';
 import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -46,25 +47,25 @@ export const showSearchModal = create(({ onResolve }) => {
 
   return (
     <Modal className='block max-w-[932px] p-0' onClose={onResolve} scrollRef={scrollRef}>
-      <div className='relative p-2'>
-        <Input
-          autoFocus
-          ref={inputRef}
-          placeholder='Start typing title...'
-          value={title}
-          onChange={handleChangeTitle}
-          className='pr-10 focus-visible:ring-0'
-        />
-        <Button
-          variant='outline'
-          type='button'
-          size='icon'
-          onClick={handleReset}
-          disabled={!title.length}
-          className='absolute right-2 top-2'
-        >
-          <XCircle />
-        </Button>
+      <div className='p-2'>
+        <ButtonsGroup>
+          <Input
+            autoFocus
+            ref={inputRef}
+            placeholder='Start typing title...'
+            value={title}
+            onChange={handleChangeTitle}
+          />
+          <Button
+            type='button'
+            size='icon'
+            className='transition-all duration-200 hover:bg-secondary-foreground hover:shadow-lg hover:shadow-secondary-foreground/60'
+            onClick={handleReset}
+            disabled={!title.length}
+          >
+            <X />
+          </Button>
+        </ButtonsGroup>
       </div>
       {isFetchedRef.current && (
         <div className='px-2'>
