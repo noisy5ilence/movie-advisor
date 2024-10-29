@@ -1,19 +1,19 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
 
 import randomQuery from '@/data/queries/random';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-const Random = async () => {
+const Random = () => {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchInfiniteQuery(randomQuery());
+  queryClient.prefetchInfiniteQuery(randomQuery());
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <ReactQueryStreamedHydration>
       <Container />
-    </HydrationBoundary>
+    </ReactQueryStreamedHydration>
   );
 };
 

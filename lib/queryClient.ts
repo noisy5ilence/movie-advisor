@@ -8,9 +8,6 @@ const makeQueryClient = () => {
         refetchOnReconnect: false,
         refetchOnMount: false,
         refetchOnWindowFocus: false
-      },
-      dehydrate: {
-        shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) || query.state.status === 'pending'
       }
     }
   });

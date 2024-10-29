@@ -1,21 +1,21 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
 
 import similarQuery from '@/data/queries/similar';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-const Similar = async ({ searchParams }: { searchParams: Record<string, string> }) => {
+const Similar = ({ searchParams }: { searchParams: Record<string, string> }) => {
   const queryClient = getQueryClient();
 
   const { id, type } = searchParams || {};
 
-  await queryClient.prefetchInfiniteQuery(similarQuery({ showId: id, showType: type as Show['type'] }));
+  queryClient.prefetchInfiniteQuery(similarQuery({ showId: id, showType: type as Show['type'] }));
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <ReactQueryStreamedHydration>
       <Container />
-    </HydrationBoundary>
+    </ReactQueryStreamedHydration>
   );
 };
 

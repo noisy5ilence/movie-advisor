@@ -1,4 +1,4 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
 import { Metadata } from 'next';
 
 import popularQuery from '@/data/queries/popular';
@@ -12,15 +12,15 @@ export const metadata: Metadata = {
   description: `Discover the top-rated movies on ${TITLE}. Find the highest-rated films and make informed viewing choices.`
 };
 
-const Top = async () => {
+const Top = () => {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchInfiniteQuery(popularQuery({ sortBy: 'vote_average.desc' }));
+  queryClient.prefetchInfiniteQuery(popularQuery({ sortBy: 'vote_average.desc' }));
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <ReactQueryStreamedHydration>
       <Container />
-    </HydrationBoundary>
+    </ReactQueryStreamedHydration>
   );
 };
 

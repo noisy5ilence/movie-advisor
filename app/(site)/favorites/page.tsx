@@ -1,4 +1,4 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
 import { Metadata } from 'next';
 
 import UsersList from '@/components/UsersLists';
@@ -20,13 +20,13 @@ const Favorites = async () => {
   const showType = 'movie';
 
   if (session) {
-    await queryClient.prefetchInfiniteQuery(usersShowsQuery({ showType, list, session }));
+    queryClient.prefetchInfiniteQuery(usersShowsQuery({ showType, list, session }));
   }
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <ReactQueryStreamedHydration>
       <UsersList session={session} list={list} label='favorites' />
-    </HydrationBoundary>
+    </ReactQueryStreamedHydration>
   );
 };
 
