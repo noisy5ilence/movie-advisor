@@ -30,9 +30,24 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
       <head>
         <meta name='theme-color' content={theme === 'dark' ? 'hsl(222.2 84% 4.9%)' : 'white'} />
 
-        <link rel='icon' type='image/png' href='/favicon-48x48.png' sizes='48x48' />
-        <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
-        <link rel='shortcut icon' href='/favicon.ico' />
+        <link
+          rel='icon'
+          type='image/png'
+          href='/favicon-48x48.png'
+          sizes='48x48'
+          media='(prefers-color-scheme: light)'
+        />
+        <link
+          rel='icon'
+          type='image/png'
+          href='/favicon-48x48-dark.png'
+          sizes='48x48'
+          media='(prefers-color-scheme: dark)'
+        />
+        <link rel='icon' type='image/svg+xml' href='/favicon.svg' media='(prefers-color-scheme: light)' />
+        <link rel='icon' type='image/svg+xml' href='/favicon-dark.svg' media='(prefers-color-scheme: dark)' />
+        <link rel='shortcut icon' href='/favicon.ico' media='(prefers-color-scheme: light)' />
+        <link rel='shortcut icon' href='/favicon-dark.ico' media='(prefers-color-scheme: dark)' />
         <link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
         <meta name='apple-mobile-web-app-title' content={TITLE} />
 

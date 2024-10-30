@@ -48,9 +48,10 @@ export const showSearchModal = create(({ onResolve }) => {
   return (
     <Modal className='block max-w-[932px] p-0' onClose={onResolve} scrollRef={scrollRef}>
       <div className='p-2'>
-        <ButtonsGroup>
+        <ButtonsGroup className='h-10'>
           <Input
             autoFocus
+            className='h-full'
             ref={inputRef}
             placeholder='Start typing title...'
             value={title}
@@ -58,12 +59,11 @@ export const showSearchModal = create(({ onResolve }) => {
           />
           <Button
             type='button'
-            size='icon'
-            className='transition-all duration-200 hover:bg-secondary-foreground hover:shadow-lg hover:shadow-secondary-foreground/60'
+            className='h-full !px-3 transition-all duration-200 hover:bg-secondary-foreground hover:shadow-lg hover:shadow-secondary-foreground/60'
             onClick={handleReset}
             disabled={!title.length}
           >
-            <X />
+            <X size={16} />
           </Button>
         </ButtonsGroup>
       </div>

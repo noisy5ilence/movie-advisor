@@ -80,18 +80,23 @@ const showTorrentsModal = create(({ title: initialTitle, year, imdbID, backdrop,
   return (
     <Modal className='rounded-xl p-0' onClose={onResolve}>
       <form className='p-2' onSubmit={handleSearch}>
-        <ButtonsGroup>
-          <Input value={title} onChange={({ target }) => setTitle(target.value)} placeholder='Start typing title...' />
+        <ButtonsGroup className='h-10'>
+          <Input
+            className='h-full'
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+            placeholder='Start typing title...'
+          />
           <Button
             type='submit'
-            className='!px-3 transition-all duration-200 hover:bg-secondary-foreground hover:shadow-lg hover:shadow-secondary-foreground/60'
+            className='h-full !px-3 transition-all duration-200 hover:bg-secondary-foreground hover:shadow-lg hover:shadow-secondary-foreground/60'
             disabled={initialQuery === title || tpb.isPending || tlk.isPending}
           >
-            <Search size={14} />
+            <Search size={16} />
           </Button>
         </ButtonsGroup>
       </form>
-      <Tabs defaultValue={providers.yts.key} className='w-full rounded-none'>
+      <Tabs defaultValue={providers.yts.key} className='w-full rounded-none px-2'>
         <TabsList className='grid w-full grid-cols-3'>
           {tabs.map(({ provider, query }) => (
             <TabsTrigger key={provider.key} value={provider.key} className='min-h-8'>
