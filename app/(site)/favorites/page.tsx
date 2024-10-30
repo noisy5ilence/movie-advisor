@@ -8,7 +8,7 @@ import { TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
 
 export const metadata: Metadata = {
-  title: `My Favorite Shows - ${TITLE}`,
+  title: `My Favorite Shows | ${TITLE}`,
   description: `View your favorite shows on ${TITLE}. Keep track of films you’ve added and revisit your top picks anytime.`
 };
 
