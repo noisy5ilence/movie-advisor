@@ -79,7 +79,7 @@ const showTorrentsModal = create(({ title: initialTitle, year, imdbID, backdrop,
 
   return (
     <Modal className='rounded-xl p-0' onClose={onResolve}>
-      <form className='p-2' onSubmit={handleSearch}>
+      <form className='p-2' tabIndex={1} onSubmit={handleSearch}>
         <ButtonsGroup className='h-10'>
           <Input
             className='h-full'

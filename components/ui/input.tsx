@@ -6,24 +6,6 @@ import { cn } from '@/lib/utils';
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, ...props }, ref) => {
-  const inputRef = useRef<HTMLInputElement>();
-
-  const handleRef = (element: HTMLInputElement) => {
-    if (!element) return;
-
-    inputRef.current = element;
-
-    if (!ref) return;
-
-    typeof ref === 'function' ? ref(element) : (ref.current = element);
-  };
-
-  useLayoutEffect(() => {
-    if (!inputRef.current || props.autoFocus) return;
-
-    setTimeout(() => inputRef.current?.blur());
-  }, [props.autoFocus]);
-
   return (
     <input
       type={type}
@@ -31,7 +13,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type,
         'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
-      ref={handleRef}
+      ref={ref}
       {...props}
     />
   );
