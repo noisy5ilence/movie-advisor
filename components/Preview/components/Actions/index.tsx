@@ -3,7 +3,6 @@
 import { Bookmark, Copy, Heart, Play, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import showTorrentsModal from '@/components/Preview/components/Torrents';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import useShowState, { useMutateShowState } from '@/hooks/useShowState';
@@ -69,14 +68,16 @@ const Actions = ({ onClose, show, className }: Props) => {
             'bg-red-700': theme === 'dark'
           })}
           variant='destructive'
-          onClick={() =>
+          onClick={async () => {
+            const showTorrentsModal = (await import('../Torrents')).default;
+
             showTorrentsModal({
               imdbID: show.imdb_id!,
               title: show.title,
               backdrop: show.backdrop,
               year: new Date(show.release).getFullYear()
-            })
-          }
+            });
+          }}
         >
           <Play size={15} />
           Watch
