@@ -35,7 +35,7 @@ const Preview: FC<Props> = ({ show: baseShow, className, onClose, poster }) => {
         className
       )}
     >
-      {poster || <Poster className='mx-auto' rounded='md:rounded-none md:rounded-l-xl' show={show} />}
+      {poster || <Poster className='mx-auto md:rounded-none md:rounded-l-xl' show={show} />}
       <div className={cn('flex grow flex-col bg-background', { 'p-0 pt-1 md:p-2': isModal })}>
         <span className='order-3 mb-4 text-3xl md:order-1 md:line-clamp-2'>{show.title}</span>
 
