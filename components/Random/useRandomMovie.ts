@@ -5,7 +5,6 @@ import { atom, getDefaultStore, useAtom } from 'jotai';
 
 import randomQuery from '@/data/queries/random';
 import useInfiniteList from '@/hooks/useInfiniteList';
-import useMounted from '@/hooks/useMounted';
 
 const indexAtom = atom(0);
 
@@ -16,10 +15,9 @@ interface Props {
 }
 
 const useRandomMovie = ({ page }: Props) => {
-  const isMounted = useMounted();
   const [index, setIndex] = useAtom(indexAtom);
 
-  const { shows: movies, fetchNextPage } = useInfiniteList(randomQuery({ page, suspense: false }));
+  const { shows: movies, fetchNextPage } = useInfiniteList(randomQuery({ page }));
 
   if (movies.length && !movies[index]) {
     setIndex(0);

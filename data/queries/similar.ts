@@ -7,7 +7,6 @@ export type SimilarQueryProps = {
 };
 
 const similarQuery = ({ showId, showType }: SimilarQueryProps) => ({
-  enabled: Boolean(showId),
   queryKey: ['similar', showId, showType],
   initialPageParam: '1',
   queryFn: ({ pageParam = '1' }: { pageParam?: string }) =>

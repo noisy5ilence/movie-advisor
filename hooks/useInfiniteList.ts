@@ -1,18 +1,15 @@
 import { useMemo } from 'react';
-import { QueryKey, useInfiniteQuery } from '@tanstack/react-query';
+import { QueryKey, useInfiniteQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
 interface Props {
-  suspense?: boolean;
   queryKey: QueryKey;
-  enabled?: boolean;
   queryFn: ({ pageParam }: { pageParam: string }) => Promise<Pagination<Show>>;
   initialPageParam?: string;
   getNextPageParam?: () => string | undefined;
 }
 
-const useInfiniteList = ({ queryKey, queryFn, enabled, initialPageParam, getNextPageParam }: Props) => {
-  const { data, hasNextPage, fetchNextPage, isFetched, isLoading } = useInfiniteQuery({
-    enabled,
+const useInfiniteList = ({ queryKey, queryFn, initialPageParam, getNextPageParam }: Props) => {
+  const { data, hasNextPage, fetchNextPage, isFetched, isLoading } = useSuspenseInfiniteQuery({
     queryKey,
     queryFn: ({ pageParam }) => queryFn({ pageParam }),
     getNextPageParam:

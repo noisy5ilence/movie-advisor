@@ -8,13 +8,15 @@ type TMDBParams = {
   };
 };
 
-export async function GET({ nextUrl: { searchParams }, headers }: NextRequest, { params: { path } }: TMDBParams) {
+export async function GET({ nextUrl: { searchParams } }: NextRequest, { params: { path } }: TMDBParams) {
   try {
-    const response = await fetch(`${MOVIE_DB_API_URL}/${path.join('/')}?${searchParams.toString()}`, {
+    const params = searchParams.toString();
+    const response = await fetch(`${MOVIE_DB_API_URL}/${path.join('/')}${params ? `?${params}` : ''}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${MOVIE_DB_TOKEN}`
-      }
+      },
+      next: searchParams.get('session_id') ? undefined : { revalidate: 3600 }
     });
 
     if (!response.ok) {

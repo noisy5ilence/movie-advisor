@@ -5,12 +5,12 @@ import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
-const Random = async () => {
+const Random = () => {
   const queryClient = getQueryClient();
 
   const page = generatePage();
 
-  await queryClient.prefetchInfiniteQuery(randomQuery({ page, suspense: false }));
+  queryClient.prefetchInfiniteQuery(randomQuery({ page }));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
