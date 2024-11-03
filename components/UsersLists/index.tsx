@@ -15,7 +15,7 @@ interface Props {
 
 const UsersList: FC<Props> = ({ list, label, session }) => {
   const movies = useUsersShows({ list, showType: 'movie', session });
-  const series = useUsersShows({ list, showType: 'tv', session });
+  const series = useUsersShows({ list, showType: 'tv', session, mode: 'default' });
 
   const tabs = [
     { query: movies, title: 'Movies', key: 'movie' as const },

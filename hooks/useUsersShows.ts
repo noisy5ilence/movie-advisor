@@ -10,10 +10,12 @@ import { useSession } from './useSession';
 const useUsersShows = ({
   showType,
   list = 'favorite',
-  session: serverSession
+  session: serverSession,
+  mode = 'suspense'
 }: {
   showType: Show['type'];
   list: 'favorite' | 'watchlist';
+  mode?: 'suspense' | 'default';
   session?: string;
 }) => {
   const isMounted = useMounted();
@@ -24,7 +26,7 @@ const useUsersShows = ({
   const { shows: favorite } = useFavorites();
   const { shows: watchlist } = useWatchList();
 
-  const query = useInfiniteList(usersShowsQuery({ showType, list, session }));
+  const query = useInfiniteList({ ...usersShowsQuery({ showType, list, session }), mode });
 
   return session
     ? query

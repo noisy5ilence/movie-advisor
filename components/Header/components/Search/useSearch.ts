@@ -6,7 +6,7 @@ import useInfiniteList from '@/hooks/useInfiniteList';
 const useSearch = (props: SearchQueryProps) => {
   const previousRef = useRef<Show[]>([]);
 
-  const infiniteQuery = useInfiniteList(searchQuery(props));
+  const infiniteQuery = useInfiniteList({ ...searchQuery(props), mode: 'default' });
 
   if (infiniteQuery.isFetched) {
     previousRef.current = infiniteQuery.shows;

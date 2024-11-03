@@ -1,8 +1,8 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
+import { cookies } from 'next/headers';
 
 import UsersList from '@/components/UsersLists';
-import { session as getSession } from '@/data';
 import usersShowsQuery from '@/data/queries/usersShows';
 import { TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
@@ -13,13 +13,13 @@ export const metadata: Metadata = {
 };
 
 const Favorites = async () => {
-  const session = await getSession();
+  const session = cookies().get('session')?.value;
   const queryClient = getQueryClient();
 
   const list = 'favorite';
 
   if (session) {
-    queryClient.prefetchInfiniteQuery(usersShowsQuery({ showType: 'movie', session, list }));
+    await queryClient.prefetchInfiniteQuery(usersShowsQuery({ showType: 'movie', session, list }));
   }
 
   return (
