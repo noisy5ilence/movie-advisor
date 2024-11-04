@@ -12,10 +12,10 @@ export const metadata: Metadata = {
   description: `Check out the most popular movies right now on ${TITLE}. See what’s trending and don’t miss out on the latest hits.`
 };
 
-const Popular = () => {
+const Popular = async () => {
   const queryClient = getQueryClient();
 
-  queryClient.prefetchInfiniteQuery(popularQuery());
+  await queryClient.prefetchInfiniteQuery(popularQuery());
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
