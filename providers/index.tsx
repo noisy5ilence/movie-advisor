@@ -5,24 +5,22 @@ import ModalContainer from 'react-modal-promise';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
+import { ThemeProvider } from 'next-themes';
 
 import { Toaster } from '@/components/ui/toaster';
 import getQueryClient from '@/lib/queryClient';
 
-import ThemeProvider from './Theme';
-
 interface Props {
   children: ReactNode;
-  theme?: Theme;
 }
 
-const Providers: FC<Props> = ({ children, theme }) => {
+const Providers: FC<Props> = ({ children }) => {
   const queryClient = getQueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryStreamedHydration>
-        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        <ThemeProvider attribute='data-mode'>{children}</ThemeProvider>
       </ReactQueryStreamedHydration>
       <ModalContainer exitTimeout={0} enterTimeout={0} />
       <Toaster />

@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import useShowState, { useMutateShowState } from '@/hooks/useShowState';
-import useTheme from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -17,8 +16,6 @@ interface Props {
 
 const Actions = ({ onClose, show, className }: Props) => {
   const router = useRouter();
-
-  const [theme] = useTheme();
 
   const state = useShowState({ showId: show.id, showType: show.type });
   const toggle = useMutateShowState(show);
@@ -63,10 +60,7 @@ const Actions = ({ onClose, show, className }: Props) => {
         </Button>
         <Button
           aria-label='Watch'
-          className={cn('hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600', {
-            'bg-red-600': theme === 'light',
-            'bg-red-700': theme === 'dark'
-          })}
+          className='bg-red-600 transition-all duration-200 hover:bg-red-600 hover:shadow-lg hover:shadow-red-600/60 dark:bg-red-700'
           variant='destructive'
           onClick={async () => {
             const showTorrentsModal = (await import('../Torrents')).default;

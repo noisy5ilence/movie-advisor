@@ -23,12 +23,10 @@ export const viewport: Viewport = {
 const font = Jost({ subsets: ['latin', 'cyrillic'], weight: ['400'] });
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
-  const theme = cookies().get('theme')?.value as Theme;
-
   return (
-    <html lang='en' data-mode={theme}>
+    <html lang='en' suppressHydrationWarning>
       <head>
-        <meta name='theme-color' content={theme === 'dark' ? 'hsl(222.2 84% 4.9%)' : 'white'} />
+        {/*<meta name='theme-color' content={theme === 'dark' ? 'hsl(222.2 84% 4.9%)' : 'white'} />*/}
 
         <link
           rel='icon'
@@ -67,7 +65,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <meta property='og:image' content={`${SITE_URL}/apple-touch-icon.png`} />
       </head>
       <body className={font.className}>
-        <Providers theme={theme}>
+        <Providers>
           <Header className='sticky top-0 z-20' />
           <main className='container'>{children}</main>
         </Providers>

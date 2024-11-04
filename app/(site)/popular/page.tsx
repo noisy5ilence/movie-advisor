@@ -24,4 +24,6 @@ const Popular = () => {
   );
 };
 
+export const revalidate = 3600;
+
 export default Popular;

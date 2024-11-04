@@ -19,4 +19,6 @@ const Random = () => {
   );
 };
 
+export const revalidate = 1;
+
 export default Random;
