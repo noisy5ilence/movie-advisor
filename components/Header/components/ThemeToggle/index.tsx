@@ -1,12 +1,19 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 import { Button } from '@/components/ui/button';
 
 const ThemeToggle = () => {
-  const { setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+
+  useEffect(() => {
+    document
+      .querySelector('meta[name="theme-color"]')!
+      .setAttribute('content', resolvedTheme === 'dark' ? 'hsl(222.2 84% 4.9%)' : 'white');
+  }, [resolvedTheme]);
 
   return (
     <>

@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { Jost } from 'next/font/google';
-import { cookies } from 'next/headers';
 
 import Header from '@/components/Header';
+import ThemeColor from '@/components/ThemeColor';
 import { SITE_URL, TITLE } from '@/env';
 import Providers from '@/providers';
 
@@ -17,7 +17,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  viewportFit: 'cover'
+  viewportFit: 'cover',
+  themeColor: 'white'
 };
 
 const font = Jost({ subsets: ['latin', 'cyrillic'], weight: ['400'] });
@@ -26,8 +27,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang='en' suppressHydrationWarning>
       <head>
-        {/*<meta name='theme-color' content={theme === 'dark' ? 'hsl(222.2 84% 4.9%)' : 'white'} />*/}
-
+        <ThemeColor />
         <link
           rel='icon'
           type='image/png'
