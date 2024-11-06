@@ -10,5 +10,13 @@ export const tabs = [
   {
     title: 'In theaters',
     type: 'theater'
+  },
+  {
+    title: 'Similar',
+    type: 'similar'
+  },
+  {
+    title: 'Recommendations',
+    type: 'recommendations'
   }
 ];

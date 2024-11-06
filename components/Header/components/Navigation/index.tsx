@@ -45,7 +45,7 @@ export const DesktopNavigation = () => {
   const active = paths.find(({ path }) => path === currentPath);
 
   return (
-    <Nav tabs={paths} active={active || paths[0]}>
+    <Nav tabs={paths} active={active}>
       {({ path, title }) => (
         <Link href={path} prefetch={path !== '/'}>
           <div>{title}</div>

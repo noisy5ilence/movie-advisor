@@ -2,26 +2,47 @@
 
 import { FC, useState } from 'react';
 
+import useSimilar from '@/components/Trending/useSimilar';
 import Nav from '@/components/ui/nav';
 
 import Gallery from './components/Gallery';
-import { tabs } from './constants';
+import { tabs as initialTabs } from './constants';
 import useTrending from './useTrending';
 
-const Trending: FC = () => {
+interface Props {
+  showType: Show['type'];
+  showId: Show['id'];
+  preview?: boolean;
+}
+
+const Trending: FC<Props> = ({ showId, showType, preview }) => {
+  const tabs = preview ? initialTabs.filter(({ type }) => ['similar', 'recommendations'].includes(type)) : initialTabs;
+
   const [active, setActive] = useState(tabs[0]);
 
-  const { data: streaming, isFetched } = useTrending({ type: 'streaming' });
-  const { data: trending } = useTrending({ type: 'trending' });
-  const { data: theater } = useTrending({ type: 'theater' });
+  const streaming = useTrending({ type: 'streaming', enabled: !preview });
+  const trending = useTrending({ type: 'trending', enabled: active.type === 'trending' });
+  const theater = useTrending({ type: 'theater', enabled: active.type === 'theater' });
+  const similar = useSimilar({
+    showId,
+    showType,
+    type: 'similar',
+    enabled: active.type === 'similar'
+  });
+  const recommendations = useSimilar({
+    showId,
+    showType,
+    type: 'recommendations',
+    enabled: active.type === 'recommendations'
+  });
 
-  const shows = { trending, streaming, theater }[active.type] || [];
+  const tab = { trending, streaming, theater, similar, recommendations }[active.type]!;
 
   return (
-    isFetched && (
+    (streaming.isFetched || similar.isFetched) && (
       <div className='hidden md:block'>
         <Nav tabs={tabs} active={active} onChange={(active) => setActive(active)} className='mb-3' />
-        <Gallery key={active.type} shows={shows} />
+        {!tab.isPending && <Gallery key={active.type} shows={tab.data || []} />}
       </div>
     )
   );

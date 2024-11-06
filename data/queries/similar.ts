@@ -2,21 +2,21 @@ import movieAdvisor from '../clients/movieAdvisor';
 import mapMoviesSeriesResponseToShows from '../dto/Show';
 
 export type SimilarQueryProps = {
-  showId: string;
+  showId: Show['id'];
   showType: Show['type'];
+  type?: 'similar' | 'recommendations';
 };
 
-const similarQuery = ({ showId, showType }: SimilarQueryProps) => ({
-  queryKey: ['similar', showId, showType],
-  initialPageParam: '1',
-  queryFn: ({ pageParam = '1' }: { pageParam?: string }) =>
+const similarQuery = ({ showId, showType, type }: SimilarQueryProps) => ({
+  queryKey: [type, showId, showType],
+  queryFn: () =>
     movieAdvisor
-      .get<TMDBPagination<Movie> | TMDBPagination<Series>>(`/${showType}/${showId}/recommendations`, {
+      .get<TMDBPagination<Movie> | TMDBPagination<Series>>(`/${showType}/${showId}/${type}`, {
         params: {
-          page: pageParam
+          page: 1
         }
       })
-      .then((response) => mapMoviesSeriesResponseToShows(response, showType))
+      .then((response) => mapMoviesSeriesResponseToShows(response, showType).results)
 });
 
 export default similarQuery;

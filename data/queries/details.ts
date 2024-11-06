@@ -13,6 +13,7 @@ const detailsQuery = ({ showId, showType }: DetailsQueryProps) => ({
     movieAdvisor
       .get<(Movie | Series) & Details>(`/${showType}/${showId}`)
       .then((response) => ({ ...response, ...mapMovieSeriesToShow(response, showType) }))
+      .catch((error) => Promise.reject(error))
 });
 
 export default detailsQuery;

@@ -32,10 +32,10 @@ class Http {
         }
         return params;
       }, new URLSearchParams())
-    );
+    ).toString();
 
     try {
-      const response = await fetch(`${base}${url}?${serializedParams}`, {
+      const response = await fetch(`${base}${url}${serializedParams ? `?${serializedParams}` : ''}`, {
         method,
         headers: {
           Authorization: this.authorization || '',

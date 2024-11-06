@@ -17,7 +17,7 @@ const Cursor: FC<CursorProps> = ({ width, left, opacity, onTransitionEnd }) => (
 export type NavProps<T extends Tab> = {
   tabs: T[];
   className?: string;
-  active: T;
+  active?: T;
   onChange?: (tab: T) => void;
   children?: (tab: T) => ReactNode;
 };
@@ -39,7 +39,7 @@ function Nav<T extends Tab>({ tabs, active, className, children, onChange }: Nav
       {tabs.map((tab) => {
         const { title } = tab;
 
-        const isActive = title === active.title;
+        const isActive = title === active?.title;
 
         return (
           <li
@@ -48,7 +48,7 @@ function Nav<T extends Tab>({ tabs, active, className, children, onChange }: Nav
             onClick={() => onChange?.(tab)}
             className={cn('z-10 px-2.5 py-0.5 font-normal text-[15px] leading-[20px] cursor-pointer', {
               'cursor-default text-secondary': isActive,
-              'mix-blend-difference text-white': !transitionEnded
+              'mix-blend-difference text-white': active && !transitionEnded
             })}
           >
             {children?.(tab) || <div>{title}</div>}

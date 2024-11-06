@@ -12,18 +12,21 @@ import { cn } from '@/lib/utils';
 import Actions from './components/Actions';
 
 interface Props {
-  show?: Show;
+  show?: Show & Partial<Details>;
+  showType?: Show['type'];
+  showId?: Show['id'];
   className?: string;
+  posterClassName?: string;
   onClose?: () => void;
   poster?: ReactNode;
 }
 
-const Preview: FC<Props> = ({ show: baseShow, className, onClose, poster }) => {
-  const { data: detailedShow } = useDetails({ showId: baseShow?.id, showType: baseShow?.type });
+const Preview: FC<Props> = ({ show: baseShow, showType, showId, className, posterClassName, onClose, poster }) => {
+  const { data: detailedShow } = useDetails({ showId: showId || baseShow?.id, showType: showType || baseShow?.type });
 
-  if (!baseShow) return null;
+  if (!baseShow && !detailedShow) return null;
 
-  const show: (Show & Partial<Details>) | undefined = detailedShow || baseShow;
+  const show: Show & Partial<Details> = (detailedShow || baseShow)!;
 
   const isModal = Boolean(onClose);
 
@@ -35,7 +38,7 @@ const Preview: FC<Props> = ({ show: baseShow, className, onClose, poster }) => {
         className
       )}
     >
-      {poster || <Poster className='mx-auto md:rounded-none md:rounded-l-xl' show={show} />}
+      {poster || <Poster className={cn('mx-auto md:rounded-none md:rounded-l-xl', posterClassName)} show={show} />}
       <div className={cn('flex grow flex-col bg-background', { 'p-0 pt-1 md:p-2': isModal })}>
         <span className='order-3 mb-4 text-3xl md:order-1 md:line-clamp-2'>{show.title}</span>
 
@@ -54,7 +57,7 @@ const Preview: FC<Props> = ({ show: baseShow, className, onClose, poster }) => {
           )}
         </div>
 
-        <Actions className='order-1 mb-4 mt-1 md:order-2 md:mt-0' show={show} onClose={onClose} />
+        <Actions className='order-1 mb-4 mt-1 md:order-2 md:mt-0' show={show} />
 
         <p key={show.id} className='order-4 md:order-4 md:line-clamp-3' title={show.overview}>
           {show.overview}

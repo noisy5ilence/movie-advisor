@@ -1,36 +1,37 @@
 'use client';
 
-import { Bookmark, Copy, Heart, Play, Star } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Bookmark, Heart, Link, Play, Star } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import useShowState, { useMutateShowState } from '@/hooks/useShowState';
+import { useToast } from '@/hooks/useToast';
 import { cn } from '@/lib/utils';
 
 interface Props {
   show: Show & Partial<Details>;
   className: string;
-  onClose?: () => void;
 }
 
-const Actions = ({ onClose, show, className }: Props) => {
-  const router = useRouter();
-
+const Actions = ({ show, className }: Props) => {
+  const { toast } = useToast();
   const state = useShowState({ showId: show.id, showType: show.type });
   const toggle = useMutateShowState(show);
 
   return (
-    <div className={cn('flex gap-2 flex-wrap md:flex-grow-0 flex-grow', className)}>
+    <div className={cn('flex gap-2 flex-grow-0', className)}>
       <ButtonsGroup className='pointer-events-none'>
         <Button aria-label='Show rating' variant='outline'>
           <Star size={14} />
         </Button>
-        <Button variant='outline'>{show.rating.toFixed(1)}</Button>
+        <Button variant='outline' className='w-[43px]'>
+          {show.rating.toFixed(1)}
+        </Button>
       </ButtonsGroup>
       <ButtonsGroup>
         <Button
           aria-label='Toggle favorite'
+          title='Toggle favorite'
           variant='outline'
           disabled={toggle.list === 'favorite' && toggle.isPending}
           onClick={() => toggle.mutate({ list: 'favorite', value: !state?.favorite })}
@@ -39,6 +40,7 @@ const Actions = ({ onClose, show, className }: Props) => {
         </Button>
         <Button
           aria-label='Toggle watch list'
+          title='Toggle watch list'
           variant='outline'
           disabled={toggle.list === 'watchlist' && toggle.isPending}
           onClick={() => toggle.mutate({ list: 'watchlist', value: !state?.watchlist })}
@@ -46,18 +48,20 @@ const Actions = ({ onClose, show, className }: Props) => {
           <Bookmark size={14} className={cn({ 'fill-secondary-foreground': state?.watchlist })} />
         </Button>
       </ButtonsGroup>
-      <ButtonsGroup>
-        <Button
-          onClick={() => {
-            onClose?.();
-            router.push(`/similar?id=${show.id}&title=${encodeURIComponent(show.title)}&type=${show.type}`);
-          }}
-          aria-label='Similar show'
-          variant='outline'
-        >
-          <Copy size={14} />
-          Similar
-        </Button>
+      <Button
+        aria-label='Copy link'
+        title='Copy link'
+        variant='outline'
+        className='h-8 px-3'
+        onClick={() =>
+          navigator.clipboard
+            .writeText(`${location.origin}/${show.type}/${show.id}`)
+            .then(() => toast({ description: 'Link has been copied' }))
+        }
+      >
+        <Link size={14} />
+      </Button>
+      <ButtonsGroup className='ml-auto sm:ml-0'>
         <Button
           aria-label='Watch'
           className='bg-red-600 transition-all duration-200 hover:bg-red-600 hover:shadow-lg hover:shadow-red-600/60 dark:bg-red-700'

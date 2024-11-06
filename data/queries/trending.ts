@@ -3,9 +3,11 @@ import mapMoviesSeriesResponseToShows from '../dto/Show';
 
 export type TrendingQueryProps = {
   type: 'trending' | 'streaming' | 'theater';
+  enabled?: boolean;
 };
 
-const trendingQuery = ({ type }: TrendingQueryProps) => ({
+const trendingQuery = ({ type, enabled }: TrendingQueryProps) => ({
+  enabled,
   queryKey: ['trending', `type-${type}`],
   queryFn: () => {
     const params: Record<string, string | number> = {};

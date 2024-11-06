@@ -28,8 +28,8 @@ const Header: FC<Props> = ({ className }) => (
         </Link>
         <DesktopNavigation />
         <div className='flex items-center gap-2'>
-          <ToggleTheme />
           <ToggleSearch />
+          <ToggleTheme />
           <User />
           <MobileNavigation />
         </div>
