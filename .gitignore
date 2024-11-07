@@ -39,3 +39,6 @@ next-env.d.ts
 certificates
 
 /public/*.js.map
+/public/*.js
+/public/robots.txt
+/public/sitemap*

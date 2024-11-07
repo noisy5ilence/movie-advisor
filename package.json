@@ -9,7 +9,8 @@
     "lint": "next lint --fix .",
     "lint-staged": "lint-staged",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit && echo ",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",
@@ -31,6 +32,7 @@
     "media-icons": "^1.1.5",
     "next": "^14.2.7",
     "next-pwa": "^5.6.0",
+    "next-sitemap": "^4.2.3",
     "next-themes": "^0.4.1",
     "parse-torrent": "^11.0.17",
     "react": "^18.3.1",
