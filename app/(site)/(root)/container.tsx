@@ -5,7 +5,7 @@ import { FC } from 'react';
 import Preview from '@/components/Preview';
 import Trending from '@/components/Trending';
 
-import Carousel from './(components)/Carousel';
+import Carousel from './components/Carousel';
 import useRandomMovie from './useRandomMovie';
 
 interface Props {

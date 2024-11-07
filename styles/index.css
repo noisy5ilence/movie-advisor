@@ -87,18 +87,20 @@
     background: hsl(var(--secondary-foreground));
   }
 
-  ::-webkit-scrollbar {
-    width: 6px;
-    background-color: transparent;
-  }
+  @media not all and (hover: none) {
+    ::-webkit-scrollbar {
+      width: 6px;
+      background-color: transparent;
+    }
 
-  ::-webkit-scrollbar-thumb {
-    border-radius: 6px;
-    background-color: hsl(var(--foreground));
-  }
+    ::-webkit-scrollbar-thumb {
+      border-radius: 6px;
+      background-color: hsl(var(--foreground));
+    }
 
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground));
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: hsl(var(--muted-foreground));
+    }
   }
 
   body {

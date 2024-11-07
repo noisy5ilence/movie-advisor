@@ -1,12 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  logging: {
-    fetches: {
-      fullUrl: true
-    }
-  },
   experimental: {
-    optimizeCss: true
+    optimizeCss: true,
+    staleTimes: {
+      dynamic: 3600,
+      static: 3600
+    }
   },
   images: {
     remotePatterns: [

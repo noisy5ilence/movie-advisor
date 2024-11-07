@@ -3,9 +3,8 @@
 import { FC } from 'react';
 
 import List from '@/components/List';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useUsersShows from '@/hooks/useUsersShows';
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 
 interface Props {
   list: 'favorite' | 'watchlist';

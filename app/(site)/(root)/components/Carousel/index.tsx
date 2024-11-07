@@ -1,6 +1,6 @@
 'use client';
 
-import { ForwardedRef, forwardRef, memo, useLayoutEffect, useMemo, useRef } from 'react';
+import { ForwardedRef, forwardRef, memo, startTransition, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Virtuoso, VirtuosoProps } from 'react-virtuoso';
 
 import Poster from '@/components/Poster';
@@ -21,16 +21,34 @@ interface Props extends Context {
 
 const Carousel = memo(
   function Carousel({ shows, gap = 8, onIndexChange, onEndReached }: Props) {
+    const initialRef = useRef(true);
     const index = useSilentIndex();
+    const [loaded, setLoaded] = useState(!index);
 
-    const context = useMemo(() => ({ onIndexChange, gap }), [onIndexChange, gap]);
+    const context = useMemo(
+      () => ({
+        onIndexChange,
+        gap
+      }),
+      [onIndexChange, gap]
+    );
+
+    const handleScroll = () => {
+      if (loaded) return;
+
+      if (initialRef.current) return (initialRef.current = false);
+
+      startTransition(() => setLoaded(true));
+    };
 
     return (
       <div className='card-aspect-ratio relative mx-auto'>
+        {!loaded && <Poster lazy={false} show={shows![index]} className='pointer-events-none absolute left-0 top-0' />}
         <Virtuoso
+          onScroll={handleScroll}
           initialItemCount={1}
           horizontalDirection
-          skipAnimationFrameInResizeObserver
+          skipAnimationFrameInResizeObserver={true}
           data={shows}
           context={context}
           endReached={onEndReached}
@@ -78,7 +96,14 @@ const components: VirtuosoProps<Show, Context>['components'] = {
     );
   },
   List: forwardRef(function List({ context, ...props }, ref) {
-    return <div {...props} ref={ref} style={{ ...props.style, display: 'flex', gap: context?.gap }} />;
+    return (
+      <div
+        {...props}
+        ref={ref}
+        className='bg-background'
+        style={{ ...props.style, display: 'flex', gap: context?.gap }}
+      />
+    );
   }),
   Scroller: forwardRef(function Scroller({ context, ...props }, ref) {
     const handleRef =
