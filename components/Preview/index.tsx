@@ -57,7 +57,7 @@ const Preview: FC<Props> = ({ show: baseShow, showType, showId, className, poste
           )}
         </div>
 
-        <Actions className='order-1 mb-4 mt-1 md:order-2 md:mt-0' show={show} />
+        <Actions className='order-1 mb-4 md:order-2' show={show} />
 
         <p key={show.id} className='order-4 md:order-4 md:line-clamp-3' title={show.overview}>
           {show.overview}

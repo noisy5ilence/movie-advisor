@@ -21,31 +21,27 @@ interface Props extends Context {
 
 const Carousel = memo(
   function Carousel({ shows, gap = 8, onIndexChange, onEndReached }: Props) {
-    const initialRef = useRef(true);
     const index = useSilentIndex();
     const [loaded, setLoaded] = useState(!index);
 
     const context = useMemo(
       () => ({
-        onIndexChange,
+        onIndexChange: (next: number) => {
+          onIndexChange(next);
+
+          if (loaded || next === index) return;
+
+          startTransition(() => setLoaded(true));
+        },
         gap
       }),
-      [onIndexChange, gap]
+      [onIndexChange, gap, loaded, index]
     );
-
-    const handleScroll = () => {
-      if (loaded) return;
-
-      if (initialRef.current) return (initialRef.current = false);
-
-      startTransition(() => setLoaded(true));
-    };
 
     return (
       <div className='card-aspect-ratio relative mx-auto'>
         {!loaded && <Poster lazy={false} show={shows![index]} className='pointer-events-none absolute left-0 top-0' />}
         <Virtuoso
-          onScroll={handleScroll}
           initialItemCount={1}
           horizontalDirection
           skipAnimationFrameInResizeObserver={true}
