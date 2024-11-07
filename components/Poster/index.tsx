@@ -15,7 +15,7 @@ const Poster: FC<Props> = ({ show, onClick, className, lazy = true }) => (
   <div
     className={cn(
       'card-aspect-ratio relative bg-black overflow-hidden rounded-lg text-lg',
-      'after:block after:absolute after:left-0 after:top-0 after:size-full after:bg-vignette',
+      'after:block after:absolute after:left-0 after:top-0 after:size-full after:bg-vignette after:pointer-events-none',
       className
     )}
   >
