@@ -39,7 +39,7 @@ const Carousel = memo(
     );
 
     return (
-      <div className='card-aspect-ratio relative mx-auto'>
+      <div className='card-aspect-ratio static-aspect-ratio relative mx-auto'>
         {!loaded && <Poster lazy={false} show={shows![index]} className='pointer-events-none absolute left-0 top-0' />}
         <Virtuoso
           initialItemCount={1}
@@ -87,7 +87,7 @@ const components: VirtuosoProps<Show, Context>['components'] = {
 
     return (
       <div {...props} ref={ref} className='snap-start'>
-        <Poster lazy={false} show={item} />
+        <Poster lazy={false} show={item} className='static-aspect-ratio' />
       </div>
     );
   },

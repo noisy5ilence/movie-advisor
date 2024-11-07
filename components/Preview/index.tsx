@@ -39,7 +39,7 @@ const Preview: FC<Props> = ({ show: baseShow, showType, showId, className, poste
       )}
     >
       {poster || <Poster className={cn('mx-auto md:rounded-none md:rounded-l-xl', posterClassName)} show={show} />}
-      <div className={cn('flex grow flex-col bg-background', { 'p-0 pt-1 md:p-2': isModal })}>
+      <div className={cn('flex grow flex-col bg-background', { 'p-0 pt-2 md:p-2': isModal })}>
         <span className='order-3 mb-4 text-3xl md:order-1 md:line-clamp-2'>{show.title}</span>
 
         <div className='order-3 mb-4 flex w-full flex-wrap gap-5 whitespace-nowrap text-sm md:order-2'>
