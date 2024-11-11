@@ -16,7 +16,7 @@ export async function GET({ nextUrl: { searchParams } }: NextRequest, { params: 
         'Content-Type': 'application/json',
         Authorization: `Bearer ${MOVIE_DB_TOKEN}`
       },
-      next: searchParams.get('session_id') ? undefined : { revalidate: 3600 }
+      next: searchParams.get('preventCache') || searchParams.get('session_id') ? undefined : { revalidate: 3600 }
     });
 
     if (!response.ok) {

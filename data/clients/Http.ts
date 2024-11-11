@@ -25,17 +25,23 @@ class Http {
     body?: B;
     preventCache?: boolean;
   }): Promise<T> {
-    const serializedParams = new URLSearchParams(
+    const searchParams = new URLSearchParams(
       Object.entries(search ?? {}).reduce((params, [key, value]) => {
         if (value != null && value !== '') {
           params.set(key, String(value));
         }
         return params;
       }, new URLSearchParams())
-    ).toString();
+    );
+
+    if (preventCache) {
+      searchParams.append('preventCache', '1');
+    }
+
+    const searchParamsString = searchParams.toString();
 
     try {
-      const response = await fetch(`${base}${url}${serializedParams ? `?${serializedParams}` : ''}`, {
+      const response = await fetch(`${base}${url}${searchParamsString ? `?${searchParamsString}` : ''}`, {
         method,
         headers: {
           Authorization: this.authorization || '',

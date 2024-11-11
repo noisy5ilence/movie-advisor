@@ -1,14 +1,18 @@
 import { useEffect, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 
+import sessionMutation from '@/data/mutations/session';
+import tokenMutation from '@/data/mutations/token';
 import { useSetSession } from '@/hooks/useSession';
-
-import { createRequestToken, createSession } from '../../../../data';
+import { useToast } from '@/hooks/useToast';
 
 const useAuth = () => {
   const setSession = useSetSession();
   const tabRef = useRef<Window | null>(null);
   const intervalRef = useRef<NodeJS.Timeout>();
+  const retryRef = useRef(10);
+
+  const { toast } = useToast();
 
   useEffect(() => {
     const interval = intervalRef.current;
@@ -16,17 +20,28 @@ const useAuth = () => {
   }, []);
 
   const session = useMutation({
-    mutationFn: createSession,
+    ...sessionMutation(),
     onSuccess({ session_id }) {
       setSession(session_id);
       clearInterval(intervalRef.current);
 
       tabRef.current?.close();
+    },
+    onError() {
+      if (!retryRef.current) {
+        toast({ title: 'Authorization failed', description: 'Try to authorize later' });
+
+        tabRef.current?.close();
+
+        return clearInterval(intervalRef.current);
+      }
+
+      retryRef.current--;
     }
   });
 
   const requestToken = useMutation({
-    mutationFn: createRequestToken,
+    ...tokenMutation(),
     onMutate() {
       tabRef.current = window.open('', '_blank');
       tabRef.current?.focus();
