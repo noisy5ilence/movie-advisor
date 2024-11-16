@@ -6,11 +6,13 @@ import tokenMutation from '@/data/mutations/token';
 import { useSetSession } from '@/hooks/useSession';
 import { useToast } from '@/hooks/useToast';
 
+const AUTH_RETRIES = 10;
+
 const useAuth = () => {
   const setSession = useSetSession();
   const tabRef = useRef<Window | null>(null);
   const intervalRef = useRef<NodeJS.Timeout>();
-  const retryRef = useRef(10);
+  const retryRef = useRef(AUTH_RETRIES);
 
   const { toast } = useToast();
 
@@ -28,15 +30,13 @@ const useAuth = () => {
       tabRef.current?.close();
     },
     onError() {
-      if (!retryRef.current) {
+      if (!--retryRef.current) {
         toast({ title: 'Authorization failed', description: 'Try to authorize later' });
 
         tabRef.current?.close();
 
         return clearInterval(intervalRef.current);
       }
-
-      retryRef.current--;
     }
   });
 
@@ -49,6 +49,7 @@ const useAuth = () => {
     onSuccess({ redirectUrl, requestToken }) {
       if (!tabRef.current) return;
 
+      retryRef.current = AUTH_RETRIES;
       tabRef.current.location = redirectUrl;
 
       intervalRef.current = setInterval(() => session.mutate({ requestToken }), 2000);

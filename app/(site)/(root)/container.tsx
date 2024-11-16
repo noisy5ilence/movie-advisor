@@ -26,7 +26,7 @@ const Container: FC<Props> = ({ page }) => {
         <div className='h-2 w-full' />
       </div>
       <div className='hidden w-full rounded-lg xs:block'>
-        <Trending showId={movie.id} showType={movie.type} />
+        <Trending showId={movie?.id} showType={movie?.type} />
         <div className='h-2 w-full' />
       </div>
     </div>
