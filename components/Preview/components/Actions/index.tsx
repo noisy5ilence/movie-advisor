@@ -1,9 +1,10 @@
 'use client';
 
-import { Bookmark, Heart, Link, Play, Star } from 'lucide-react';
+import { Bookmark, ExternalLink, Heart, Link, Play, Star } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
+import { SITE_URL } from '@/env';
 import useShowState, { useMutateShowState } from '@/hooks/useShowState';
 import { useToast } from '@/hooks/useToast';
 import { cn } from '@/lib/utils';
@@ -30,8 +31,8 @@ const Actions = ({ show, className }: Props) => {
       </ButtonsGroup>
       <ButtonsGroup>
         <Button
-          aria-label='Toggle favorite'
-          title='Toggle favorite'
+          aria-label={`${state?.favorite ? 'Remove from' : 'Add to'} favorites`}
+          title={`${state?.favorite ? 'Remove from' : 'Add to'} favorites`}
           variant='outline'
           disabled={toggle.list === 'favorite' && toggle.isPending}
           onClick={() => toggle.mutate({ list: 'favorite', value: !state?.favorite })}
@@ -39,8 +40,8 @@ const Actions = ({ show, className }: Props) => {
           <Heart size={14} className={cn({ 'fill-secondary-foreground': state?.favorite })} />
         </Button>
         <Button
-          aria-label='Toggle watch list'
-          title='Toggle watch list'
+          aria-label={`${state?.watchlist ? 'Remove from' : 'Add to'} watch list`}
+          title={`${state?.watchlist ? 'Remove from' : 'Add to'} watch list`}
           variant='outline'
           disabled={toggle.list === 'watchlist' && toggle.isPending}
           onClick={() => toggle.mutate({ list: 'watchlist', value: !state?.watchlist })}
@@ -48,19 +49,31 @@ const Actions = ({ show, className }: Props) => {
           <Bookmark size={14} className={cn({ 'fill-secondary-foreground': state?.watchlist })} />
         </Button>
       </ButtonsGroup>
-      <Button
-        aria-label='Copy link'
-        title='Copy link'
-        variant='outline'
-        className='h-8 px-3'
-        onClick={() =>
-          navigator.clipboard
-            .writeText(`${location.origin}/${show.type}/${show.id}`)
-            .then(() => toast({ description: 'Link has been copied' }))
-        }
-      >
-        <Link size={14} />
-      </Button>
+      <ButtonsGroup className='ml-auto sm:ml-0'>
+        <Button
+          aria-label='Copy link'
+          title='Copy link'
+          variant='outline'
+          className='h-8 px-3'
+          onClick={() =>
+            navigator.clipboard
+              .writeText(`${location.origin}/${show.type}/${show.id}`)
+              .then(() => toast({ description: 'Link has been copied' }))
+          }
+        >
+          <Link size={14} />
+        </Button>
+        <Button aria-label='Open in new tab' title='Open in new tab' variant='outline' className='relative h-8 px-3'>
+          <a
+            className='absolute left-0 top-0 size-full'
+            target='_blank'
+            rel='noopener noreferrer'
+            href={`${SITE_URL}/${show.type}/${show.id}`}
+          />
+          <ExternalLink size={14} />
+        </Button>
+      </ButtonsGroup>
+
       <ButtonsGroup className='ml-auto sm:ml-0'>
         <Button
           aria-label='Watch'
