@@ -16,6 +16,7 @@ const Container: FC<Props> = ({ showId, showType }) => (
         showType={showType}
         className='rounded-lg bg-background'
         posterClassName='md:rounded-lg'
+        externalLink={false}
       />
       <div className='h-2 w-full' />
     </div>

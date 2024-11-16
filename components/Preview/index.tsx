@@ -19,9 +19,19 @@ interface Props {
   posterClassName?: string;
   onClose?: () => void;
   poster?: ReactNode;
+  externalLink?: boolean;
 }
 
-const Preview: FC<Props> = ({ show: baseShow, showType, showId, className, posterClassName, onClose, poster }) => {
+const Preview: FC<Props> = ({
+  show: baseShow,
+  showType,
+  showId,
+  className,
+  posterClassName,
+  onClose,
+  poster,
+  externalLink = true
+}) => {
   const { data: detailedShow } = useDetails({ showId: showId || baseShow?.id, showType: showType || baseShow?.type });
 
   if (!baseShow && !detailedShow) return null;
@@ -57,7 +67,7 @@ const Preview: FC<Props> = ({ show: baseShow, showType, showId, className, poste
           )}
         </div>
 
-        <Actions className='order-1 mb-4 md:order-2' show={show} />
+        <Actions externalLink={externalLink} className='order-1 mb-4 md:order-2' show={show} />
 
         <p key={show.id} className='order-4 md:order-4 md:line-clamp-3' title={show.overview}>
           {show.overview}

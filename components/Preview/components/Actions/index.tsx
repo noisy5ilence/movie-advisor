@@ -12,12 +12,29 @@ import { cn } from '@/lib/utils';
 interface Props {
   show: Show & Partial<Details>;
   className: string;
+  externalLink: boolean;
 }
 
-const Actions = ({ show, className }: Props) => {
+const Actions = ({ show, className, externalLink }: Props) => {
   const { toast } = useToast();
   const state = useShowState({ showId: show.id, showType: show.type });
   const toggle = useMutateShowState(show);
+
+  const copyLink = (
+    <Button
+      aria-label='Copy link'
+      title='Copy link'
+      variant='outline'
+      className='h-8 px-3'
+      onClick={() =>
+        navigator.clipboard
+          .writeText(`${location.origin}/${show.type}/${show.id}`)
+          .then(() => toast({ description: 'Link has been copied' }))
+      }
+    >
+      <Link size={14} />
+    </Button>
+  );
 
   return (
     <div className={cn('flex gap-2 flex-grow-0', className)}>
@@ -49,31 +66,29 @@ const Actions = ({ show, className }: Props) => {
           <Bookmark size={14} className={cn({ 'fill-secondary-foreground': state?.watchlist })} />
         </Button>
       </ButtonsGroup>
-      <ButtonsGroup className='ml-auto sm:ml-0'>
-        <Button
-          aria-label='Copy link'
-          title='Copy link'
-          variant='outline'
-          className='h-8 px-3'
-          onClick={() =>
-            navigator.clipboard
-              .writeText(`${location.origin}/${show.type}/${show.id}`)
-              .then(() => toast({ description: 'Link has been copied' }))
-          }
-        >
-          <Link size={14} />
-        </Button>
-        <Button aria-label='Open in new tab' title='Open in new tab' variant='outline' className='relative h-8 px-3'>
-          <a
-            className='absolute left-0 top-0 size-full'
-            target='_blank'
-            rel='noopener noreferrer'
-            href={`${SITE_URL}/${show.type}/${show.id}`}
-          />
-          <ExternalLink size={14} />
-        </Button>
-      </ButtonsGroup>
-
+      {externalLink ? (
+        <ButtonsGroup>
+          {copyLink}
+          {externalLink && (
+            <Button
+              aria-label='Open in new tab'
+              title='Open in new tab'
+              variant='outline'
+              className='relative h-8 px-3'
+            >
+              <a
+                className='absolute left-0 top-0 size-full'
+                target='_blank'
+                rel='noopener noreferrer'
+                href={`${SITE_URL}/${show.type}/${show.id}`}
+              />
+              <ExternalLink size={14} />
+            </Button>
+          )}
+        </ButtonsGroup>
+      ) : (
+        copyLink
+      )}
       <ButtonsGroup className='ml-auto sm:ml-0'>
         <Button
           aria-label='Watch'

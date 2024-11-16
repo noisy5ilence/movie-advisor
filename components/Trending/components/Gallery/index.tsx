@@ -17,11 +17,17 @@ const Gallery: FC<Props> = ({ shows }) => (
         ref={setScrollElement}
         className='no-scrollbar flex animate-fade-aside-slide-in snap-x snap-mandatory gap-2 overflow-auto rounded-lg opacity-0'
       >
-        {shows.map((show) => (
-          <li key={show.id} className='snap-start'>
-            <Poster className='!h-[350px] !w-[230px] text-sm' show={show} onClick={() => showPreviewModal({ show })} />
-          </li>
-        ))}
+        {shows
+          .filter((show) => show.poster['1x'])
+          .map((show) => (
+            <li key={show.id} className='snap-start'>
+              <Poster
+                className='!h-[350px] !w-[230px] text-sm'
+                show={show}
+                onClick={() => showPreviewModal({ show })}
+              />
+            </li>
+          ))}
       </ul>
     )}
   </ScrollNavigation>
