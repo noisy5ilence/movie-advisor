@@ -56,12 +56,13 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
         <Button variant='outline' className='relative grow-0 px-3' title='Download m3u playlist'>
           <a
             className='absolute left-0 top-0 size-full'
+            target='_blank'
             href={`${STREAM_URL}?m3u&link=${encodeURIComponent(magnet)}`}
           />
           <ListVideo size={20} />
         </Button>
         <Button className='relative grow-0 px-3' variant='outline' title='Download magnet'>
-          <a className='absolute left-0 top-0 size-full' href={magnet} />
+          <a className='absolute left-0 top-0 size-full' target='_blank' href={magnet} />
           <Magnet size={20} />
         </Button>
         {supportedForCast && (
