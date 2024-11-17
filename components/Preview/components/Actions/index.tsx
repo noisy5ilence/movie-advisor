@@ -4,7 +4,6 @@ import { Bookmark, ExternalLink, Heart, Link, Play, Star } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
-import { SITE_URL } from '@/env';
 import useShowState, { useMutateShowState } from '@/hooks/useShowState';
 import { useToast } from '@/hooks/useToast';
 import { cn } from '@/lib/utils';
@@ -75,13 +74,8 @@ const Actions = ({ show, className, externalLink }: Props) => {
               title='Open in new tab'
               variant='outline'
               className='relative h-8 px-3'
+              onClick={() => window.open(`${location.origin}/${show.type}/${show.id}`, '_blank')}
             >
-              <a
-                className='absolute left-0 top-0 size-full'
-                target='_blank'
-                rel='noopener noreferrer'
-                href={`${SITE_URL}/${show.type}/${show.id}`}
-              />
               <ExternalLink size={14} />
             </Button>
           )}
