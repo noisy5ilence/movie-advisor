@@ -34,7 +34,7 @@ const UsersList: FC<Props> = ({ list, label, session }) => {
         <TabsContent key={key} value={key} className='w-full'>
           {query.isFetched && !query.shows.length ? (
             <div className='flex h-40 w-full items-center justify-center text-center text-xl text-muted-foreground'>
-              There are no {title.toLowerCase()} in your {label} list
+              There are no {title.toLowerCase()} in your {label}
             </div>
           ) : (
             <List shows={query.shows} fetchNextPage={query.fetchNextPage} />

@@ -1,4 +1,4 @@
-export const TITLE = process.env.NEXT_PUBLIC_TITLE || 'Movie Advisor';
+export const TITLE = process.env.NEXT_PUBLIC_TITLE || 'Movies Advisor';
 
 const BASE =
   process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'

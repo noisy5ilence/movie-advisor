@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import Nav from '@/components/ui/nav';
+import { cn } from '@/lib/utils';
 
 import { paths } from './constants';
 
@@ -22,7 +23,7 @@ export const MobileNavigation = () => {
             <Menu size={19} />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className='flex w-44 flex-col gap-2 p-2'>
+        <DropdownMenuContent className='flex w-44 flex-col gap-2 rounded-none rounded-bl-lg border-none p-2'>
           {paths.map(({ path, title }) => (
             <DropdownMenuItem key={path} asChild>
               <Link href={path} prefetch={path !== '/'}>
