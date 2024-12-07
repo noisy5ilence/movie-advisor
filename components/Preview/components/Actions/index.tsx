@@ -87,7 +87,7 @@ const Actions = ({ show, className, externalLink }: Props) => {
       </div>
       <Button
         aria-label='Watch'
-        className='ml-auto h-8 bg-red-600 transition-all duration-200 hover:bg-red-600 hover:shadow-lg hover:shadow-red-600/60 sm:ml-0 dark:bg-red-700'
+        className='ml-auto h-8 gap-1.5 bg-red-600 px-3 transition-all duration-200 hover:bg-red-600 hover:shadow-lg hover:shadow-red-600/60 sm:ml-0 dark:bg-red-700'
         variant='destructive'
         onClick={async () => {
           const showTorrentsModal = (await import('../Torrents')).default;
