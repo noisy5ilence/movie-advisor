@@ -37,72 +37,72 @@ const Actions = ({ show, className, externalLink }: Props) => {
 
   return (
     <div className={cn('flex gap-2 flex-grow-0', className)}>
-      <ButtonsGroup className='pointer-events-none'>
-        <Button aria-label='Show rating' variant='outline'>
-          <Star size={14} />
-        </Button>
-        <Button variant='outline' className='w-[43px]'>
-          {show.rating.toFixed(1)}
-        </Button>
-      </ButtonsGroup>
-      <ButtonsGroup>
-        <Button
-          aria-label={`${state?.favorite ? 'Remove from' : 'Add to'} favorites`}
-          title={`${state?.favorite ? 'Remove from' : 'Add to'} favorites`}
-          variant='outline'
-          disabled={toggle.list === 'favorite' && toggle.isPending}
-          onClick={() => toggle.mutate({ list: 'favorite', value: !state?.favorite })}
-        >
-          <Heart size={14} className={cn({ 'fill-secondary-foreground': state?.favorite })} />
-        </Button>
-        <Button
-          aria-label={`${state?.watchlist ? 'Remove from' : 'Add to'} watch list`}
-          title={`${state?.watchlist ? 'Remove from' : 'Add to'} watch list`}
-          variant='outline'
-          disabled={toggle.list === 'watchlist' && toggle.isPending}
-          onClick={() => toggle.mutate({ list: 'watchlist', value: !state?.watchlist })}
-        >
-          <Bookmark size={14} className={cn({ 'fill-secondary-foreground': state?.watchlist })} />
-        </Button>
-      </ButtonsGroup>
-      {externalLink ? (
-        <ButtonsGroup>
-          {copyLink}
-          {externalLink && (
-            <Button
-              aria-label='Open in new tab'
-              title='Open in new tab'
-              variant='outline'
-              className='relative h-8 px-3'
-              onClick={() => window.open(`${location.origin}/${show.type}/${show.id}`, '_blank')}
-            >
-              <ExternalLink size={14} />
-            </Button>
-          )}
+      <div className='flex flex-wrap gap-2'>
+        <ButtonsGroup className='pointer-events-none'>
+          <Button aria-label='Show rating' variant='outline'>
+            <Star size={14} />
+          </Button>
+          <Button variant='outline' className='w-[43px]'>
+            {show.rating.toFixed(1)}
+          </Button>
         </ButtonsGroup>
-      ) : (
-        copyLink
-      )}
-      <ButtonsGroup className='ml-auto sm:ml-0'>
-        <Button
-          aria-label='Watch'
-          className='bg-red-600 transition-all duration-200 hover:bg-red-600 hover:shadow-lg hover:shadow-red-600/60 dark:bg-red-700'
-          variant='destructive'
-          onClick={async () => {
-            const showTorrentsModal = (await import('../Torrents')).default;
+        <ButtonsGroup>
+          <Button
+            aria-label={`${state?.favorite ? 'Remove from' : 'Add to'} favorites`}
+            title={`${state?.favorite ? 'Remove from' : 'Add to'} favorites`}
+            variant='outline'
+            disabled={toggle.list === 'favorite' && toggle.isPending}
+            onClick={() => toggle.mutate({ list: 'favorite', value: !state?.favorite })}
+          >
+            <Heart size={14} className={cn({ 'fill-secondary-foreground': state?.favorite })} />
+          </Button>
+          <Button
+            aria-label={`${state?.watchlist ? 'Remove from' : 'Add to'} watch list`}
+            title={`${state?.watchlist ? 'Remove from' : 'Add to'} watch list`}
+            variant='outline'
+            disabled={toggle.list === 'watchlist' && toggle.isPending}
+            onClick={() => toggle.mutate({ list: 'watchlist', value: !state?.watchlist })}
+          >
+            <Bookmark size={14} className={cn({ 'fill-secondary-foreground': state?.watchlist })} />
+          </Button>
+        </ButtonsGroup>
+        {externalLink ? (
+          <ButtonsGroup>
+            {copyLink}
+            {externalLink && (
+              <Button
+                aria-label='Open in new tab'
+                title='Open in new tab'
+                variant='outline'
+                className='relative h-8 px-3'
+                onClick={() => window.open(`${location.origin}/${show.type}/${show.id}`, '_blank')}
+              >
+                <ExternalLink size={14} />
+              </Button>
+            )}
+          </ButtonsGroup>
+        ) : (
+          copyLink
+        )}
+      </div>
+      <Button
+        aria-label='Watch'
+        className='ml-auto h-8 bg-red-600 transition-all duration-200 hover:bg-red-600 hover:shadow-lg hover:shadow-red-600/60 sm:ml-0 dark:bg-red-700'
+        variant='destructive'
+        onClick={async () => {
+          const showTorrentsModal = (await import('../Torrents')).default;
 
-            showTorrentsModal({
-              imdbID: show.imdb_id!,
-              title: show.title,
-              backdrop: show.backdrop,
-              year: new Date(show.release).getFullYear()
-            });
-          }}
-        >
-          <Play size={15} />
-          Watch
-        </Button>
-      </ButtonsGroup>
+          showTorrentsModal({
+            imdbID: show.imdb_id!,
+            title: show.title,
+            backdrop: show.backdrop,
+            year: new Date(show.release).getFullYear()
+          });
+        }}
+      >
+        <Play size={15} />
+        Watch
+      </Button>
     </div>
   );
 };
