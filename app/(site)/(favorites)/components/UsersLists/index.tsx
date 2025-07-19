@@ -13,7 +13,7 @@ interface Props {
 }
 
 const UsersList: FC<Props> = ({ list, label, session }) => {
-  const movies = useUsersShows({ list, showType: 'movie', session });
+  const movies = useUsersShows({ list, showType: 'movie', session, mode: 'default' });
   const series = useUsersShows({ list, showType: 'tv', session, mode: 'default' });
 
   const tabs = [
@@ -23,7 +23,7 @@ const UsersList: FC<Props> = ({ list, label, session }) => {
 
   return (
     <Tabs defaultValue='movie' className='flex w-full flex-col items-center'>
-      <TabsList className='grid w-full grid-cols-2 sm:w-[300px]'>
+      <TabsList className='grid w-full grid-cols-2'>
         {tabs.map(({ title, key }) => (
           <TabsTrigger key={key} value={key}>
             {title}
