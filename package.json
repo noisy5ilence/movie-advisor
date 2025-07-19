@@ -12,6 +12,9 @@
     "prepare": "husky",
     "postbuild": "next-sitemap"
   },
+  "engines": {
+    "node": "22.x"
+  },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.1.2",
