@@ -4,7 +4,7 @@ import { Cast, Download, ListVideo, Loader, Magnet, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import { Quality } from '@/data/parsers/yts/models';
-import { STREAM_URL } from '@/env';
+import { useStreamUrl } from '@/hooks/useStreamUrl';
 import { cn } from '@/lib/utils';
 
 import { providers } from '../../../../constants';
@@ -23,6 +23,7 @@ interface Props {
 const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
   const prefix = usePrefix();
   const cast = useCastMagnet();
+  const streamUrl = useStreamUrl();
 
   const supportedForStream = Boolean(
     (provider === providers.yts.key &&
@@ -58,7 +59,7 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
             className='absolute left-0 top-0 size-full'
             target='_blank'
             rel='noopener noreferrer'
-            href={`${STREAM_URL}?m3u&link=${encodeURIComponent(magnet)}`}
+            href={`${streamUrl}?m3u&link=${encodeURIComponent(magnet)}`}
           />
           <ListVideo size={20} />
         </Button>

@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { STREAM_URL } from '@/env';
+import { useStreamUrl } from '@/hooks/useStreamUrl';
 
 export type Source = { name: string; src: string; type: string };
 type Sources = { subtitles: Source[]; videos: Source[] };
 
 const useFiles = (magnet: string) => {
-  const streamUrl = `${STREAM_URL}?link=${encodeURIComponent(magnet)}`;
+  const streamUrl = `${useStreamUrl()}?link=${encodeURIComponent(magnet)}`;
   const query = useQuery<Stream>({
     queryKey: ['files', magnet],
     queryFn: () => fetch(`${streamUrl}&stat`).then((response) => response.json())

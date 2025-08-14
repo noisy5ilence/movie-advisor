@@ -47,7 +47,7 @@ export const showSearchModal = create(({ onResolve }) => {
 
   return (
     <Modal className='block max-w-[932px] p-0' onClose={onResolve} scrollRef={scrollRef}>
-      <div className='p-2'>
+      <div className='sticky top-[-2px] z-20 rounded-xl bg-background p-2'>
         <ButtonsGroup className='h-10'>
           <Input
             autoFocus
