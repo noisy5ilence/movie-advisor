@@ -73,7 +73,8 @@ export class PirateBay {
           size: sizes[index],
           seeders: parseInt(seeders[index] || '0', 10),
           quality: resolution,
-          magnet: magnets[index] || ''
+          magnet: magnets[index] || '',
+          hash: ''
         };
       });
     });

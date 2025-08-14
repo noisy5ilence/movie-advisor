@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import { PlaylistIcon } from '@vidstack/react/icons';
 
 import { cn } from '@/lib/utils';
@@ -16,13 +16,13 @@ const VideosMenu: FC<Props> = ({ sources, source, onChange }) => {
 
   return (
     <PlayerMenu
+      closeOnSelect
       value={value.toString()}
       options={sources.map(({ name }, index) => ({
         label: name,
         value: index.toString(),
         onSelect: () => onChange(index)
       }))}
-      className='max-h-80'
     >
       <PlaylistIcon className={cn('vds-icon !transform-none')} />
       <span className={cn('plyr__tooltip')}>Playlist</span>

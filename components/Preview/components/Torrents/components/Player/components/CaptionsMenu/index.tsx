@@ -10,6 +10,7 @@ const CaptionsMenu = () => {
 
   return (
     <PlayerMenu
+      closeOnSelect
       value={tracks.selectedValue}
       options={tracks.map((track) => ({ label: track.label, value: track.value, onSelect: () => track.select() }))}
     >

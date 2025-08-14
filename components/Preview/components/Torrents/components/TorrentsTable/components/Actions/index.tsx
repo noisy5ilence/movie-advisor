@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import { Quality } from '@/data/parsers/yts/models';
 import { useStreamUrl } from '@/hooks/useStreamUrl';
-import { cn } from '@/lib/utils';
+import { cn, getMagnetHash } from '@/lib/utils';
 
 import { providers } from '../../../../constants';
 import { useCastMagnet, usePrefix } from '../../../../hooks/useMagnetHosts';
@@ -36,6 +36,8 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
 
   const magnet = fetchMagnet.data || torrent.magnet;
 
+  const hash = getMagnetHash(magnet);
+
   const supportedForCast = prefix && !prefix.includes('{host}');
 
   return (
@@ -48,7 +50,7 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
               'flex-grow-0 px-3 bg-red-600',
               'hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600'
             )}
-            onClick={() => showPlayer({ magnet, backdrop, title })}
+            onClick={() => showPlayer({ magnet, backdrop, title, hash })}
             title='Play'
           >
             <Play size={15} />
@@ -59,7 +61,7 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
             className='absolute left-0 top-0 size-full'
             target='_blank'
             rel='noopener noreferrer'
-            href={`${streamUrl}?m3u&link=${encodeURIComponent(magnet)}`}
+            href={`${streamUrl}/stream?m3u&link=${encodeURIComponent(magnet)}`}
           />
           <ListVideo size={20} />
         </Button>

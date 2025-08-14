@@ -46,7 +46,6 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
       <TableBody>
         {torrents?.map((torrent) => {
           const yearView = torrent.year && year.toString() != torrent.year && `[${torrent.year}]`;
-
           return (
             <Fragment key={torrent.magnet + torrent.id + torrent.download}>
               <TableRow className='table-row border-b-0 hover:bg-transparent md:hidden'>

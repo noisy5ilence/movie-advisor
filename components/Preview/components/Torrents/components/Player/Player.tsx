@@ -16,7 +16,7 @@ import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr
 import { cn } from '@/lib/utils';
 
 import CaptionsMenu from './components/CaptionsMenu';
-import VideosMenu from './components/VideosMenu';
+import PlaylistMenu from './components/PlaylistMenu';
 import useSource from './useSource';
 
 import '@vidstack/react/player/styles/plyr/theme.css';
@@ -25,10 +25,9 @@ interface Props {
   magnet: string;
   subtitles: Source[];
   videos: Source[];
-  onReady: () => void;
 }
 
-const Player: FC<Props> = ({ videos, subtitles, magnet, onReady }) => {
+const Player: FC<Props> = ({ videos, subtitles, magnet }) => {
   const { index, setIndex } = useSource({ magnet });
 
   const player = useRef<MediaPlayerInstance>(null);
@@ -48,7 +47,6 @@ const Player: FC<Props> = ({ videos, subtitles, magnet, onReady }) => {
   return (
     <MediaPlayer
       autoPlay
-      onCanPlay={onReady}
       load='eager'
       storage='movie-advisor'
       ref={player}
@@ -75,7 +73,7 @@ const Player: FC<Props> = ({ videos, subtitles, magnet, onReady }) => {
           afterVolumeSlider: <ul className='w-2' />,
           beforeSettings: Boolean(subtitles.length) && <CaptionsMenu />,
           settings: videos.length > 1 && (
-            <VideosMenu key={source?.src} source={source} sources={videos} onChange={setIndex} />
+            <PlaylistMenu key={source?.src} source={source} sources={videos} onChange={setIndex} />
           )
         }}
       />

@@ -5,11 +5,15 @@ import { useStreamUrl } from '@/hooks/useStreamUrl';
 export type Source = { name: string; src: string; type: string };
 type Sources = { subtitles: Source[]; videos: Source[] };
 
-const useFiles = (magnet: string) => {
-  const streamUrl = `${useStreamUrl()}?link=${encodeURIComponent(magnet)}`;
+interface Props {
+  magnet: string;
+}
+
+const useFiles = ({ magnet }: Props) => {
+  const streamUrl = `${useStreamUrl()}/stream?link=${encodeURIComponent(magnet)}`;
   const query = useQuery<Stream>({
     queryKey: ['files', magnet],
-    queryFn: () => fetch(`${streamUrl}&stat`).then((response) => response.json())
+    queryFn: () => fetch(`${streamUrl}&stat&preload`).then((response) => response.json())
   });
 
   return {

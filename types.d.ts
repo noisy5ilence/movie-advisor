@@ -132,6 +132,7 @@ interface Torrent {
   container?: string;
   year?: string;
   download?: string;
+  hash: string;
 }
 
 interface Source {
@@ -166,6 +167,8 @@ interface Stream {
   bytes_written: number;
   bytes_read: number;
   file_stats: FileStat[];
+  download_speed: number;
+  preloaded_bytes: number;
 }
 
 interface FileStat {
@@ -189,12 +192,4 @@ interface Account {
   name: string;
   username: string;
   avatar: Avatar;
-}
-
-interface Gravatar {
-  hash: string;
-}
-
-interface Tmdb {
-  avatar_path: null;
 }

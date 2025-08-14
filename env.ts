@@ -9,7 +9,8 @@ export const SITE_URL = `${BASE?.startsWith('http') ? BASE : `https://${BASE}`}`
 export const MOVIE_DB_TOKEN = process.env.MOVIE_DB_TOKEN;
 export const MOVIE_DB_API_URL = process.env.MOVIE_DB_API_URL || 'https://api.themoviedb.org/3';
 
-export const STREAM_URL = `${process.env.NEXT_PUBLIC_TORRENT_PROXY}/stream`;
+export const STREAM_URL = process.env.NEXT_PUBLIC_TORRENT_PROXY || '';
+export const PRELOAD_CACHE_LIMIT = +(process.env.NEXT_PUBLIC_PRELOAD_CACHE_LIMIT || 32);
 
 export const TOLOKA_HOST = process.env.TOLOKA_HOST;
 export const TOLOKA_USERNAME = process.env.TOLOKA_USERNAME;

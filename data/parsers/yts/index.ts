@@ -61,7 +61,8 @@ export class YTS {
               quality: torrent.quality,
               source: torrent.type,
               year: movie.year?.toString(),
-              magnet: `magnet:?xt=urn:btih:${torrent.hash}&dn=${encodeURIComponent(query)}&tr=${trackers.join('&tr=')}`
+              magnet: `magnet:?xt=urn:btih:${torrent.hash}&dn=${encodeURIComponent(query)}&tr=${trackers.join('&tr=')}`,
+              hash: torrent.hash
             };
           }) || []
         );

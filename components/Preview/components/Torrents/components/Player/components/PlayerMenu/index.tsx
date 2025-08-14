@@ -1,7 +1,9 @@
-import { FC, forwardRef, ReactNode, useRef } from 'react';
+import React, { FC, forwardRef, MutableRefObject, ReactNode, useRef } from 'react';
+import { create, InstanceProps } from 'react-modal-promise';
 import { Virtuoso, VirtuosoHandle, VirtuosoProps } from 'react-virtuoso';
 import { Menu } from '@vidstack/react';
 
+import { Modal } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 type Option = { onSelect: (value: string) => void; value: string; label: string };
@@ -10,32 +12,42 @@ interface Props {
   children: ReactNode;
   options: Option[];
   value: string;
-  className?: string;
+  closeOnSelect?: boolean;
 }
 
-const PlayerMenu: FC<Props> = ({ children, options, value, className }) => {
-  const virtuosoRef = useRef<VirtuosoHandle | null>(null);
+const showMenu = create(
+  ({ onResolve, options, value, closeOnSelect }: InstanceProps<void> & Omit<Props, 'children'>) => {
+    const virtuosoRef = useRef<VirtuosoHandle | null>(null);
+    const scrollRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement>;
 
-  return (
-    <Menu.Root
-      className={cn('plyr__menu')}
-      onOpen={() =>
-        setTimeout(() => {
-          virtuosoRef.current?.scrollToIndex({ behavior: 'smooth', index: +value });
-        }, 100)
-      }
-    >
-      <Menu.Button className={cn('plyr__controls__item plyr__control')}>{children}</Menu.Button>
-      <Menu.Items className={cn('!bg-background rounded-lg h-60 after:hidden p-2', className)} placement='top end'>
+    return (
+      <Modal className='max-w-screen-xs rounded-xl p-2' onClose={onResolve} scrollRef={scrollRef}>
         <Virtuoso
+          useWindowScroll
+          initialTopMostItemIndex={+value || 0}
+          overscan={20}
+          initialItemCount={20}
           ref={virtuosoRef}
-          className='h-full w-72'
-          initialItemCount={10}
+          customScrollParent={scrollRef.current}
           data={options}
           context={value}
           components={components}
+          onClick={closeOnSelect ? () => onResolve() : undefined}
         />
-      </Menu.Items>
+      </Modal>
+    );
+  }
+);
+
+const PlayerMenu: FC<Props> = ({ children, options, value, closeOnSelect }) => {
+  return (
+    <Menu.Root className={cn('plyr__menu')}>
+      <Menu.Button
+        onClick={() => showMenu({ options, value, closeOnSelect })}
+        className={cn('plyr__controls__item plyr__control')}
+      >
+        {children}
+      </Menu.Button>
     </Menu.Root>
   );
 };
@@ -45,31 +57,27 @@ const components: VirtuosoProps<Option, string>['components'] = {
     if (!option) return null;
 
     return (
-      <Menu.Radio asChild>
-        <div
-          {...props}
-          key={option.value}
-          title={option.label}
-          onClick={() => option.onSelect(option.value)}
-          className={cn(
-            '!m-0 cursor-pointer whitespace-normal break-all rounded-sm bg-secondary text-left !px-2 !py-1 text-foreground',
-            {
-              'bg-secondary-foreground text-secondary': context === option.value
-            }
-          )}
-        >
-          {option.label}
-        </div>
-      </Menu.Radio>
+      <div
+        {...props}
+        key={option.value}
+        title={option.label}
+        onClick={() => option.onSelect(option.value)}
+        className={cn(
+          '!m-0 cursor-pointer whitespace-normal break-all rounded-sm bg-secondary text-left !px-2 !py-1 text-foreground',
+          {
+            'bg-secondary-foreground text-secondary': context === option.value
+          }
+        )}
+      >
+        {option.label}
+      </div>
     );
   },
   List: forwardRef(function List({ children, ...props }, ref) {
     return (
-      <Menu.RadioGroup asChild className='flex flex-col gap-2' value={props.context}>
-        <div {...props} ref={ref}>
-          {children}
-        </div>
-      </Menu.RadioGroup>
+      <div className='flex flex-col gap-2' {...props} ref={ref}>
+        {children}
+      </div>
     );
   })
 };
