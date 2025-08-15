@@ -1,11 +1,11 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { Cast, Download, ListVideo, Loader, Magnet, Play } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import { Quality } from '@/data/parsers/yts/models';
 import { useStreamUrl } from '@/hooks/useStreamUrl';
-import { cn, getMagnetHash } from '@/lib/utils';
+import { cn, detectSafari, getMagnetHash } from '@/lib/utils';
 
 import { providers } from '../../../../constants';
 import { useCastMagnet, usePrefix } from '../../../../hooks/useMagnetHosts';
@@ -25,12 +25,21 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
   const cast = useCastMagnet();
   const streamUrl = useStreamUrl();
 
-  const supportedForStream = Boolean(
-    (provider === providers.yts.key &&
-      torrent.seeders &&
-      [Quality.The1080P, Quality.The720P].includes(torrent.quality as Quality)) ||
-      torrent.container?.includes('mp4')
-  );
+  const { isIOS, isSafari } = detectSafari();
+  const isHEVC = torrent.codec?.includes('265') || torrent.codec?.toLowerCase().includes('hevc');
+
+  const supportedForStream = useMemo(() => {
+    if (provider === providers.yts.key) {
+      return (
+        [Quality.The1080P, Quality.The720P].includes(torrent.quality as Quality) &&
+        (isHEVC ? !isIOS && !isSafari : true)
+      );
+    }
+
+    const isMP4 = torrent.container?.includes('mp4');
+
+    return isMP4 && (isHEVC ? !isIOS && !isSafari : true);
+  }, [isIOS, isSafari, isHEVC, torrent, provider]);
 
   const fetchMagnet = useMagnet(torrent);
 

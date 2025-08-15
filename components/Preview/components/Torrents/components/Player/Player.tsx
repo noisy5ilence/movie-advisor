@@ -46,7 +46,7 @@ const Player: FC<Props> = ({ videos, subtitles, magnet }) => {
 
   return (
     <MediaPlayer
-      autoPlay
+      playsInline
       load='eager'
       storage='movie-advisor'
       ref={player}

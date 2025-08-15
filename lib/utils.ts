@@ -42,3 +42,12 @@ export const formatBytes = (bytes?: number) => {
 
   return `${v.toFixed(v < 10 && i > 0 ? 1 : 0)} ${units[i]}`;
 };
+
+export const detectSafari = () => {
+  const ua = navigator.userAgent;
+  const isSafari = ua.includes('Safari') && !ua.includes('Chrome') && !ua.includes('CriOS') && !ua.includes('FxiOS');
+
+  const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  return { isSafari, isIOS };
+};

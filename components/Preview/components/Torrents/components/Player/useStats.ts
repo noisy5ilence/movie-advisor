@@ -23,7 +23,7 @@ export const useStats = ({ hash }: Props) => {
     refetchInterval: ({ state }) => {
       if (state.data?.stat === StreamStatus.ready) return false;
 
-      return 500;
+      return 1000;
     },
     queryFn: () =>
       fetch(`${streamUrl}/torrents`, {
