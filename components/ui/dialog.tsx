@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { CSSProperties, useState } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { DialogContentProps } from '@radix-ui/react-dialog';
 
 import useScrollDelta from '@/hooks/useScrollDelta';
 import { cn } from '@/lib/utils';
@@ -37,8 +38,9 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     onClose?: () => void;
     scrollRef?: React.MutableRefObject<HTMLDivElement>;
+    portal?: HTMLElement;
   }
->(({ className, children, onClose, scrollRef, ...props }, ref) => {
+>(({ className, children, onClose, scrollRef, portal, ...props }, ref) => {
   const FULL_OPACITY = 1;
 
   const position = React.useRef(0);
@@ -101,7 +103,7 @@ const DialogContent = React.forwardRef<
   };
 
   return (
-    <DialogPortal>
+    <DialogPortal container={portal}>
       <div className='fixed inset-0 z-50 size-full bg-black/80' data-overlay ref={wrapperRef}>
         <DialogOverlay
           ref={(element) => {
@@ -172,7 +174,10 @@ const Modal: React.FC<{
   style?: CSSProperties;
   onClose: () => void;
   scrollRef?: React.MutableRefObject<HTMLDivElement>;
-}> = ({ children, onClose, className, style, scrollRef }) => {
+  onInteractOutside?: DialogContentProps['onInteractOutside'];
+  onPointerDownOutside?: DialogContentProps['onPointerDownOutside'];
+  portal?: HTMLElement;
+}> = ({ children, onClose, className, style, scrollRef, onInteractOutside, onPointerDownOutside, portal }) => {
   const [open, setOpen] = useState(true);
 
   React.useLayoutEffect(() => {
@@ -194,7 +199,16 @@ const Modal: React.FC<{
       <DialogHeader>
         <DialogTitle />
       </DialogHeader>
-      <DialogContent style={style} scrollRef={scrollRef} forceMount onClose={handleClose} className={className}>
+      <DialogContent
+        onInteractOutside={onInteractOutside}
+        onPointerDownOutside={onPointerDownOutside}
+        style={style}
+        scrollRef={scrollRef}
+        forceMount
+        onClose={handleClose}
+        className={className}
+        portal={portal}
+      >
         {children}
         <DialogDescription className='hidden' />
       </DialogContent>

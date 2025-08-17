@@ -1,4 +1,4 @@
-import React, { FC, forwardRef, MutableRefObject, ReactNode, useRef } from 'react';
+import React, { FC, forwardRef, MutableRefObject, ReactNode, useLayoutEffect, useRef } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import { Virtuoso, VirtuosoHandle, VirtuosoProps } from 'react-virtuoso';
 import { Menu } from '@vidstack/react';
@@ -20,15 +20,29 @@ const showMenu = create(
     const virtuosoRef = useRef<VirtuosoHandle | null>(null);
     const scrollRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement>;
 
+    useLayoutEffect(() => {
+      const index = +value || 0;
+
+      if (!index || !virtuosoRef.current) return;
+
+      setTimeout(() => virtuosoRef.current?.scrollToIndex(index), 1000);
+    }, [value]);
+
     return (
-      <Modal className='max-w-screen-xs rounded-xl p-2' onClose={onResolve} scrollRef={scrollRef}>
+      <Modal
+        className='max-w-screen-xs rounded-xl p-2'
+        onClose={onResolve}
+        scrollRef={scrollRef}
+        portal={(document.fullscreenElement || document.body) as HTMLElement}
+      >
         <Virtuoso
           useWindowScroll
-          initialTopMostItemIndex={+value || 0}
-          overscan={20}
-          initialItemCount={20}
+          overscan={10}
+          initialItemCount={50}
           ref={virtuosoRef}
           customScrollParent={scrollRef.current}
+          defaultItemHeight={56}
+          fixedItemHeight={56}
           data={options}
           context={value}
           components={components}
@@ -63,7 +77,7 @@ const components: VirtuosoProps<Option, string>['components'] = {
         title={option.label}
         onClick={() => option.onSelect(option.value)}
         className={cn(
-          '!m-0 cursor-pointer whitespace-normal break-all rounded-sm bg-secondary text-left !px-2 !py-1 text-foreground',
+          '!m-0 cursor-pointer line-clamp-2 rounded-sm bg-secondary text-left !px-2 !py-1 text-foreground !mb-2',
           {
             'bg-secondary-foreground text-secondary': context === option.value
           }
@@ -75,7 +89,7 @@ const components: VirtuosoProps<Option, string>['components'] = {
   },
   List: forwardRef(function List({ children, ...props }, ref) {
     return (
-      <div className='flex flex-col gap-2' {...props} ref={ref}>
+      <div className='flex flex-col' {...props} ref={ref}>
         {children}
       </div>
     );

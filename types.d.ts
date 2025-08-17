@@ -141,6 +141,11 @@ interface Source {
   type: string;
 }
 
+interface Sources {
+  playlist: Source[];
+  subtitles: Source[];
+}
+
 interface Subtitles {
   name: string;
   content: string;

@@ -1,58 +1,143 @@
-import { useEffect, useRef } from 'react';
-import { create, InstanceProps } from 'react-modal-promise';
+'use client';
+
+import { FC, MutableRefObject, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import {
+  MediaPlayer,
+  MediaPlayerInstance,
+  MediaProvider,
+  PlayButton,
+  Track,
+  useMediaState,
+  VideoSrc
+} from '@vidstack/react';
+import { NextIcon } from '@vidstack/react/icons';
+import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr';
 import { Loader } from 'lucide-react';
-import dynamic from 'next/dynamic';
 
-import { Modal } from '@/components/ui/dialog';
-import { useToast } from '@/hooks/useToast';
-import { formatBytes } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
-import useFiles from './useFiles';
-import { useStats } from './useStats';
+import Captions from './components/Captions';
+import Playlist from './components/Playlist';
+import useSource from './useSource';
 
-const Player = dynamic(() => import('./Player'));
+import '@vidstack/react/player/styles/plyr/theme.css';
 
-interface Props extends InstanceProps<void> {
+interface Stream {
   magnet: string;
-  hash?: string;
-  backdrop: string;
-  title: string;
+  subtitles: Source[];
+  playlist: Source[];
 }
 
-const showPlayer = create(({ onResolve, magnet, hash, backdrop, title }: Props) => {
-  const { subtitles, videos } = useFiles({ magnet, onResolve });
+const sample = { type: 'video/mp4', src: '/sample.mp4', name: 'Sample' };
 
-  const { isReady, preloadingProgress, downloadSpeed, peers } = useStats({ hash });
+const initialStream: Stream = {
+  magnet: '',
+  subtitles: [],
+  playlist: [sample]
+};
+
+export type PlayerControlRef = MutableRefObject<{
+  sample: () => void;
+  play: (options: { sources: Sources; magnet: string }) => void;
+  stop: () => void;
+}>;
+
+interface Props {
+  controlRef: PlayerControlRef;
+}
+
+const Player: FC<Props> = ({ controlRef }) => {
+  const [{ magnet, playlist, subtitles }, setStream] = useState<Stream>(initialStream);
+  const [canPlay, setCanPlay] = useState(false);
+
+  const { index, setIndex } = useSource({ magnet });
+
+  const player = useRef<MediaPlayerInstance>(null);
+
+  const isEnded = useMediaState('ended', player);
+
+  const hasNext = index + 1 < playlist?.length;
+
+  useEffect(() => {
+    if (!isEnded || !hasNext) return;
+
+    setIndex((index) => index + 1);
+  }, [isEnded, hasNext, setIndex]);
+
+  const source = playlist[index];
+
+  const handlePlay = () => {
+    if (!player.current) return;
+
+    player.current
+      .play()
+      .catch(() => {})
+      .finally(() => setCanPlay(true));
+  };
+
+  useImperativeHandle(controlRef, () => ({
+    sample() {
+      handlePlay();
+      setCanPlay(false);
+    },
+    play({ magnet, sources }) {
+      setStream({ magnet, ...sources });
+    },
+    stop() {
+      setStream(initialStream);
+    }
+  }));
+
+  const pending = !canPlay || source === sample;
 
   return (
-    <Modal className='overflow-hidden border-none bg-black p-0' onClose={onResolve}>
-      <div className='relative w-full overflow-hidden pt-[56.25%]'>
-        <div className='absolute left-0 top-0 size-full'>
-          <Player magnet={magnet} subtitles={subtitles} videos={videos} />
-        </div>
-        {!isReady && (
-          <div className='absolute left-0 top-0 size-full'>
-            <img src={backdrop} className='absolute left-0 top-0 size-full' alt={title} />
-            <div className='absolute left-0 top-0 flex size-full items-center justify-center bg-black/60 transition-all'>
-              {!preloadingProgress && !peers && (
-                <div className='animate-spin'>
-                  <Loader color='white' />
-                </div>
-              )}
+    <>
+      <MediaPlayer
+        load='eager'
+        preload='none'
+        storage='movie-advisor'
+        ref={player}
+        src={(source as VideoSrc) || []}
+        onCanPlay={handlePlay}
+        className={cn('relative size-full select-none', { invisible: pending })}
+      >
+        <MediaProvider className='relative flex size-full justify-center [&>video]:!h-full'>
+          {subtitles.map((track, index) => (
+            <Track key={track.name} src={track.src} kind='subtitles' label={track.name} type='srt' default={!index} />
+          ))}
+        </MediaProvider>
+        <PlyrLayout
+          className='hidden'
+          icons={plyrLayoutIcons}
+          slots={{
+            playLargeButton: null,
+            settingsMenu: null,
+            captionsButton: null,
+            afterPlayButton: hasNext && (
+              <PlayButton onClick={() => setIndex(index + 1)} className={cn('plyr__controls__item plyr__control')}>
+                <NextIcon className={cn('vds-icon')} />
+                <span className={cn('plyr__tooltip')}>Next</span>
+              </PlayButton>
+            ),
+            afterVolumeSlider: <ul className='w-2' />,
+            beforeSettings: Boolean(subtitles.length) && <Captions />,
+            settings: playlist.length > 1 && (
+              <Playlist key={source?.src} source={source} sources={playlist} onChange={setIndex} />
+            )
+          }}
+        />
+      </MediaPlayer>
+      {pending && (
+        <div className='absolute left-0 top-0 flex size-full items-center justify-center'>
+          <div className='flex size-12 items-center justify-center rounded bg-black/60'>
+            <div className='animate-spin'>
+              <Loader color='white' />
             </div>
-            {(downloadSpeed || peers) && (
-              <div className='absolute left-0 top-0 flex size-full flex-col items-center justify-center text-white'>
-                <div className='flex h-[90px] w-[230px] flex-col items-center justify-center gap-2 rounded-xl bg-black/80 p-4 shadow-2xl'>
-                  <p className='text-white/90'>Buffering: {preloadingProgress.toFixed()}%</p>
-                  <p className='text-white/90'>Download speed: {downloadSpeed || '0 B/s'}</p>
-                </div>
-              </div>
-            )}
           </div>
-        )}
-      </div>
-    </Modal>
+        </div>
+      )}
+    </>
   );
-});
+};
 
-export default showPlayer;
+export default Player;

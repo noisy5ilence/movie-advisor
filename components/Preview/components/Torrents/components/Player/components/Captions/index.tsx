@@ -3,7 +3,7 @@ import { ClosedCaptionsIcon, ClosedCaptionsOnIcon } from '@vidstack/react/icons'
 
 import { cn } from '@/lib/utils';
 
-import PlayerMenu from '../PlayerMenu';
+import PlayerMenu from '../Menu';
 
 const CaptionsMenu = () => {
   const tracks = useCaptionOptions();

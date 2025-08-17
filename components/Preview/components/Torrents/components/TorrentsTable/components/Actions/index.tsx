@@ -9,8 +9,9 @@ import { cn, detectSafari, getMagnetHash } from '@/lib/utils';
 
 import { providers } from '../../../../constants';
 import { useCastMagnet, usePrefix } from '../../../../hooks/useMagnetHosts';
-import showPlayer from '../../../Player';
 
+import showPlayerModal from './components/Player';
+import useFiles from './useFiles';
 import useMagnet from './useMagnet';
 
 interface Props {
@@ -18,9 +19,11 @@ interface Props {
   backdrop: string;
   title: string;
   provider: string;
+  onPlay: (options: Promise<{ sources: Sources; magnet: string }>) => void;
+  playerEntryId: string;
 }
 
-const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
+const Actions: FC<Props> = ({ torrent, backdrop, title, provider, playerEntryId, onPlay }) => {
   const prefix = usePrefix();
   const cast = useCastMagnet();
   const streamUrl = useStreamUrl();
@@ -45,6 +48,8 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
 
   const magnet = fetchMagnet.data || torrent.magnet;
 
+  const fetchSources = useFiles({ magnet });
+
   const hash = getMagnetHash(magnet);
 
   const supportedForCast = prefix && !prefix.includes('{host}');
@@ -59,7 +64,10 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
               'flex-grow-0 px-3 bg-red-600',
               'hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600'
             )}
-            onClick={() => showPlayer({ magnet, backdrop, title, hash })}
+            onClick={() => {
+              showPlayerModal({ backdrop, title, hash, playerEntryId });
+              onPlay(fetchSources.mutateAsync().then((sources) => ({ sources, magnet })));
+            }}
             title='Play'
           >
             <Play size={15} />

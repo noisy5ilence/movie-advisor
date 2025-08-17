@@ -10,7 +10,11 @@ const sourceStateAtom = atomWithStorage<SourceState>('current-video-source', {},
   unstable_getOnInit: true
 });
 
-const useSource = ({ magnet }: { magnet: string }) => {
+interface Props {
+  magnet: string;
+}
+
+const useSource = ({ magnet }: Props) => {
   const [source, setSource] = useAtom(sourceStateAtom);
   const account = useAccount();
 

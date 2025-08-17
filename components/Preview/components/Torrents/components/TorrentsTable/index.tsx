@@ -17,9 +17,22 @@ interface Props {
   provider: string;
   year: number;
   onChangeSort: (sort: Sort) => void;
+  onPlay: (options: Promise<{ sources: Sources; magnet: string }>) => void;
+  playerEntryId: string;
 }
 
-const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, provider, year, onChangeSort }) => {
+const TorrentsTable: FC<Props> = ({
+  title,
+  torrents,
+  backdrop,
+  sort,
+  sortable,
+  provider,
+  year,
+  onChangeSort,
+  onPlay,
+  playerEntryId
+}) => {
   const colSpan = 5;
 
   return (
@@ -68,7 +81,14 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
                 </TableCell>
                 <TableCell className='truncate p-2'>{torrent.seeders}</TableCell>
                 <TableCell className='p-1 pr-2 text-center'>
-                  <Actions title={title} backdrop={backdrop} torrent={torrent} provider={provider} />
+                  <Actions
+                    title={title}
+                    backdrop={backdrop}
+                    torrent={torrent}
+                    provider={provider}
+                    onPlay={onPlay}
+                    playerEntryId={playerEntryId}
+                  />
                 </TableCell>
               </TableRow>
             </Fragment>
