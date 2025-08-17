@@ -137,7 +137,6 @@ const showTorrentsModal = create(({ title: initialTitle, year, imdbID, backdrop,
                   onPlay={(options) => {
                     if (!playerControlRef.current) return;
 
-                    playerControlRef.current.sample();
                     options.then((options) => playerControlRef.current.play(options));
                   }}
                 />

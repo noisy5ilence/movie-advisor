@@ -6,6 +6,7 @@ import { formatBytes } from '@/lib/utils';
 
 interface Props {
   hash?: string;
+  canPlay: boolean;
 }
 
 export enum StreamStatus {
@@ -14,14 +15,14 @@ export enum StreamStatus {
   ready = 3
 }
 
-export const useStats = ({ hash }: Props) => {
+export const useStats = ({ hash, canPlay }: Props) => {
   const streamUrl = useStreamUrl();
 
   const { data } = useQuery<Stream & { stat: StreamStatus }>({
     enabled: Boolean(hash),
     queryKey: ['stats', hash],
     refetchInterval: ({ state }) => {
-      if (state.data?.stat === StreamStatus.ready) return false;
+      if (state.data?.stat === StreamStatus.ready && canPlay) return false;
 
       return 1000;
     },

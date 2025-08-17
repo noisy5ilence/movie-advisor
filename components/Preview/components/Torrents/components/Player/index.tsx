@@ -12,8 +12,8 @@ import {
 } from '@vidstack/react';
 import { NextIcon } from '@vidstack/react/icons';
 import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr';
-import { Loader } from 'lucide-react';
 
+import { useCanPlay, useSetCanPlay } from '@/hooks/useCanPlay';
 import { cn } from '@/lib/utils';
 
 import Captions from './components/Captions';
@@ -30,16 +30,8 @@ interface Stream {
 
 const sample = { type: 'video/mp4', src: '/sample.mp4', name: 'Sample' };
 
-const initialStream: Stream = {
-  magnet: '',
-  subtitles: [],
-  playlist: [sample]
-};
-
 export type PlayerControlRef = MutableRefObject<{
-  sample: () => void;
   play: (options: { sources: Sources; magnet: string }) => void;
-  stop: () => void;
 }>;
 
 interface Props {
@@ -47,8 +39,13 @@ interface Props {
 }
 
 const Player: FC<Props> = ({ controlRef }) => {
-  const [{ magnet, playlist, subtitles }, setStream] = useState<Stream>(initialStream);
-  const [canPlay, setCanPlay] = useState(false);
+  const [{ magnet, playlist, subtitles }, setStream] = useState<Stream>({
+    magnet: '',
+    subtitles: [],
+    playlist: [sample]
+  });
+  const canPlay = useCanPlay();
+  const setCanPlay = useSetCanPlay();
 
   const { index, setIndex } = useSource({ magnet });
 
@@ -72,71 +69,69 @@ const Player: FC<Props> = ({ controlRef }) => {
     player.current
       .play()
       .catch(() => {})
-      .finally(() => setCanPlay(true));
+      .finally(() => {
+        if (source === sample) return;
+
+        setCanPlay(true);
+      });
   };
 
   useImperativeHandle(controlRef, () => ({
-    sample() {
-      handlePlay();
-      setCanPlay(false);
-    },
     play({ magnet, sources }) {
       setStream({ magnet, ...sources });
-    },
-    stop() {
-      setStream(initialStream);
+      setCanPlay(false);
     }
   }));
 
-  const pending = !canPlay || source === sample;
+  const pending = !canPlay;
 
   return (
-    <>
-      <MediaPlayer
-        load='eager'
-        preload='none'
-        storage='movie-advisor'
-        ref={player}
-        src={(source as VideoSrc) || []}
-        onCanPlay={handlePlay}
-        className={cn('relative size-full select-none', { invisible: pending })}
-      >
-        <MediaProvider className='relative flex size-full justify-center [&>video]:!h-full'>
-          {subtitles.map((track, index) => (
-            <Track key={track.name} src={track.src} kind='subtitles' label={track.name} type='srt' default={!index} />
-          ))}
-        </MediaProvider>
-        <PlyrLayout
-          className='hidden'
-          icons={plyrLayoutIcons}
-          slots={{
-            playLargeButton: null,
-            settingsMenu: null,
-            captionsButton: null,
-            afterPlayButton: hasNext && (
-              <PlayButton onClick={() => setIndex(index + 1)} className={cn('plyr__controls__item plyr__control')}>
-                <NextIcon className={cn('vds-icon')} />
-                <span className={cn('plyr__tooltip')}>Next</span>
-              </PlayButton>
-            ),
-            afterVolumeSlider: <ul className='w-2' />,
-            beforeSettings: Boolean(subtitles.length) && <Captions />,
-            settings: playlist.length > 1 && (
-              <Playlist key={source?.src} source={source} sources={playlist} onChange={setIndex} />
-            )
-          }}
-        />
-      </MediaPlayer>
-      {pending && (
-        <div className='absolute left-0 top-0 flex size-full items-center justify-center'>
-          <div className='flex size-12 items-center justify-center rounded bg-black/60'>
-            <div className='animate-spin'>
-              <Loader color='white' />
-            </div>
-          </div>
-        </div>
-      )}
-    </>
+    <MediaPlayer
+      playsInline
+      autoPlay
+      load='eager'
+      preload='none'
+      storage='movie-advisor'
+      ref={player}
+      loop={pending}
+      src={(source as VideoSrc) || []}
+      onCanPlay={handlePlay}
+      className={cn('relative size-full select-none', { invisible: pending })}
+    >
+      <MediaProvider className='relative flex size-full justify-center [&>video]:!h-full'>
+        {subtitles.map((track, index) => (
+          <Track
+            key={track.name}
+            src={track.src}
+            kind='subtitles'
+            label={track.name}
+            type='srt'
+            default={!index}
+            id={track.name}
+          />
+        ))}
+      </MediaProvider>
+      <PlyrLayout
+        className='hidden'
+        icons={plyrLayoutIcons}
+        slots={{
+          playLargeButton: null,
+          settingsMenu: null,
+          captionsButton: null,
+          afterPlayButton: hasNext && (
+            <PlayButton onClick={() => setIndex(index + 1)} className={cn('plyr__controls__item plyr__control')}>
+              <NextIcon className={cn('vds-icon')} />
+              <span className={cn('plyr__tooltip')}>Next</span>
+            </PlayButton>
+          ),
+          afterVolumeSlider: <ul className='w-2' />,
+          beforeSettings: Boolean(subtitles.length) && <Captions />,
+          settings: playlist.length > 1 && (
+            <Playlist key={source?.src} source={source} sources={playlist} onChange={setIndex} />
+          )
+        }}
+      />
+    </MediaPlayer>
   );
 };
 

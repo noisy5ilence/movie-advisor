@@ -11,7 +11,7 @@ const useFiles = ({ magnet }: Props) => {
 
   return useMutation<Sources>({
     mutationFn: () =>
-      fetch(`${streamUrl}&stat&preload`)
+      fetch(`${streamUrl}&stat`)
         .then((response) => {
           if (!response.ok) return Promise.reject('Download Failed: unable to retrieve the video');
 
