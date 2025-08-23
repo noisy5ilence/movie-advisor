@@ -1,12 +1,12 @@
 import { FC, useMemo } from 'react';
-import { Cast, Download, ListVideo, Loader, Magnet, Play } from 'lucide-react';
+import { Cast, Download, ListVideo, Loader, Magnet, Play, TrafficCone } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import { Quality } from '@/data/parsers/yts/models';
 import { useM3UUrl } from '@/hooks/useM3UStreamUrl';
 import { useStreamUrl } from '@/hooks/useStreamUrl';
-import { cn, detectSafari, getMagnetHash } from '@/lib/utils';
+import { cn, detectSafari, getMagnetHash, isStandaloneApp } from '@/lib/utils';
 
 import { providers } from '../../../../constants';
 import { useCastMagnet, usePrefix } from '../../../../hooks/useMagnetHosts';
@@ -29,6 +29,8 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider, playerEntryId,
   const cast = useCastMagnet();
   const streamUrl = useStreamUrl();
   const M3UUrl = useM3UUrl();
+
+  const isStandalone = isStandaloneApp();
 
   const { isIOS, isSafari } = detectSafari();
   const isHEVC = torrent.codec?.includes('265') || torrent.codec?.toLowerCase().includes('hevc');
@@ -106,6 +108,22 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider, playerEntryId,
               <Cast size={20} />
             </Button>
           )
+        )}
+        {isStandalone && (
+          <Button
+            className='relative grow-0 px-3 text-white hover:text-white active:text-white'
+            style={{ background: '#f7901e' }}
+            variant='outline'
+            title='Play in VLC'
+            asChild
+          >
+            <a
+              className='absolute left-0 top-0 size-full'
+              rel='noopener noreferrer'
+              href={`vlc://${streamUrl}/stream?m3u&link=${encodeURIComponent(magnet)}`}
+            />
+            <TrafficCone size={20} />
+          </Button>
         )}
       </ButtonsGroup>
       {!magnet && (

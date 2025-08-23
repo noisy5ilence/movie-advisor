@@ -51,3 +51,5 @@ export const detectSafari = () => {
 
   return { isSafari, isIOS };
 };
+
+export const isStandaloneApp = () => window.matchMedia('screen and (display-mode: standalone)').matches;
