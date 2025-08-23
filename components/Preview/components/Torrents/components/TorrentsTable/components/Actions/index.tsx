@@ -4,6 +4,7 @@ import { Cast, Download, ListVideo, Loader, Magnet, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import { Quality } from '@/data/parsers/yts/models';
+import { useM3UUrl } from '@/hooks/useM3UStreamUrl';
 import { useStreamUrl } from '@/hooks/useStreamUrl';
 import { cn, detectSafari, getMagnetHash } from '@/lib/utils';
 
@@ -27,6 +28,7 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider, playerEntryId,
   const prefix = usePrefix();
   const cast = useCastMagnet();
   const streamUrl = useStreamUrl();
+  const M3UUrl = useM3UUrl();
 
   const { isIOS, isSafari } = detectSafari();
   const isHEVC = torrent.codec?.includes('265') || torrent.codec?.toLowerCase().includes('hevc');
@@ -53,6 +55,14 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider, playerEntryId,
   const hash = getMagnetHash(magnet);
 
   const supportedForCast = prefix && !prefix.includes('{host}');
+
+  const handleM3ULink = () => {
+    const link = window.open(
+      `${M3UUrl}${encodeURIComponent(`${streamUrl}/stream?m3u&link=${encodeURIComponent(magnet)}`)}`,
+      '_blank'
+    );
+    setTimeout(() => link?.close(), 1000);
+  };
 
   return (
     <div className='relative ml-auto w-fit grow-0'>
@@ -86,10 +96,16 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider, playerEntryId,
           <a className='absolute left-0 top-0 size-full' target='_blank' rel='noopener noreferrer' href={magnet} />
           <Magnet size={20} />
         </Button>
-        {supportedForCast && (
-          <Button className='grow-0 px-3' variant='outline' onClick={() => cast(magnet)}>
+        {M3UUrl ? (
+          <Button className='relative grow-0 px-3' variant='outline' title='Play m3u playlist' onClick={handleM3ULink}>
             <Cast size={20} />
           </Button>
+        ) : (
+          supportedForCast && (
+            <Button className='grow-0 px-3' variant='outline' onClick={() => cast(magnet)}>
+              <Cast size={20} />
+            </Button>
+          )
         )}
       </ButtonsGroup>
       {!magnet && (
