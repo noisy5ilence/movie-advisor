@@ -110,19 +110,13 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider, playerEntryId,
           )
         )}
         {isStandalone && (
-          <Button
-            className='relative grow-0 px-3 text-white hover:text-white active:text-white'
-            style={{ background: '#f7901e' }}
-            variant='outline'
-            title='Play in VLC'
-            asChild
-          >
+          <Button className='relative grow-0 px-3' variant='outline' title='Play in VLC' asChild>
             <a
               className='absolute left-0 top-0 size-full'
               rel='noopener noreferrer'
               href={`vlc://${streamUrl}/stream?m3u&link=${encodeURIComponent(magnet)}`}
             />
-            <TrafficCone size={20} />
+            <TrafficCone size={19} />
           </Button>
         )}
       </ButtonsGroup>
