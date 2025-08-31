@@ -61,8 +61,7 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider, playerEntryId,
   const handleM3ULink = () => {
     const link = window.open(
       `${M3UUrl}${encodeURIComponent(`${streamUrl}/stream?m3u&link=${encodeURIComponent(magnet)}`)}`,
-      '_blank',
-      'noopener,noreferrer'
+      '_blank'
     );
     setTimeout(() => link?.close(), 1000);
   };
