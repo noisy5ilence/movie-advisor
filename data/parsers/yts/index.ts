@@ -11,7 +11,7 @@ export class YTS {
   private host: string;
 
   constructor() {
-    this.host = YTS_HOST || 'https://yts.mx/api/v2/list_movies.json';
+    this.host = YTS_HOST || 'https://yts.lt/api/v2/list_movies.json';
 
     this.client = axios.create({
       baseURL: this.host

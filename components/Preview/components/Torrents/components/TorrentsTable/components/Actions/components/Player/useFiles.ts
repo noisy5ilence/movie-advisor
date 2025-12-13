@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useStreamUrl } from '@/hooks/useStreamUrl';
 
@@ -6,11 +6,12 @@ interface Props {
   magnet: string;
 }
 
-const useFiles = ({ magnet }: Props) => {
+export const useFiles = ({ magnet }: Props) => {
   const streamUrl = `${useStreamUrl()}/stream?link=${encodeURIComponent(magnet)}`;
 
-  return useMutation<Sources>({
-    mutationFn: () =>
+  const { data } = useQuery<Sources>({
+    queryKey: ['sources', magnet],
+    queryFn: () =>
       fetch(`${streamUrl}&stat`)
         .then((response) => {
           if (!response.ok) return Promise.reject('Download Failed: unable to retrieve the video');
@@ -42,6 +43,6 @@ const useFiles = ({ magnet }: Props) => {
           return sources;
         })
   });
-};
 
-export default useFiles;
+  return data;
+};

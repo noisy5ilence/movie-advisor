@@ -1,27 +1,26 @@
 import { create, InstanceProps } from 'react-modal-promise';
-import { DialogContentProps } from '@radix-ui/react-dialog';
 import { Loader } from 'lucide-react';
 
+import Player from '@/components/Preview/components/Torrents/components/Player';
 import { Modal } from '@/components/ui/dialog';
 import { useCanPlay, useSetCanPlay } from '@/hooks/useCanPlay';
 
+import { useFiles } from './useFiles';
 import { useStats } from './useStats';
 
 interface Props extends InstanceProps<void> {
   hash: string;
   backdrop: string;
   title: string;
-  playerEntryId: string;
+  magnet: string;
 }
 
-const showPlayerModal = create(({ onResolve, hash, backdrop, title, playerEntryId }: Props) => {
+const showPlayerModal = create(({ onResolve, hash, backdrop, title, magnet }: Props) => {
   const canPlay = useCanPlay();
   const setCanPlay = useSetCanPlay();
   const { isReady, preloadingProgress, downloadSpeed } = useStats({ hash, canPlay });
 
-  const handlePlayerInteraction: DialogContentProps['onInteractOutside'] = (event) => {
-    if (document.getElementById(playerEntryId)?.contains(event.target as Node)) event.preventDefault();
-  };
+  const sources = useFiles({ magnet });
 
   const handleClose = () => {
     setCanPlay(false);
@@ -29,14 +28,11 @@ const showPlayerModal = create(({ onResolve, hash, backdrop, title, playerEntryI
   };
 
   return (
-    <Modal
-      className='overflow-hidden border-none bg-black p-0'
-      onClose={handleClose}
-      onInteractOutside={handlePlayerInteraction}
-      onPointerDownOutside={handlePlayerInteraction}
-    >
+    <Modal className='overflow-hidden border-none bg-black p-0' onClose={handleClose}>
       <div className='relative w-full overflow-hidden pt-[56.25%]'>
-        <div className='absolute left-0 top-0 size-full' id={playerEntryId} />
+        <div className='absolute left-0 top-0 size-full'>
+          {sources && <Player magnet={magnet} playlist={sources.playlist} subtitles={sources.subtitles} />}
+        </div>
         {(!isReady || !canPlay) && (
           <div className='absolute left-0 top-0 size-full'>
             <img src={backdrop} className='absolute left-0 top-0 size-full' alt={title} />

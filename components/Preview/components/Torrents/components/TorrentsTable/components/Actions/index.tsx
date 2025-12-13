@@ -1,6 +1,8 @@
 import { FC, useMemo } from 'react';
 import { Cast, Download, ListVideo, Loader, Magnet, Play, TrafficCone } from 'lucide-react';
 
+import { providers } from '@/components/Preview/components/Torrents/constants';
+import { useCastMagnet, usePrefix } from '@/components/Preview/components/Torrents/hooks/useMagnetHosts';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import { Quality } from '@/data/parsers/yts/models';
@@ -8,11 +10,7 @@ import { useM3UUrl } from '@/hooks/useM3UStreamUrl';
 import { useStreamUrl } from '@/hooks/useStreamUrl';
 import { cn, detectSafari, getMagnetHash, isStandaloneApp } from '@/lib/utils';
 
-import { providers } from '../../../../constants';
-import { useCastMagnet, usePrefix } from '../../../../hooks/useMagnetHosts';
-
 import showPlayerModal from './components/Player';
-import useFiles from './useFiles';
 import useMagnet from './useMagnet';
 
 interface Props {
@@ -20,11 +18,9 @@ interface Props {
   backdrop: string;
   title: string;
   provider: string;
-  onPlay: (options: Promise<{ sources: Sources; magnet: string }>) => void;
-  playerEntryId: string;
 }
 
-const Actions: FC<Props> = ({ torrent, backdrop, title, provider, playerEntryId, onPlay }) => {
+const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
   const prefix = usePrefix();
   const cast = useCastMagnet();
   const streamUrl = useStreamUrl();
@@ -52,8 +48,6 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider, playerEntryId,
 
   const magnet = fetchMagnet.data || torrent.magnet;
 
-  const fetchSources = useFiles({ magnet });
-
   const hash = getMagnetHash(magnet);
 
   const supportedForCast = prefix && !prefix.includes('{host}');
@@ -77,8 +71,7 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider, playerEntryId,
               'hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600'
             )}
             onClick={() => {
-              showPlayerModal({ backdrop, title, hash, playerEntryId });
-              onPlay(fetchSources.mutateAsync().then((sources) => ({ sources, magnet })));
+              showPlayerModal({ backdrop, title, hash, magnet });
             }}
             title='Play'
           >

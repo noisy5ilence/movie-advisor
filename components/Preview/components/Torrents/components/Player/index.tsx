@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, MutableRefObject, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import {
   MediaPlayer,
   MediaPlayerInstance,
@@ -13,7 +13,7 @@ import {
 import { NextIcon } from '@vidstack/react/icons';
 import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr';
 
-import { useCanPlay, useSetCanPlay } from '@/hooks/useCanPlay';
+import { useSetCanPlay } from '@/hooks/useCanPlay';
 import { cn } from '@/lib/utils';
 
 import Captions from './components/Captions';
@@ -22,31 +22,14 @@ import useSource from './useSource';
 
 import '@vidstack/react/player/styles/plyr/theme.css';
 
-interface Stream {
+interface Props {
   magnet: string;
   subtitles: Source[];
   playlist: Source[];
 }
 
-const sample = { type: 'video/mp4', src: '/sample.mp4', name: 'Sample' };
-
-export type PlayerControlRef = MutableRefObject<{
-  play: (options: { sources: Sources; magnet: string }) => void;
-}>;
-
-interface Props {
-  controlRef: PlayerControlRef;
-}
-
-const Player: FC<Props> = ({ controlRef }) => {
-  const [{ magnet, playlist, subtitles }, setStream] = useState<Stream>({
-    magnet: '',
-    subtitles: [],
-    playlist: [sample]
-  });
-  const canPlay = useCanPlay();
+const Player: FC<Props> = ({ magnet, playlist, subtitles }) => {
   const setCanPlay = useSetCanPlay();
-
   const { index, setIndex } = useSource({ magnet });
 
   const player = useRef<MediaPlayerInstance>(null);
@@ -63,28 +46,6 @@ const Player: FC<Props> = ({ controlRef }) => {
 
   const source = playlist[index];
 
-  const handlePlay = () => {
-    if (!player.current) return;
-
-    player.current
-      .play()
-      .catch(() => {})
-      .finally(() => {
-        if (source === sample) return;
-
-        setCanPlay(true);
-      });
-  };
-
-  useImperativeHandle(controlRef, () => ({
-    play({ magnet, sources }) {
-      setStream({ magnet, ...sources });
-      setCanPlay(false);
-    }
-  }));
-
-  const pending = !canPlay;
-
   return (
     <MediaPlayer
       playsInline
@@ -93,10 +54,9 @@ const Player: FC<Props> = ({ controlRef }) => {
       preload='none'
       storage='movie-advisor'
       ref={player}
-      loop={pending}
       src={(source as VideoSrc) || []}
-      onCanPlay={handlePlay}
-      className={cn('relative size-full select-none', { invisible: pending })}
+      onCanPlay={() => setCanPlay(true)}
+      className={cn('relative size-full select-none')}
     >
       <MediaProvider className='relative flex size-full justify-center [&>video]:!h-full'>
         {subtitles.map((track, index) => (
