@@ -70,7 +70,8 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
     if (isSafari) {
       return fetch(`${M3UUrl}?${params}`, {
         method: 'GET',
-        keepalive: true
+        keepalive: true,
+        mode: 'no-cors'
       })
         .catch(() => {})
         .finally(() => setIsStreamPending(false));
