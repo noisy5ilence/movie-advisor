@@ -69,7 +69,10 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
 
     if (isSafari) {
       const link = window.open(`${M3UUrl}?${params}`, '_blank');
-      return setTimeout(() => link?.close(), 300);
+      return setTimeout(() => {
+        link?.close();
+        setIsStreamPending(false);
+      }, 300);
     }
 
     const resolver = new Image();
