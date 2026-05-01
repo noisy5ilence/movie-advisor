@@ -4,6 +4,7 @@ import { TabsContent } from '@radix-ui/react-tabs';
 import { Loader } from 'lucide-react';
 import { Search } from 'lucide-react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import { Modal } from '@/components/ui/dialog';
@@ -15,42 +16,36 @@ import TorrentsTable from './components/TorrentsTable';
 import { providers } from './constants';
 import useTorrents from './useTorrents';
 
-interface Props extends InstanceProps<void> {
-  imdbID: string;
-  title: string;
-  year: number;
-  backdrop: string;
-}
+type Props = InstanceProps<void> & Show & Partial<Details>;
 
-const showTorrentsModal = create(({ title: initialTitle, year, imdbID, backdrop, onResolve }: Props) => {
+const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
   const [sort, setSort] = useState<Sort>(Sort.seeds);
 
-  const initialQuery = `${initialTitle} ${year}`;
+  const [manualQuery, setManualQuery] = useState(show.title);
+  const [query, setQuery] = useState(manualQuery);
 
-  const [title, setTitle] = useState(initialQuery);
-
-  const [query, setQuery] = useState(title);
+  const year = new Date(show.release).getFullYear();
 
   const yts = useTorrents({
-    query: initialTitle,
+    query: show.title,
     queryFn: providers.yts.queryFn,
     sort,
     key: providers.yts.key,
-    imdbID
+    imdbID: show.imdb_id!
   });
   const tpb = useTorrents({
     query,
     queryFn: providers.tpb.queryFn,
     sort,
     key: providers.tpb.key,
-    imdbID
+    imdbID: show.imdb_id!
   });
   const tlk = useTorrents({
     query,
     queryFn: providers.tlk.queryFn,
     sort,
     key: providers.tlk.key,
-    imdbID
+    imdbID: show.imdb_id!
   });
 
   const tabs = [
@@ -71,7 +66,7 @@ const showTorrentsModal = create(({ title: initialTitle, year, imdbID, backdrop,
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
 
-    setQuery(title || initialQuery);
+    setQuery(manualQuery);
   };
 
   const checkIsEmpty = (query: (typeof tabs)[number]['query']) =>
@@ -83,14 +78,14 @@ const showTorrentsModal = create(({ title: initialTitle, year, imdbID, backdrop,
         <ButtonsGroup className='h-10'>
           <Input
             className='h-full'
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
+            value={manualQuery}
+            onChange={({ target: { value } }) => setManualQuery(value)}
             placeholder='Start typing title...'
           />
           <Button
             type='submit'
             className='h-full !px-3 transition-all duration-200 hover:bg-secondary-foreground hover:shadow-lg hover:shadow-secondary-foreground/60'
-            disabled={initialQuery === title || tpb.isPending || tlk.isPending}
+            disabled={tpb.isPending || tlk.isPending}
           >
             <Search size={16} />
           </Button>
@@ -110,9 +105,8 @@ const showTorrentsModal = create(({ title: initialTitle, year, imdbID, backdrop,
           return (
             <TabsContent className='pb-1' key={provider.key} value={provider.key}>
               <TorrentsTable
-                year={year}
-                title={title}
-                backdrop={backdrop}
+                show={show}
+                title={show.title}
                 sort={sort}
                 sortable={provider.sortable}
                 onChangeSort={setSort}

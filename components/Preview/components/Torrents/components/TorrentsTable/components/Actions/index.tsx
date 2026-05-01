@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { Cast, Download, ListVideo, Loader, Magnet, Play, TrafficCone } from 'lucide-react';
 
 import { providers } from '@/components/Preview/components/Torrents/constants';
@@ -14,17 +14,18 @@ import showPlayerModal from './components/Player';
 import useMagnet from './useMagnet';
 
 interface Props {
+  show: Show & Partial<Details>;
   torrent: Torrent;
-  backdrop: string;
   title: string;
   provider: string;
 }
 
-const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
+const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
   const prefix = usePrefix();
   const cast = useCastMagnet();
   const streamUrl = useStreamUrl();
   const M3UUrl = useM3UUrl();
+  const [isStreamPending, setIsStreamPending] = useState(false);
 
   const isStandalone = isStandaloneApp();
 
@@ -53,11 +54,24 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
   const supportedForCast = prefix && !prefix.includes('{host}');
 
   const handleM3ULink = () => {
-    const link = window.open(
-      `${M3UUrl}${encodeURIComponent(`${streamUrl}/stream?m3u&link=${encodeURIComponent(magnet)}`)}`,
-      '_blank'
-    );
-    setTimeout(() => link?.close(), 1000);
+    setIsStreamPending(true);
+
+    const params = new URLSearchParams({
+      m3u: `${streamUrl}/stream?m3u&link=${magnet}`,
+      poster: show.poster['2x'],
+      backdrop: show.backdrop,
+      type: show.type,
+      name: show.title,
+      imdb_id: show.imdb_id ?? '',
+      year: new Date(show.release).getFullYear().toString(),
+      runtime: show.runtime?.toString() ?? ''
+    });
+
+    fetch(`${M3UUrl}?${params}`, {
+      method: 'GET'
+    })
+      .catch(() => {})
+      .finally(() => setIsStreamPending(false));
   };
 
   return (
@@ -71,7 +85,7 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
               'hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600'
             )}
             onClick={() => {
-              showPlayerModal({ backdrop, title, hash, magnet });
+              showPlayerModal({ backdrop: show.backdrop, title, hash, magnet });
             }}
             title='Play'
           >
@@ -92,8 +106,20 @@ const Actions: FC<Props> = ({ torrent, backdrop, title, provider }) => {
           <Magnet size={20} />
         </Button>
         {M3UUrl ? (
-          <Button className='relative grow-0 px-3' variant='outline' title='Play m3u playlist' onClick={handleM3ULink}>
-            <Cast size={20} />
+          <Button
+            className='relative h-[32px] w-[45px] grow-0 px-3'
+            variant='outline'
+            title='Play m3u playlist'
+            onClick={handleM3ULink}
+            disabled={isStreamPending}
+          >
+            {isStreamPending ? (
+              <div className='animate-spin'>
+                <Loader size={18} />
+              </div>
+            ) : (
+              <Cast size={20} />
+            )}
           </Button>
         ) : (
           supportedForCast && (

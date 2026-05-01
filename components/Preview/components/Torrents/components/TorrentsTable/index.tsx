@@ -8,19 +8,19 @@ import TableHeadSortable from '../TableHeadSortable';
 
 import Actions from './components/Actions';
 
-interface Props {
+type Props = {
+  show: Show & Partial<Details>;
   title: string;
-  backdrop: string;
   torrents: Torrent[];
   sort: Sort;
   sortable: boolean;
   provider: string;
-  year: number;
   onChangeSort: (sort: Sort) => void;
-}
+};
 
-const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, provider, year, onChangeSort }) => {
+const TorrentsTable: FC<Props> = ({ title, torrents, show, sort, sortable, provider, onChangeSort }) => {
   const colSpan = 5;
+  const year = new Date(show.release).getFullYear();
 
   return (
     <Table className='overflow-hidden rounded-xl'>
@@ -68,7 +68,7 @@ const TorrentsTable: FC<Props> = ({ title, torrents, backdrop, sort, sortable, p
                 </TableCell>
                 <TableCell className='truncate p-2'>{torrent.seeders}</TableCell>
                 <TableCell className='p-1 pr-2 text-center'>
-                  <Actions title={title} backdrop={backdrop} torrent={torrent} provider={provider} />
+                  <Actions show={show} title={title} torrent={torrent} provider={provider} />
                 </TableCell>
               </TableRow>
             </Fragment>

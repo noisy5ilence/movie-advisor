@@ -92,12 +92,7 @@ const Actions = ({ show, className, externalLink }: Props) => {
         onClick={async () => {
           const showTorrentsModal = (await import('../Torrents')).default;
 
-          showTorrentsModal({
-            imdbID: show.imdb_id!,
-            title: show.title,
-            backdrop: show.backdrop,
-            year: new Date(show.release).getFullYear()
-          });
+          showTorrentsModal(show);
         }}
       >
         <Play size={15} />
