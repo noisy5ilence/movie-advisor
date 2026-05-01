@@ -68,13 +68,8 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
     });
 
     if (isSafari) {
-      return fetch(`${M3UUrl}?${params}`, {
-        method: 'GET',
-        keepalive: true,
-        mode: 'no-cors'
-      })
-        .catch(() => {})
-        .finally(() => setIsStreamPending(false));
+      const link = window.open(`${M3UUrl}?${params}`, '_blank');
+      setTimeout(() => link?.close(), 300);
     }
 
     const resolver = new Image();
