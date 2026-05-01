@@ -67,7 +67,17 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
       runtime: show.runtime?.toString() ?? ''
     });
 
+    if (isSafari) {
+      return fetch(`${M3UUrl}?${params}`, {
+        method: 'GET',
+        keepalive: true
+      })
+        .catch(() => {})
+        .finally(() => setIsStreamPending(false));
+    }
+
     const resolver = new Image();
+
     resolver.src = `${M3UUrl}?${params}`;
     resolver.onerror = resolver.onload = () => setIsStreamPending(false);
   };

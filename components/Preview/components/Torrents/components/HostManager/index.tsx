@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useM3UUrl, useSetM3UUrl } from '@/hooks/useM3UStreamUrl';
+import { useSession } from '@/hooks/useSession';
 import { useSetStreamUrl, useStreamUrl } from '@/hooks/useStreamUrl';
 
 import { usePrefix, useSetPrefix } from '../../hooks/useMagnetHosts';
@@ -17,6 +18,7 @@ const showHostManagerModal = create<InstanceProps<string>>(({ onResolve, onRejec
   const submitStreamUrl = useSetStreamUrl();
   const [M3UUrl, setM3UUrl] = useState(useM3UUrl());
   const submitM3UUrl = useSetM3UUrl();
+  const [session, setSession] = useState(useSession);
 
   return (
     <Modal className='m-auto p-2' onClose={onReject}>
@@ -52,6 +54,13 @@ const showHostManagerModal = create<InstanceProps<string>>(({ onResolve, onRejec
             value={M3UUrl}
             className='h-full'
             onChange={({ target: { value } }) => setM3UUrl(value)}
+          />
+          <Input
+            autoFocus
+            placeholder='Enter token of your session'
+            value={session}
+            className='h-full'
+            onChange={({ target: { value } }) => setSession(value)}
           />
           <Button
             type='submit'
