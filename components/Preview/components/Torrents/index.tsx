@@ -1,5 +1,8 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FC, FormEvent, useState } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
+import { DndContext } from '@dnd-kit/core';
+import { horizontalListSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { TabsContent } from '@radix-ui/react-tabs';
 import { Loader } from 'lucide-react';
 import { Search } from 'lucide-react';
@@ -11,12 +14,34 @@ import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Sort } from '@/data/parsers';
+import { cn } from '@/lib/utils';
 
 import TorrentsTable from './components/TorrentsTable';
 import { providers } from './constants';
+import useProvidersOrder, { ProviderKey } from './useProvidersOrder';
 import useTorrents from './useTorrents';
 
 type Props = InstanceProps<void> & Show & Partial<Details>;
+
+const SortableTabsTrigger: FC<{ provider: (typeof providers)[ProviderKey]; isLoading: boolean }> = ({
+  provider,
+  isLoading
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: provider.key });
+
+  return (
+    <TabsTrigger
+      ref={setNodeRef}
+      value={provider.key}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={cn('min-h-8 touch-none', isDragging && 'z-10 opacity-50')}
+      {...attributes}
+      {...listeners}
+    >
+      {isLoading ? <Loader className='animate-spin' size={14} /> : provider.label}
+    </TabsTrigger>
+  );
+};
 
 const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
   const [sort, setSort] = useState<Sort>(Sort.seeds);
@@ -48,20 +73,11 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
     imdbID: show.imdb_id!
   });
 
-  const tabs = [
-    {
-      query: yts,
-      provider: providers.yts
-    },
-    {
-      query: tpb,
-      provider: providers.tpb
-    },
-    {
-      query: tlk,
-      provider: providers.tlk
-    }
-  ];
+  const queries = { yts, tpb, tlk };
+
+  const { order, ...dndProps } = useProvidersOrder();
+
+  const tabs = order.map((key) => ({ query: queries[key], provider: providers[key] }));
 
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
@@ -91,14 +107,16 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
           </Button>
         </ButtonsGroup>
       </form>
-      <Tabs defaultValue={providers.yts.key} className='w-full rounded-none px-2'>
-        <TabsList className='grid w-full grid-cols-3'>
-          {tabs.map(({ provider, query }) => (
-            <TabsTrigger key={provider.key} value={provider.key} className='min-h-8'>
-              {query.isLoading ? <Loader className='animate-spin' size={14} /> : provider.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      <Tabs defaultValue={tabs[0].provider.key} className='w-full rounded-none px-2'>
+        <DndContext {...dndProps}>
+          <SortableContext items={order} strategy={horizontalListSortingStrategy}>
+            <TabsList className='grid w-full grid-cols-3'>
+              {tabs.map(({ provider, query }) => (
+                <SortableTabsTrigger key={provider.key} provider={provider} isLoading={query.isLoading} />
+              ))}
+            </TabsList>
+          </SortableContext>
+        </DndContext>
         {tabs.map(({ provider, query }) => {
           const isEmpty = checkIsEmpty(query);
 
