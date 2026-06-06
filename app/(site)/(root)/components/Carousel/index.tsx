@@ -12,6 +12,7 @@ import { useSilentIndex } from '../../useRandomMovie';
 interface Context {
   onIndexChange: (index: number) => void;
   gap?: number;
+  initialIndex?: number;
 }
 
 interface Props extends Context {
@@ -23,6 +24,7 @@ const Carousel = memo(
   function Carousel({ shows, gap = 8, onIndexChange, onEndReached }: Props) {
     const index = useSilentIndex();
     const [loaded, setLoaded] = useState(!index);
+    const initialIndexRef = useRef(index);
 
     const context = useMemo(
       () => ({
@@ -33,7 +35,8 @@ const Carousel = memo(
 
           startTransition(() => setLoaded(true));
         },
-        gap
+        gap,
+        initialIndex: initialIndexRef.current
       }),
       [onIndexChange, gap, loaded, index]
     );
@@ -89,7 +92,7 @@ const components: VirtuosoProps<Show, Context>['components'] = {
 
     return (
       <div {...props} ref={ref} className='snap-start'>
-        <Poster lazy={false} show={item} className='static-aspect-ratio' />
+        <Poster lazy={false} priority={index === context?.initialIndex} show={item} className='static-aspect-ratio' />
       </div>
     );
   },
