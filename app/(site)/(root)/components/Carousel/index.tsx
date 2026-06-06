@@ -40,7 +40,9 @@ const Carousel = memo(
 
     return (
       <div className='card-aspect-ratio static-aspect-ratio relative mx-auto'>
-        {!loaded && <Poster lazy={false} show={shows![index]} className='pointer-events-none absolute left-0 top-0' />}
+        {!loaded && (
+          <Poster lazy={false} priority show={shows![index]} className='pointer-events-none absolute left-0 top-0' />
+        )}
         <Virtuoso
           initialItemCount={1}
           horizontalDirection

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, ImgHTMLAttributes } from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -9,30 +9,38 @@ interface Props {
   onClick?: () => void;
   className?: string;
   lazy?: boolean;
+  priority?: boolean;
 }
 
-const Poster: FC<Props> = ({ show, onClick, className, lazy = true }) => (
-  <div
-    className={cn(
-      'card-aspect-ratio relative bg-black overflow-hidden rounded-lg text-lg',
-      'after:block after:absolute after:left-0 after:top-0 after:size-full after:bg-vignette after:pointer-events-none',
-      className
-    )}
-  >
-    <picture>
-      <source srcSet={show.poster['1x']} media='(max-resolution: 191dpi)' />
-      <source srcSet={show.poster['1x']} media='(max-device-pixel-ratio: 1.99)' />
-      <source srcSet={show.poster['1.5x']} media='(min-resolution: 192dpi)' />
-      <source srcSet={show.poster['1.5x']} media='(min-device-pixel-ratio: 2)' />
-      <img
-        className='size-full rounded-lg object-cover md:rounded-none md:rounded-l-lg'
-        loading={lazy ? 'lazy' : 'eager'}
-        src={show.poster['1x']}
-        alt={show.title}
-      />
-    </picture>
-    <Handlers show={show} onClick={onClick} />
-  </div>
-);
+type FetchPriorityProps = ImgHTMLAttributes<HTMLImageElement> & { fetchpriority?: 'high' | 'low' | 'auto' };
+
+const Poster: FC<Props> = ({ show, onClick, className, lazy = true, priority = false }) => {
+  const fetchPriorityProps: FetchPriorityProps = priority ? { fetchpriority: 'high' } : {};
+
+  return (
+    <div
+      className={cn(
+        'card-aspect-ratio relative bg-black overflow-hidden rounded-lg text-lg',
+        'after:block after:absolute after:left-0 after:top-0 after:size-full after:bg-vignette after:pointer-events-none',
+        className
+      )}
+    >
+      <picture>
+        <source srcSet={show.poster['1x']} media='(max-resolution: 191dpi)' />
+        <source srcSet={show.poster['1x']} media='(max-device-pixel-ratio: 1.99)' />
+        <source srcSet={show.poster['1.5x']} media='(min-resolution: 192dpi)' />
+        <source srcSet={show.poster['1.5x']} media='(min-device-pixel-ratio: 2)' />
+        <img
+          className='size-full rounded-lg object-cover md:rounded-none md:rounded-l-lg'
+          loading={lazy ? 'lazy' : 'eager'}
+          src={show.poster['1x']}
+          alt={show.title}
+          {...fetchPriorityProps}
+        />
+      </picture>
+      <Handlers show={show} onClick={onClick} />
+    </div>
+  );
+};
 
 export default Poster;
