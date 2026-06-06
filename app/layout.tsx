@@ -27,6 +27,8 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang='en' suppressHydrationWarning>
       <head>
+        <link rel='preconnect' href='https://image.tmdb.org' crossOrigin='anonymous' />
+        <link rel='dns-prefetch' href='https://image.tmdb.org' />
         <ThemeColor />
         <link
           rel='icon'
