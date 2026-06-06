@@ -27,7 +27,7 @@ const SortableTabsTrigger: FC<{ provider: (typeof providers)[ProviderKey]; isLoa
   provider,
   isLoading
 }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: provider.key });
+  const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: provider.key });
 
   return (
     <TabsTrigger
@@ -35,7 +35,6 @@ const SortableTabsTrigger: FC<{ provider: (typeof providers)[ProviderKey]; isLoa
       value={provider.key}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={cn('min-h-8 touch-none', isDragging && 'z-10 opacity-50')}
-      {...attributes}
       {...listeners}
     >
       {isLoading ? <Loader className='animate-spin' size={14} /> : provider.label}
