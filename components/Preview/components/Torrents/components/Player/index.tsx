@@ -63,6 +63,7 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles }) => {
     <MediaPlayer
       playsInline
       autoPlay
+      crossOrigin
       load='eager'
       preload='none'
       storage='movie-advisor'
