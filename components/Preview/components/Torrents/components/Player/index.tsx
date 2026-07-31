@@ -2,9 +2,11 @@
 
 import { FC, useEffect, useMemo, useRef } from 'react';
 import {
+  isHLSProvider,
   MediaPlayer,
   MediaPlayerInstance,
   MediaProvider,
+  MediaProviderAdapter,
   PlayButton,
   Track,
   useMediaState,
@@ -59,6 +61,17 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles }) => {
 
   const playerSrc = useMemo(() => (source ? ({ ...source, src: resolvedSrc } as VideoSrc) : []), [source, resolvedSrc]);
 
+  const onProviderChange = (provider: MediaProviderAdapter | null) => {
+    if (isHLSProvider(provider)) {
+      provider.config = {
+        backBufferLength: 15,
+        maxBufferLength: 20,
+        maxMaxBufferLength: 40,
+        maxBufferSize: 30 * 1000 * 1000
+      };
+    }
+  };
+
   return (
     <MediaPlayer
       playsInline
@@ -69,6 +82,7 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles }) => {
       storage='movie-advisor'
       ref={player}
       src={playerSrc}
+      onProviderChange={onProviderChange}
       onCanPlay={() => {
         setCanPlay(true);
         if (resumeTime.current) {
