@@ -18,6 +18,8 @@ const CaptionsMenu = () => {
     return Object.values(record);
   }, [tracks]);
 
+  if (!captions.length) return null;
+
   return (
     <PlayerMenu
       closeOnSelect

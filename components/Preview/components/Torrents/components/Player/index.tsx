@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useMemo, useRef } from 'react';
 import {
   MediaPlayer,
   MediaPlayerInstance,
@@ -16,8 +16,10 @@ import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr
 import { useSetCanPlay } from '@/hooks/useCanPlay';
 import { cn } from '@/lib/utils';
 
+import Audio from './components/Audio';
 import Captions from './components/Captions';
 import Playlist from './components/Playlist';
+import { useGstAudio } from './useGstAudio';
 import useSource from './useSource';
 
 import '@vidstack/react/player/styles/plyr/theme.css';
@@ -46,6 +48,17 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles }) => {
 
   const source = playlist[index];
 
+  const { tracks: audioTracks, audio, setAudio, resolvedSrc } = useGstAudio(source?.src);
+
+  const resumeTime = useRef(0);
+
+  const changeAudio = (track: number) => {
+    resumeTime.current = player.current?.currentTime ?? 0;
+    setAudio(track);
+  };
+
+  const playerSrc = useMemo(() => (source ? ({ ...source, src: resolvedSrc } as VideoSrc) : []), [source, resolvedSrc]);
+
   return (
     <MediaPlayer
       playsInline
@@ -54,8 +67,14 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles }) => {
       preload='none'
       storage='movie-advisor'
       ref={player}
-      src={(source as VideoSrc) || []}
-      onCanPlay={() => setCanPlay(true)}
+      src={playerSrc}
+      onCanPlay={() => {
+        setCanPlay(true);
+        if (resumeTime.current) {
+          player.current!.currentTime = resumeTime.current;
+          resumeTime.current = 0;
+        }
+      }}
       className={cn('relative size-full select-none')}
     >
       <MediaProvider className='relative flex size-full justify-center [&>video]:!h-full'>
@@ -85,7 +104,12 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles }) => {
             </PlayButton>
           ),
           afterVolumeSlider: <ul className='w-2' />,
-          beforeSettings: Boolean(subtitles.length) && <Captions />,
+          beforeSettings: (
+            <>
+              <Audio tracks={audioTracks} value={audio} onChange={changeAudio} />
+              <Captions />
+            </>
+          ),
           settings: playlist.length > 1 && (
             <Playlist key={source?.src} source={source} sources={playlist} onChange={setIndex} />
           )

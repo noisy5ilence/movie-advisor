@@ -29,21 +29,21 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
 
   const isStandalone = isStandaloneApp();
 
-  const { isIOS, isSafari } = detectSafari();
-  const isHEVC = torrent.codec?.includes('265') || torrent.codec?.toLowerCase().includes('hevc');
+  const { isSafari } = detectSafari();
 
+  // The stream proxy remuxes any container to fragmented MP4 and converts audio
+  // to AAC, and copies HEVC tagged `hvc1` (which Safari/iOS decode in hardware).
+  // So we no longer require container === mp4 or block HEVC on Safari — the proxy
+  // makes the usual MKV/HEVC rips playable in the browser.
   const supportedForStream = useMemo(() => {
     if (provider === providers.yts.key) {
-      return (
-        [Quality.The1080P, Quality.The720P].includes(torrent.quality as Quality) &&
-        (isHEVC ? !isIOS && !isSafari : true)
-      );
+      return [Quality.The1080P, Quality.The720P].includes(torrent.quality as Quality);
     }
 
-    const isMP4 = torrent.container?.includes('mp4');
+    const container = torrent.container?.toLowerCase();
 
-    return isMP4 && (isHEVC ? !isIOS && !isSafari : true);
-  }, [isIOS, isSafari, isHEVC, torrent, provider]);
+    return !container || /mp4|mkv|webm|mov|m4v|avi|ts/.test(container);
+  }, [torrent, provider]);
 
   const fetchMagnet = useMagnet(torrent);
 
