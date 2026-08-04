@@ -18,7 +18,51 @@ interface Details {
   imdb_id: string;
   runtime: number;
   tagline: string;
+  availability?: Availability;
+  airing?: Airing;
 }
+
+interface TMDBEpisode {
+  air_date: string | null;
+  episode_number: number;
+  season_number: number;
+  name: string;
+}
+
+interface TMDBSeriesDetails {
+  last_episode_to_air?: TMDBEpisode | null;
+  next_episode_to_air?: TMDBEpisode | null;
+  number_of_seasons?: number;
+  status?: string;
+}
+
+/** Where a series currently stands — the latest aired episode plus what follows it */
+interface Airing {
+  season: number;
+  episode: number;
+  seasons: number;
+  ended: boolean;
+  /** air date of the next episode, ISO string, only when TMDB knows one */
+  next?: string;
+}
+
+interface TMDBReleaseDate {
+  certification: string;
+  iso_639_1: string;
+  note: string;
+  release_date: string;
+  type: number;
+}
+
+interface TMDBCountryReleaseDates {
+  iso_3166_1: string;
+  release_dates: TMDBReleaseDate[];
+}
+
+type AvailabilityState = 'theatre' | 'stream' | 'bluray';
+
+/** Earliest worldwide release date per window, ISO strings */
+type Availability = Partial<Record<AvailabilityState, string>>;
 
 interface Movie {
   adult: boolean;
@@ -82,9 +126,18 @@ interface Person {
   original_name: string;
   popularity: number;
   profile_path: string;
-  cast_id: number;
   credit_id: string;
-  order: number;
+  // crew members carry neither
+  cast_id?: number;
+  order?: number;
+}
+
+interface Crew extends Person {
+  department: string;
+  /** movie credits carry a single job, tv aggregate credits carry one entry per job */
+  job?: string;
+  jobs?: Array<{ credit_id: string; job: string; episode_count: number }>;
+  total_episode_count?: number;
 }
 
 interface Actor extends Person {

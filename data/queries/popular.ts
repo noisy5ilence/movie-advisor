@@ -15,7 +15,7 @@ const popularQuery = ({ sortBy = 'popularity.desc', starring }: PopularQueryProp
         params: {
           page: pageParam,
           sort_by: sortBy,
-          with_cast: starring,
+          // with_people covers cast and crew, with_cast on top of it would AND directors away
           with_people: starring,
           'vote_count.gte': 300,
           'vote_average.lte': 10,

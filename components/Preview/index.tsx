@@ -10,6 +10,8 @@ import { Modal } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 import Actions from './components/Actions';
+import Airing from './components/Airing';
+import Availability from './components/Availability';
 
 interface Props {
   show?: Show & Partial<Details>;
@@ -52,8 +54,12 @@ const Preview: FC<Props> = ({
       <div className={cn('flex grow flex-col bg-background', { 'p-0 pt-2 md:p-2': isModal })}>
         <span className='order-3 mb-4 text-3xl md:order-1 md:line-clamp-2'>{show.title}</span>
 
-        <div className='order-3 mb-4 flex w-full flex-wrap gap-5 whitespace-nowrap text-sm md:order-2'>
+        <div className='order-3 mb-4 flex w-full flex-wrap items-center gap-5 whitespace-nowrap text-sm md:order-2'>
           <span>{new Date(show.release).getFullYear()}</span>
+          {Boolean(show.availability) && (
+            <Availability availability={show.availability!} className='animate-fade-aside-slide-in opacity-0' />
+          )}
+          {Boolean(show.airing) && <Airing airing={show.airing!} className='animate-fade-aside-slide-in opacity-0' />}
           {Boolean(show.runtime) && (
             <span className='animate-fade-aside-slide-in opacity-0'>{show.runtime} minutes</span>
           )}
