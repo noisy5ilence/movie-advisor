@@ -1,4 +1,3 @@
-// TMDB release types: 1 premiere, 2 limited theatrical, 3 theatrical, 4 digital, 5 physical, 6 TV
 const STATE_BY_RELEASE_TYPE: Record<number, AvailabilityState> = {
   1: 'theatre',
   2: 'theatre',
@@ -7,11 +6,9 @@ const STATE_BY_RELEASE_TYPE: Record<number, AvailabilityState> = {
   5: 'bluray'
 };
 
-/** How long a movie is assumed to still be running in theatres when TMDB has no digital/physical date yet */
 const THEATRICAL_WINDOW = 120 * 24 * 60 * 60 * 1000;
 
 export const mapReleaseDatesToAvailability = (results?: TMDBCountryReleaseDates[]): Availability | undefined => {
-  // TMDB reports dates per country, it doesn't matter where a window opened first — only when
   const availability = (results || []).reduce<Availability>((dates, { release_dates }) => {
     (release_dates || []).forEach(({ type, release_date }) => {
       const state = STATE_BY_RELEASE_TYPE[type];
@@ -37,8 +34,6 @@ export const getAvailabilityState = ({ theatre, stream, bluray }: Availability):
   if (isUpcoming(theatre)) return 'theatre';
   if (!theatre) return undefined;
 
-  // Still in theatres only while the run lasts or while a digital/physical date is announced but not reached,
-  // otherwise TMDB simply never got the digital entry and the movie is long out of cinemas
   const isRunning = Date.now() - Date.parse(theatre) < THEATRICAL_WINDOW;
 
   return isRunning || isUpcoming(stream) || isUpcoming(bluray) ? 'theatre' : 'stream';

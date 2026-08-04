@@ -36,13 +36,11 @@ interface TMDBSeriesDetails {
   status?: string;
 }
 
-/** Where a series currently stands — the latest aired episode plus what follows it */
 interface Airing {
   season: number;
   episode: number;
   seasons: number;
   ended: boolean;
-  /** air date of the next episode, ISO string, only when TMDB knows one */
   next?: string;
 }
 
@@ -61,7 +59,6 @@ interface TMDBCountryReleaseDates {
 
 type AvailabilityState = 'theatre' | 'stream' | 'bluray';
 
-/** Earliest worldwide release date per window, ISO strings */
 type Availability = Partial<Record<AvailabilityState, string>>;
 
 interface Movie {
@@ -127,14 +124,12 @@ interface Person {
   popularity: number;
   profile_path: string;
   credit_id: string;
-  // crew members carry neither
   cast_id?: number;
   order?: number;
 }
 
 interface Crew extends Person {
   department: string;
-  /** movie credits carry a single job, tv aggregate credits carry one entry per job */
   job?: string;
   jobs?: Array<{ credit_id: string; job: string; episode_count: number }>;
   total_episode_count?: number;
@@ -143,6 +138,32 @@ interface Crew extends Person {
 interface Actor extends Person {
   character: string;
   photoUrl: string;
+}
+
+type TMDBPersonCredit = (Movie | Series) & { media_type: Show['type'] };
+
+interface TMDBPersonDetails {
+  id: number;
+  name: string;
+  biography: string;
+  birthday: string | null;
+  deathday: string | null;
+  place_of_birth: string | null;
+  known_for_department: string;
+  profile_path: string | null;
+  combined_credits?: { cast: TMDBPersonCredit[]; crew: TMDBPersonCredit[] };
+}
+
+interface Profile {
+  id: number;
+  name: string;
+  photo: string;
+  biography: string;
+  department: string;
+  birthday?: string;
+  deathday?: string;
+  birthplace?: string;
+  shows: Show[];
 }
 
 interface AggregatedActor extends Person {

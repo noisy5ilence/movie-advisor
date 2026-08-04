@@ -6,7 +6,6 @@ export const mapDetailsToAiring = ({
   number_of_seasons,
   status
 }: TMDBSeriesDetails): Airing | undefined => {
-  // before a premiere there is nothing aired yet, the upcoming episode is the only position we have
   const current = last_episode_to_air || next_episode_to_air;
 
   if (!current) return undefined;

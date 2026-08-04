@@ -8,21 +8,17 @@ interface Props {
   lines: string[];
   children: ReactNode;
   className?: string;
-  triggerClassName?: string;
 }
 
-const Hint: FC<Props> = ({ lines, children, className, triggerClassName }) => {
+const Hint: FC<Props> = ({ lines, children, className }) => {
   const [open, setOpen] = useState(false);
 
-  // an animation that lands on a transform turns this wrapper into a stacking context,
-  // so the tooltip can only reach above the following rows by raising the wrapper itself
   return (
     <span className={cn('relative z-10 inline-flex', className)}>
       <button
         type='button'
         aria-label={lines.join('. ')}
-        className={cn('inline-flex cursor-help items-center', triggerClassName)}
-        // a tap fires pointerenter too, opening what the click would then toggle shut
+        className='inline-flex cursor-help items-center'
         onPointerEnter={({ pointerType }) => pointerType === 'mouse' && setOpen(true)}
         onPointerLeave={({ pointerType }) => pointerType === 'mouse' && setOpen(false)}
         onClick={() => setOpen((value) => !value)}

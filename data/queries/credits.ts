@@ -7,7 +7,6 @@ export type CreditsQueryProps = {
 
 const photo = (path: string) => `https://image.tmdb.org/t/p/w185${path}`;
 
-// a series has no single director, so the one behind most episodes stands in for it
 const findDirector = (crew: Crew[] = []) =>
   crew
     .filter(

@@ -3,7 +3,6 @@ import { twMerge } from 'tailwind-merge';
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
-// TMDB dates are UTC midnight, formatting them in the local zone would shift them a day back
 export const formatDate = (date: string) =>
   new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' })
     .format(new Date(date))

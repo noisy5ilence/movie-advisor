@@ -39,11 +39,7 @@ const Availability: FC<Props> = ({ availability, className }) => {
   const Icon = ICONS[state];
 
   return (
-    <Hint
-      lines={getLabels(availability, state)}
-      className={className}
-      triggerClassName='text-muted-foreground transition-colors hover:text-foreground'
-    >
+    <Hint lines={getLabels(availability, state)} className={className}>
       <Icon size={16} />
     </Hint>
   );

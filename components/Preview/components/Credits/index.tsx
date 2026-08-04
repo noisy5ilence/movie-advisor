@@ -52,11 +52,7 @@ const components: VirtuosoProps<Actor, Context>['components'] = {
         style={{ width: context?.width, height: context?.height }}
         className='relative shrink-0 cursor-pointer snap-start self-end bg-card text-card-foreground transition-shadow hover:shadow-lg'
       >
-        <Link
-          prefetch={false}
-          href={`/starring?actorId=${actor.id}&title=${encodeURIComponent(actor.name)}`}
-          onClick={() => context?.onClick?.(actor.id.toString())}
-        >
+        <Link prefetch={false} href={`/person/${actor.id}`} onClick={() => context?.onClick?.(actor.id.toString())}>
           <div className='overflow-hidden rounded-lg'>
             <img height={180} width={120} loading='lazy' src={actor.photoUrl} alt={actor.name} />
           </div>
