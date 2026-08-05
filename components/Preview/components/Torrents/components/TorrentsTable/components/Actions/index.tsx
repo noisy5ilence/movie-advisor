@@ -31,10 +31,6 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
 
   const { isSafari } = detectSafari();
 
-  // The stream proxy remuxes any container to fragmented MP4 and converts audio
-  // to AAC, and copies HEVC tagged `hvc1` (which Safari/iOS decode in hardware).
-  // So we no longer require container === mp4 or block HEVC on Safari — the proxy
-  // makes the usual MKV/HEVC rips playable in the browser.
   const supportedForStream = useMemo(() => {
     if (provider === providers.yts.key) {
       return [Quality.The1080P, Quality.The720P].includes(torrent.quality as Quality);
@@ -89,7 +85,8 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
             variant='destructive'
             className={cn(
               'flex-grow-0 px-3 bg-red-600',
-              'hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600'
+              'hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600',
+              { 'bg-transparent': !magnet || fetchMagnet.isPending }
             )}
             onClick={() => {
               showPlayerModal({ backdrop: show.backdrop, title, hash, magnet });
