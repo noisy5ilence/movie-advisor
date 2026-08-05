@@ -12,10 +12,10 @@ interface Props {
   priority?: boolean;
 }
 
-type FetchPriorityProps = ImgHTMLAttributes<HTMLImageElement> & { fetchpriority?: 'high' | 'low' | 'auto' };
+type FetchPriorityProps = ImgHTMLAttributes<HTMLImageElement> & { fetchPriority?: 'high' | 'low' | 'auto' };
 
 const Poster: FC<Props> = ({ show, onClick, className, lazy = true, priority = false }) => {
-  const fetchPriorityProps: FetchPriorityProps = priority ? { fetchpriority: 'high' } : {};
+  const fetchPriorityProps: FetchPriorityProps = priority ? { fetchPriority: 'high' } : {};
 
   return (
     <div
