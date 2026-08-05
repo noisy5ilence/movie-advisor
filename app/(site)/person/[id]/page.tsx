@@ -41,7 +41,7 @@ const PersonPage: FC<Props> = async ({ params: { id } }) => {
 
   if (!id) return redirect('/');
 
-  await queryClient.prefetchQuery(personQuery({ personId: id }));
+  queryClient.prefetchQuery(personQuery({ personId: id }));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
