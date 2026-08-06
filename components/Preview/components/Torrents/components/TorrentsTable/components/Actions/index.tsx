@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Cast, Download, ListVideo, Loader, Magnet, Play, TrafficCone } from 'lucide-react';
 
 import { providers } from '@/components/Preview/components/Torrents/constants';
@@ -45,14 +45,24 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
 
   const fetchMagnet = useMagnet(torrent);
 
-  const { pin } = usePinnedTorrents();
+  const { pin, isPinned, savedMagnet, rememberMagnet } = usePinnedTorrents();
 
-  const magnet = fetchMagnet.data || torrent.magnet;
+  const key = torrentKey(torrent);
+  const pinned = isPinned(key);
+
+  // savedMagnet keeps a pinned Toloka torrent playable after a reload without re-fetching
+  const magnet = fetchMagnet.data || torrent.magnet || savedMagnet(key) || '';
 
   const hash = getMagnetHash(magnet);
 
+  // persist the fetched magnet while pinned; only Toloka needs it (others carry it in the result)
+  useEffect(() => {
+    if (pinned && magnet && !torrent.magnet) rememberMagnet(key, magnet);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pinned, magnet, key, torrent.magnet]);
+
   // starting to watch a torrent pins it to the top for next time
-  const pinPlayed = () => pin(torrentKey(torrent));
+  const pinPlayed = () => pin(key);
 
   const supportedForCast = prefix && !prefix.includes('{host}');
 

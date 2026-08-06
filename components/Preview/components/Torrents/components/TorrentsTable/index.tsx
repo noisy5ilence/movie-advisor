@@ -1,5 +1,5 @@
 import { FC, Fragment, MouseEvent, useState } from 'react';
-import { ArrowDownIcon, Pin } from 'lucide-react';
+import { ArrowDownIcon, Bookmark } from 'lucide-react';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Sort } from '@/data/parsers';
@@ -72,7 +72,7 @@ const TorrentsTable: FC<Props> = ({ title, torrents, show, sort, sortable, provi
             : 'w-5 opacity-100 [@media(hover:hover)]:w-0 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:w-5 [@media(hover:hover)]:group-hover:opacity-100'
         )}
       >
-        <Pin className={cn('size-4', pinned && 'fill-current')} />
+        <Bookmark className={cn('size-4', pinned && 'fill-current')} />
       </button>
     );
   };
