@@ -1,10 +1,11 @@
-import { FC, Fragment, useState } from 'react';
-import { ArrowDownIcon } from 'lucide-react';
+import { FC, Fragment, MouseEvent, useState } from 'react';
+import { ArrowDownIcon, Pin } from 'lucide-react';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Sort } from '@/data/parsers';
-import { cn } from '@/lib/utils';
+import { cn, torrentKey } from '@/lib/utils';
 
+import usePinnedTorrents from '../../usePinnedTorrents';
 import showHostManagerModal from '../HostManager';
 import TableHeadSortable from '../TableHeadSortable';
 
@@ -34,7 +35,9 @@ const TorrentsTable: FC<Props> = ({ title, torrents, show, sort, sortable, provi
 
   const [episodesSort, setEpisodesSort] = useState<EpisodesSort | null>(null);
 
-  const rows = episodesSort
+  const { isPinned, toggle } = usePinnedTorrents();
+
+  const sorted = episodesSort
     ? [...torrents].sort((a, b) => {
         const [seasonA, episodeA] = seasonEpisode(a.episodes);
         const [seasonB, episodeB] = seasonEpisode(b.episodes);
@@ -43,6 +46,36 @@ const TorrentsTable: FC<Props> = ({ title, torrents, show, sort, sortable, provi
         return episodesSort === 'asc' ? diff : -diff;
       })
     : torrents;
+
+  // pinned (previously played) torrents stick to the top, keeping their order within each group
+  const rows = [
+    ...sorted.filter((torrent) => isPinned(torrentKey(torrent))),
+    ...sorted.filter((torrent) => !isPinned(torrentKey(torrent)))
+  ];
+
+  const renderPin = (torrent: Torrent, mobile?: boolean) => {
+    const pinned = isPinned(torrentKey(torrent));
+    const onClick = (event: MouseEvent) => {
+      event.stopPropagation();
+      toggle(torrentKey(torrent));
+    };
+
+    return (
+      <button
+        type='button'
+        onClick={onClick}
+        aria-label={pinned ? 'Unpin torrent' : 'Pin torrent to top'}
+        className={cn(
+          'flex shrink-0 items-center overflow-hidden text-muted-foreground transition-all duration-200 hover:text-foreground',
+          pinned || mobile
+            ? 'w-5 opacity-100'
+            : 'w-5 opacity-100 [@media(hover:hover)]:w-0 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:w-5 [@media(hover:hover)]:group-hover:opacity-100'
+        )}
+      >
+        <Pin className={cn('size-4', pinned && 'fill-current')} />
+      </button>
+    );
+  };
 
   // server sort (size/seeds) refetches in a new order, so drop the client-side S:E sort
   const handleChangeSort = (next: Sort) => {
@@ -95,16 +128,22 @@ const TorrentsTable: FC<Props> = ({ title, torrents, show, sort, sortable, provi
           return (
             <Fragment key={torrent.magnet + torrent.id + torrent.download}>
               <TableRow className='table-row border-b-0 hover:bg-transparent md:hidden'>
-                <TableCell className='break-all p-2' colSpan={colSpan}>
-                  <span className='flex w-full flex-wrap items-center gap-3'>
-                    {torrent.title} {isSeries && torrent.episodes && `[${torrent.episodes}]`}{' '}
-                    {torrent.quality && `[${torrent.quality}]`}
+                <TableCell className='p-2' colSpan={colSpan}>
+                  <span className='flex w-full flex-wrap items-center gap-1'>
+                    {renderPin(torrent, true)}
+                    <span className='break-all'>
+                      {torrent.title} {isSeries && torrent.episodes && `[${torrent.episodes}]`}{' '}
+                      {torrent.quality && `[${torrent.quality}]`}
+                    </span>
                   </span>
                 </TableCell>
               </TableRow>
-              <TableRow className='hover:bg-transparent'>
+              <TableRow className='group hover:bg-transparent'>
                 <TableCell className='hidden break-all p-2 md:table-cell' title={torrent.originalTitle}>
-                  {torrent.title}
+                  <span className='flex items-center'>
+                    {renderPin(torrent)}
+                    <span className='break-all'>{torrent.title}</span>
+                  </span>
                 </TableCell>
                 {isSeries && (
                   <TableCell className='hidden p-2 md:table-cell'>

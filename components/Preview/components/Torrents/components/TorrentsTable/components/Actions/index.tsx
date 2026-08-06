@@ -8,7 +8,9 @@ import ButtonsGroup from '@/components/ui/buttons-group';
 import { Quality } from '@/data/parsers/yts/models';
 import { useM3UUrl } from '@/hooks/useM3UStreamUrl';
 import { useStreamUrl } from '@/hooks/useStreamUrl';
-import { cn, detectSafari, getMagnetHash, isStandaloneApp } from '@/lib/utils';
+import { cn, detectSafari, getMagnetHash, isStandaloneApp, torrentKey } from '@/lib/utils';
+
+import usePinnedTorrents from '../../../../usePinnedTorrents';
 
 import showPlayerModal from './components/Player';
 import useMagnet from './useMagnet';
@@ -43,13 +45,19 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
 
   const fetchMagnet = useMagnet(torrent);
 
+  const { pin } = usePinnedTorrents();
+
   const magnet = fetchMagnet.data || torrent.magnet;
 
   const hash = getMagnetHash(magnet);
 
+  // starting to watch a torrent pins it to the top for next time
+  const pinPlayed = () => pin(torrentKey(torrent));
+
   const supportedForCast = prefix && !prefix.includes('{host}');
 
   const handleM3ULink = () => {
+    pinPlayed();
     setIsStreamPending(true);
 
     const params = new URLSearchParams({
@@ -89,6 +97,7 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
               { invisible: !magnet || fetchMagnet.isPending }
             )}
             onClick={() => {
+              pinPlayed();
               showPlayerModal({ backdrop: show.backdrop, title, hash, magnet });
             }}
             title='Play'
@@ -127,7 +136,14 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
           </Button>
         ) : (
           supportedForCast && (
-            <Button className='grow-0 px-3' variant='outline' onClick={() => cast(magnet)}>
+            <Button
+              className='grow-0 px-3'
+              variant='outline'
+              onClick={() => {
+                pinPlayed();
+                cast(magnet);
+              }}
+            >
               <Cast size={20} />
             </Button>
           )

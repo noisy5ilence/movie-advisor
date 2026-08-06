@@ -32,6 +32,11 @@ export const getMagnetHash = (link: string) => {
   return hash?.toUpperCase();
 };
 
+// Stable identity for a torrent that survives the lazy empty -> fetched magnet transition:
+// Toloka has a permanent download URL, the rest always carry a magnet infohash.
+export const torrentKey = (torrent: Torrent) =>
+  torrent.download || getMagnetHash(torrent.magnet) || torrent.hash || torrent.id;
+
 export const formatBytes = (bytes?: number) => {
   if (bytes == null || !isFinite(bytes)) return '';
 
