@@ -50,8 +50,11 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
 
   const year = new Date(show.release).getFullYear();
 
+  // YTS is a movies-only API, so it has nothing to offer for series
+  const isSeries = show.type === 'tv';
+
   const yts = useTorrents({
-    query: show.title,
+    query: isSeries ? '' : show.title,
     queryFn: providers.yts.queryFn,
     sort,
     key: providers.yts.key,
@@ -76,7 +79,9 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
 
   const { order, ...dndProps } = useProvidersOrder();
 
-  const tabs = order.map((key) => ({ query: queries[key], provider: providers[key] }));
+  const visibleOrder = isSeries ? order.filter((key) => key !== 'yts') : order;
+
+  const tabs = visibleOrder.map((key) => ({ query: queries[key], provider: providers[key] }));
 
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
@@ -108,8 +113,8 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
       </form>
       <Tabs defaultValue={tabs[0].provider.key} className='w-full rounded-none px-2'>
         <DndContext {...dndProps}>
-          <SortableContext items={order} strategy={horizontalListSortingStrategy}>
-            <TabsList className='grid w-full grid-cols-3'>
+          <SortableContext items={visibleOrder} strategy={horizontalListSortingStrategy}>
+            <TabsList className={cn('grid w-full', isSeries ? 'grid-cols-2' : 'grid-cols-3')}>
               {tabs.map(({ provider, query }) => (
                 <SortableTabsTrigger key={provider.key} provider={provider} isLoading={query.isLoading} />
               ))}
