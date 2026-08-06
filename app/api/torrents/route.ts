@@ -5,6 +5,8 @@ import tlk from '@/data/parsers/tlk';
 import tpb from '@/data/parsers/tpb';
 import yts from '@/data/parsers/yts';
 
+const MIN_SEEDERS = 5;
+
 export async function GET({ nextUrl: { searchParams } }: NextRequest) {
   const key = searchParams.get('key') as keyof typeof providers;
 
@@ -15,7 +17,9 @@ export async function GET({ nextUrl: { searchParams } }: NextRequest) {
   const providers = { yts, tpb, tlk };
 
   try {
-    return NextResponse.json(await providers[key].search({ imdbID, query, sort }));
+    const torrents = await providers[key].search({ imdbID, query, sort });
+
+    return NextResponse.json(torrents.filter((torrent) => torrent.seeders >= MIN_SEEDERS));
   } catch (_) {
     return NextResponse.json([]);
   }

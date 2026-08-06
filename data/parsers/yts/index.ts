@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 
 import { YTS_HOST } from '@/env';
 
-import { Sort } from '../index';
+import { Sort, TRACKERS } from '../index';
 
 import { YTSResponse } from './models';
 
@@ -42,17 +42,6 @@ export class YTS {
 
         return (
           movie?.torrents.map((torrent) => {
-            const trackers = [
-              'udp://open.demonii.com:1337/announce',
-              'udp://tracker.openbittorrent.com:80',
-              'udp://tracker.coppersurfer.tk:6969',
-              'udp://glotorrents.pw:6969/announce',
-              'udp://tracker.opentrackr.org:1337/announce',
-              'udp://torrent.gresille.org:80/announce',
-              'udp://p4p.arenabg.com:1337',
-              'udp://tracker.leechers-paradise.org:6969'
-            ];
-
             return {
               id: movie.id?.toString(),
               title: movie.title_english,
@@ -61,7 +50,7 @@ export class YTS {
               quality: torrent.quality,
               source: torrent.type,
               year: movie.year?.toString(),
-              magnet: `magnet:?xt=urn:btih:${torrent.hash}&dn=${encodeURIComponent(query)}&tr=${trackers.join('&tr=')}`,
+              magnet: `magnet:?xt=urn:btih:${torrent.hash}&dn=${encodeURIComponent(query)}&tr=${TRACKERS.join('&tr=')}`,
               hash: torrent.hash,
               codec: torrent.video_codec
             };

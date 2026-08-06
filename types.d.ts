@@ -205,6 +205,7 @@ interface Torrent {
   codec?: string;
   container?: string;
   year?: string;
+  episodes?: string;
   download?: string;
   hash: string;
 }

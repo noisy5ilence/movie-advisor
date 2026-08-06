@@ -86,7 +86,7 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
             className={cn(
               'flex-grow-0 px-3 bg-red-600',
               'hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600',
-              { 'bg-transparent': !magnet || fetchMagnet.isPending }
+              { invisible: !magnet || fetchMagnet.isPending }
             )}
             onClick={() => {
               showPlayerModal({ backdrop: show.backdrop, title, hash, magnet });
