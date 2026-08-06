@@ -42,3 +42,4 @@ certificates
 /public/*.js
 /public/robots.txt
 /public/sitemap*
+.env*

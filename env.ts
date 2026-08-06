@@ -18,3 +18,6 @@ export const TOLOKA_PASSWORD = process.env.TOLOKA_PASSWORD;
 
 export const PIRATE_BAY_HOST = process.env.PIRATE_BAY_HOST;
 export const YTS_HOST = process.env.YTS_HOST;
+
+export const UPSTASH_REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+export const UPSTASH_REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
