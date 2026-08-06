@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Cast, Download, ListVideo, Loader, Magnet, Play, TrafficCone } from 'lucide-react';
+import { Bookmark, Cast, Download, ListVideo, Loader, Magnet, Play, TrafficCone } from 'lucide-react';
 
 import { providers } from '@/components/Preview/components/Torrents/constants';
 import { useCastMagnet, usePrefix } from '@/components/Preview/components/Torrents/hooks/useMagnetHosts';
@@ -45,7 +45,7 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
 
   const fetchMagnet = useMagnet(torrent);
 
-  const { pin, isPinned, savedMagnet, rememberMagnet } = usePinnedTorrents();
+  const { pin, toggle, isPinned, savedMagnet, rememberMagnet } = usePinnedTorrents();
 
   const key = torrentKey(torrent);
   const pinned = isPinned(key);
@@ -115,6 +115,14 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
             <Play size={15} />
           </Button>
         )}
+        <Button
+          variant='outline'
+          className='grow-0 px-3'
+          onClick={() => toggle(key)}
+          title={pinned ? 'Unpin' : 'Pin to top'}
+        >
+          <Bookmark size={16} className={cn(pinned && 'fill-current')} />
+        </Button>
         <Button variant='outline' className='relative grow-0 px-3' title='Download m3u playlist'>
           <a
             className='absolute left-0 top-0 size-full'
