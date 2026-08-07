@@ -12,7 +12,6 @@ import { Sort, TRACKERS } from '../index';
 import { parseTolokaTitle } from './title';
 
 const COOKIE_JAR_KEY = 'toloka:cookie-jar';
-const MAGNET_KEY_PREFIX = 'toloka:magnet:';
 
 // UpstashError messages embed the full command, including cookie values — never log them
 const redisWarn = (message: string, error: unknown) =>
@@ -29,8 +28,6 @@ export class Toloka {
   private cookieJar = new CookieJar();
 
   private hydration?: Promise<void>;
-
-  private magnets: Record<string, string> = {};
 
   constructor() {
     this.host = TOLOKA_HOST || 'https://toloka.to';
@@ -148,23 +145,7 @@ export class Toloka {
   }
 
   async magnet(url: string) {
-    if (this.magnets[url]) return this.magnets[url];
-
     await this.hydrate();
-
-    // an infohash never changes for a given torrent, so a cached magnet is valid forever
-    // and saves a .torrent download from Toloka on every cold start
-    try {
-      const cached = await redis?.get<string>(`${MAGNET_KEY_PREFIX}${url}`);
-
-      if (cached) {
-        this.magnets[url] = cached;
-
-        return cached;
-      }
-    } catch (error) {
-      redisWarn('Failed to read Toloka magnet from Redis:', error);
-    }
 
     const fetchTorrent = async () => {
       const { data: buffer } = await this.client.get(`/${url}`, {
@@ -184,22 +165,9 @@ export class Toloka {
       torrent = (await fetchTorrent()) as Instance;
     }
 
-    console.info(`[tlk] downloaded .torrent for ${url}`);
-
-    // the .torrent's own announce URLs embed the account passkey — never expose them in a magnet;
-    // public trackers help discover cross-seeded peers, the rest is covered by DHT
     const trackers = TRACKERS.map((tracker) => `&tr=${encodeURIComponent(tracker)}`).join('');
-    const magnet = `magnet:?xt=urn:btih:${torrent.infoHash}&dn=${encodeURIComponent(torrent.name?.toString() || '')}${trackers}`;
 
-    this.magnets[url] = magnet;
-
-    try {
-      await redis?.set(`${MAGNET_KEY_PREFIX}${url}`, magnet);
-    } catch (error) {
-      redisWarn('Failed to persist Toloka magnet to Redis:', error);
-    }
-
-    return magnet;
+    return `magnet:?xt=urn:btih:${torrent.infoHash}&dn=${encodeURIComponent(torrent.name?.toString() || '')}${trackers}`;
   }
 }
 

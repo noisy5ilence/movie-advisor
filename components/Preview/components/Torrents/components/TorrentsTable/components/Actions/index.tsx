@@ -90,6 +90,14 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
     if (show.type === 'tv') {
       const season = seasonFromEpisodes(torrent.episodes) ?? show.airing?.season;
       if (season != null) params.set('season', season.toString());
+
+      // Toloka thread id (download.php?id=<id>): the TV stores it and later
+      // asks movie-advisor's /api/refresh to re-pull the thread's current
+      // magnet, so a still-airing season picks up new episodes on its own.
+      if (provider === providers.tlk.key && torrent.download) {
+        const tid = new URLSearchParams(torrent.download.split('?')[1] || '').get('id');
+        if (tid) params.set('tlk', tid);
+      }
     }
 
     if (isSafari) {
