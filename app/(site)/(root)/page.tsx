@@ -1,8 +1,9 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
 
+import JsonLd from '@/components/JsonLd';
 import randomQuery, { generatePage } from '@/data/queries/random';
-import { TITLE } from '@/env';
+import { SITE_URL, TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
@@ -20,6 +21,7 @@ const Random = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <JsonLd data={{ '@context': 'https://schema.org', '@type': 'WebSite', name: TITLE, url: SITE_URL }} />
       <h1 className='sr-only'>{TITLE} — Discover Your Next Favorite Movie</h1>
       <Container page={page} />
     </HydrationBoundary>

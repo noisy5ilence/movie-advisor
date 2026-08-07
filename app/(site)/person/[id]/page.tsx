@@ -3,9 +3,10 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import JsonLd from '@/components/JsonLd';
 import Person from '@/components/Person';
 import personQuery from '@/data/queries/person';
-import { TITLE } from '@/env';
+import { SITE_URL, TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
 
 interface Props {
@@ -41,14 +42,25 @@ export const generateMetadata = async ({ params: { id } }: Props): Promise<Metad
 const PersonPage: FC<Props> = async ({ params: { id } }) => {
   const queryClient = getQueryClient();
 
-  try {
-    await queryClient.fetchQuery(personQuery({ personId: id }));
-  } catch (_) {
-    return notFound();
-  }
+  const profile = await queryClient.fetchQuery(personQuery({ personId: id })).catch(() => null);
+
+  if (!profile) return notFound();
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: profile.name,
+    description: profile.biography || undefined,
+    image: profile.photo || undefined,
+    birthDate: profile.birthday || undefined,
+    deathDate: profile.deathday || undefined,
+    birthPlace: profile.birthplace ? { '@type': 'Place', name: profile.birthplace } : undefined,
+    url: `${SITE_URL}/person/${id}`
+  };
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <JsonLd data={jsonLd} />
       <Person personId={id} />
     </HydrationBoundary>
   );
