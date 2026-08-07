@@ -5,6 +5,7 @@ import { FC } from 'react';
 import Poster from '@/components/Poster';
 import { showPreviewModal } from '@/components/Preview';
 import ScrollNavigation from '@/components/ScrollNavigation';
+import { showPath } from '@/lib/utils';
 
 interface Props {
   shows: Show[];
@@ -24,7 +25,7 @@ const Gallery: FC<Props> = ({ shows }) => (
               <Poster
                 className='!h-[350px] !w-[230px] text-sm'
                 show={show}
-                href={`/${show.type}/${show.id}`}
+                href={showPath(show)}
                 onClick={() => showPreviewModal({ show })}
               />
             </li>

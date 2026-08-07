@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import useShowState, { useMutateShowState } from '@/hooks/useShowState';
 import { useToast } from '@/hooks/useToast';
-import { cn } from '@/lib/utils';
+import { cn, showPath } from '@/lib/utils';
 
 interface Props {
   show: Show & Partial<Details>;
@@ -27,7 +27,7 @@ const Actions = ({ show, className, externalLink }: Props) => {
       className='h-8 px-3'
       onClick={() =>
         navigator.clipboard
-          .writeText(`${location.origin}/${show.type}/${show.id}`)
+          .writeText(`${location.origin}${showPath(show)}`)
           .then(() => toast({ description: 'Link has been copied' }))
       }
     >
@@ -75,7 +75,7 @@ const Actions = ({ show, className, externalLink }: Props) => {
                 title='Open in new tab'
                 variant='outline'
                 className='relative h-8 px-3'
-                onClick={() => window.open(`${location.origin}/${show.type}/${show.id}`, '_blank')}
+                onClick={() => window.open(`${location.origin}${showPath(show)}`, '_blank')}
               >
                 <ExternalLink size={14} />
               </Button>

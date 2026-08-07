@@ -3,6 +3,7 @@ import { VirtuosoGrid, VirtuosoGridProps } from 'react-virtuoso';
 
 import Poster from '@/components/Poster';
 import { showPreviewModal } from '@/components/Preview';
+import { showPath } from '@/lib/utils';
 
 interface Props {
   shows: Show[];
@@ -18,7 +19,7 @@ const components: VirtuosoGridProps<Movie, { shows: Show[]; onClick: (show: Show
 
     if (!show) return null;
 
-    return <Poster show={show} href={`/${show.type}/${show.id}`} onClick={() => onClick?.(show)} />;
+    return <Poster show={show} href={showPath(show)} onClick={() => onClick?.(show)} />;
   }
 };
 

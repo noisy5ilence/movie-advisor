@@ -1,6 +1,7 @@
 import { getServerSideSitemap, ISitemapField } from 'next-sitemap';
 
 import { MOVIE_DB_API_URL, MOVIE_DB_TOKEN, SITE_URL } from '@/env';
+import { showPath } from '@/lib/utils';
 
 export const revalidate = 86400;
 
@@ -15,9 +16,12 @@ const DISCOVER_FILTERS = {
   'vote_average.lte': '10'
 };
 
-type TMDBListResponse = { results?: { id: number }[] };
+type TMDBListItem = { id: number; title?: string; name?: string };
+type TMDBListResponse = { results?: TMDBListItem[] };
 
-const fetchIds = async (path: string, params: Record<string, string>): Promise<number[]> => {
+type Entry = { id: number; title: string };
+
+const fetchEntries = async (path: string, params: Record<string, string>): Promise<Entry[]> => {
   const query = new URLSearchParams(params).toString();
 
   const response = await fetch(`${MOVIE_DB_API_URL}/${path}?${query}`, {
@@ -29,38 +33,42 @@ const fetchIds = async (path: string, params: Record<string, string>): Promise<n
 
   const { results = [] }: TMDBListResponse = await response.json();
 
-  return results.map(({ id }) => id);
+  return results.map(({ id, title, name }) => ({ id, title: title || name || '' }));
 };
 
 // TMDB allows ~50 requests per second, so the task list is drained in small batches
-const collectIds = async (tasks: (() => Promise<number[]>)[]) => {
-  const ids: number[] = [];
+const collectEntries = async (tasks: (() => Promise<Entry[]>)[]) => {
+  const entries = new Map<number, string>();
 
   for (let index = 0; index < tasks.length; index += BATCH_SIZE) {
     const batch = await Promise.all(tasks.slice(index, index + BATCH_SIZE).map((task) => task().catch(() => [])));
 
-    ids.push(...batch.flat());
+    batch.flat().forEach(({ id, title }) => entries.has(id) || entries.set(id, title));
   }
 
-  return Array.from(new Set(ids));
+  return Array.from(entries, ([id, title]) => ({ id, title }));
 };
 
 const pages = (count: number) => Array.from({ length: count }, (_, index) => `${index + 1}`);
 
 const discoverTasks = (type: Show['type']) =>
   ['popularity.desc', 'vote_average.desc'].flatMap((sortBy) =>
-    pages(LIST_PAGES).map((page) => () => fetchIds(`discover/${type}`, { ...DISCOVER_FILTERS, sort_by: sortBy, page }))
+    pages(LIST_PAGES).map(
+      (page) => () => fetchEntries(`discover/${type}`, { ...DISCOVER_FILTERS, sort_by: sortBy, page })
+    )
   );
 
 export async function GET() {
-  const movieIds = await collectIds(discoverTasks('movie'));
-  const seriesIds = await collectIds(discoverTasks('tv'));
-  const personIds = await collectIds(pages(PERSON_PAGES).map((page) => () => fetchIds('person/popular', { page })));
+  const movies = await collectEntries(discoverTasks('movie'));
+  const series = await collectEntries(discoverTasks('tv'));
+  const persons = await collectEntries(
+    pages(PERSON_PAGES).map((page) => () => fetchEntries('person/popular', { page }))
+  );
 
   const fields: ISitemapField[] = [
-    ...movieIds.map((id) => `${SITE_URL}/movie/${id}`),
-    ...seriesIds.map((id) => `${SITE_URL}/tv/${id}`),
-    ...personIds.map((id) => `${SITE_URL}/person/${id}`)
+    ...movies.map(({ id, title }) => `${SITE_URL}${showPath({ type: 'movie', id, title })}`),
+    ...series.map(({ id, title }) => `${SITE_URL}${showPath({ type: 'tv', id, title })}`),
+    ...persons.map(({ id }) => `${SITE_URL}/person/${id}`)
   ].map((loc) => ({ loc }));
 
   return getServerSideSitemap(fields);

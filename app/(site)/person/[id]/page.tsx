@@ -13,6 +13,8 @@ interface Props {
   params: { id: string };
 }
 
+export const revalidate = 86400;
+
 export const generateMetadata = async ({ params: { id } }: Props): Promise<Metadata> => {
   const queryClient = getQueryClient();
 
