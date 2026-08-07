@@ -96,7 +96,12 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
       // magnet, so a still-airing season picks up new episodes on its own.
       if (provider === providers.tlk.key && torrent.download) {
         const tid = new URLSearchParams(torrent.download.split('?')[1] || '').get('id');
-        if (tid) params.set('tlk', tid);
+        if (tid) {
+          params.set('tlk', tid);
+          // where /api/refresh lives (this app's origin) — distinct from the
+          // m3u stream host, so the TV knows which host to call back.
+          params.set('app', window.location.origin);
+        }
       }
     }
 
