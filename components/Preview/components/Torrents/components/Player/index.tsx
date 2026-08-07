@@ -30,9 +30,10 @@ interface Props {
   magnet: string;
   subtitles: Source[];
   playlist: Source[];
+  onStreamError?: (reason?: string) => void;
 }
 
-const Player: FC<Props> = ({ magnet, playlist, subtitles }) => {
+const Player: FC<Props> = ({ magnet, playlist, subtitles, onStreamError }) => {
   const setCanPlay = useSetCanPlay();
   const { index, setIndex } = useSource({ magnet });
 
@@ -50,7 +51,7 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles }) => {
 
   const source = playlist[index];
 
-  const { tracks: audioTracks, audio, setAudio, resolvedSrc } = useGstAudio(source?.src);
+  const { tracks: audioTracks, audio, setAudio, resolvedSrc, error } = useGstAudio(source?.src);
 
   const resumeTime = useRef(0);
 
@@ -59,7 +60,15 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles }) => {
     setAudio(track);
   };
 
-  const playerSrc = useMemo(() => (source ? ({ ...source, src: resolvedSrc } as VideoSrc) : []), [source, resolvedSrc]);
+  // report the transcoder rejection up to the modal and stop hls.js from retrying a dead stream
+  useEffect(() => {
+    onStreamError?.(error);
+  }, [error, onStreamError]);
+
+  const playerSrc = useMemo(
+    () => (source && !error ? ({ ...source, src: resolvedSrc } as VideoSrc) : []),
+    [source, resolvedSrc, error]
+  );
 
   const onProviderChange = (provider: MediaProviderAdapter | null) => {
     if (isHLSProvider(provider)) {

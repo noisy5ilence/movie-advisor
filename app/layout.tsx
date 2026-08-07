@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { Analytics } from '@vercel/analytics/next';
 import type { Metadata, Viewport } from 'next';
 import { Jost } from 'next/font/google';
 
@@ -71,6 +72,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
           <Header className='sticky top-0 z-20' />
           <main className='container'>{children}</main>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );

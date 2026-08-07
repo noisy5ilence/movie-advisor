@@ -11,6 +11,7 @@ import { useStreamUrl } from '@/hooks/useStreamUrl';
 import { cn, detectSafari, getMagnetHash, isStandaloneApp, torrentKey } from '@/lib/utils';
 
 import usePinnedTorrents from '../../../../usePinnedTorrents';
+import useUnplayable from '../../../../useUnplayable';
 
 import showPlayerModal from './components/Player';
 import useMagnet from './useMagnet';
@@ -46,6 +47,7 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
   const fetchMagnet = useMagnet(torrent);
 
   const { pin, toggle, isPinned, savedMagnet, rememberMagnet } = usePinnedTorrents();
+  const { reasonFor } = useUnplayable();
 
   const key = torrentKey(torrent);
   const pinned = isPinned(key);
@@ -54,6 +56,9 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
   const magnet = fetchMagnet.data || torrent.magnet || savedMagnet(key) || '';
 
   const hash = getMagnetHash(magnet);
+
+  // a release that already failed transcoding stays greyed out so we don't hit the same 502 twice
+  const unplayable = reasonFor(hash);
 
   // persist the fetched magnet while pinned; only Toloka needs it (others carry it in the result)
   useEffect(() => {
@@ -101,16 +106,19 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
         {supportedForStream && (
           <Button
             variant='destructive'
+            disabled={Boolean(unplayable)}
             className={cn(
-              'flex-grow-0 px-3 bg-red-600',
-              'hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600',
+              'flex-grow-0 px-3',
+              unplayable
+                ? 'bg-muted text-muted-foreground hover:bg-muted'
+                : 'bg-red-600 hover:shadow-lg hover:shadow-red-600/60 duration-200 transition-all hover:bg-red-600',
               { invisible: !magnet || fetchMagnet.isPending }
             )}
             onClick={() => {
               pinPlayed();
               showPlayerModal({ backdrop: show.backdrop, title, hash, magnet });
             }}
-            title='Play'
+            title={unplayable ? `Can’t stream in browser: ${unplayable}` : 'Play'}
           >
             <Play size={15} />
           </Button>
