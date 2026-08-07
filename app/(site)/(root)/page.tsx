@@ -1,9 +1,14 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { Metadata } from 'next';
 
 import randomQuery, { generatePage } from '@/data/queries/random';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
+
+export const metadata: Metadata = {
+  alternates: { canonical: '/' }
+};
 
 const Random = async () => {
   const queryClient = getQueryClient();

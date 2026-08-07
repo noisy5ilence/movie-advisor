@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 
 import Person from '@/components/Person';
 import personQuery from '@/data/queries/person';
-import { SITE_URL, TITLE } from '@/env';
+import { TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
 
 interface Props {
@@ -23,12 +23,14 @@ export const generateMetadata = async ({ params: { id } }: Props): Promise<Metad
     return {
       title: `${name} | ${TITLE}`,
       description,
+      alternates: { canonical: `/person/${id}` },
       openGraph: {
         title: name,
         description,
+        siteName: TITLE,
         images: photo ? [photo] : [],
         type: 'profile',
-        url: `${SITE_URL}/person/${id}`
+        url: `/person/${id}`
       }
     };
   } catch (_) {

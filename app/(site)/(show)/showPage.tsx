@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import detailsQuery from '@/data/queries/details';
-import { SITE_URL, TITLE } from '@/env';
+import { TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
@@ -18,17 +18,21 @@ export const createShowMetadata =
     const queryClient = getQueryClient();
 
     try {
-      const { title, overview, poster } = await queryClient.fetchQuery(detailsQuery({ showId: Number(id), showType }));
+      const { title, overview, poster, backdrop } = await queryClient.fetchQuery(
+        detailsQuery({ showId: Number(id), showType })
+      );
 
       return {
         title: `${title} | ${TITLE}`,
         description: overview,
+        alternates: { canonical: `/${showType}/${id}` },
         openGraph: {
           title,
           description: overview,
-          images: [poster['2x']],
-          type: 'website',
-          url: `${SITE_URL}/${showType}/${id}`
+          siteName: TITLE,
+          images: [backdrop || poster['2x']],
+          type: showType === 'movie' ? 'video.movie' : 'video.tv_show',
+          url: `/${showType}/${id}`
         }
       };
     } catch (_) {

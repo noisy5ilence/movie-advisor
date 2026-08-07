@@ -9,7 +9,8 @@ import Container from './container';
 
 export const metadata: Metadata = {
   title: `Top Rated Movies | ${TITLE}`,
-  description: `Discover the top-rated movies on ${TITLE}. Find the highest-rated films and make informed viewing choices.`
+  description: `Discover the top-rated movies on ${TITLE}. Find the highest-rated films and make informed viewing choices.`,
+  alternates: { canonical: '/top' }
 };
 
 const Top = async () => {

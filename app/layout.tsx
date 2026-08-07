@@ -10,9 +10,21 @@ import Providers from '@/providers';
 
 import '@/styles/index.css';
 
+const DESCRIPTION = `Explore a diverse selection of movies with ${TITLE}. Get random movie recommendations and find out top-rated, popular, and user-favorite films.`;
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: `${TITLE} | Discover Your Next Favorite Movie`,
-  description: `Explore a diverse selection of movies with ${TITLE}. Get random movie recommendations and find out top-rated, popular, and user-favorite films.`
+  description: DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    siteName: TITLE,
+    title: TITLE,
+    description: DESCRIPTION
+  },
+  twitter: {
+    card: 'summary_large_image'
+  }
 };
 
 export const viewport: Viewport = {
@@ -53,19 +65,6 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <meta name='apple-mobile-web-app-title' content={TITLE} />
 
         <link rel='manifest' href='/manifest.json' />
-
-        <meta name='twitter:card' content={metadata.description!} />
-        <meta name='twitter:url' content={SITE_URL} />
-        <meta name='twitter:title' content={TITLE} />
-        <meta name='twitter:description' content={metadata.description!} />
-        <meta name='twitter:image' content={`${SITE_URL}/web-app-manifest-512x512.png`} />
-        <meta name='twitter:creator' content='https://github.com/noisy5ilence' />
-        <meta property='og:type' content='website' />
-        <meta property='og:title' content={TITLE} />
-        <meta property='og:description' content={metadata.description!} />
-        <meta property='og:site_name' content={TITLE} />
-        <meta property='og:url' content={SITE_URL} />
-        <meta property='og:image' content={`${SITE_URL}/apple-touch-icon.png`} />
       </head>
       <body className={font.className}>
         <Providers>

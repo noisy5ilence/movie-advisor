@@ -9,7 +9,8 @@ import Container from './container';
 
 export const metadata: Metadata = {
   title: `Popular Movies | ${TITLE}`,
-  description: `Check out the most popular movies right now on ${TITLE}. See what’s trending and don’t miss out on the latest hits.`
+  description: `Check out the most popular movies right now on ${TITLE}. See what’s trending and don’t miss out on the latest hits.`,
+  alternates: { canonical: '/popular' }
 };
 
 const Popular = async () => {
