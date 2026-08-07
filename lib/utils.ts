@@ -55,6 +55,13 @@ export const getMagnetHash = (link: string) => {
 export const torrentKey = (torrent: Torrent) =>
   torrent.download || getMagnetHash(torrent.magnet) || torrent.hash || torrent.id;
 
+export const seasonFromEpisodes = (episodes?: string): number | undefined => {
+  if (!episodes) return undefined;
+  if (/^S\d+\s*[-–—]\s*\d+/i.test(episodes)) return undefined;
+  const [, season] = episodes.match(/^S(\d+)/i) || [];
+  return season ? Number(season) : undefined;
+};
+
 export const formatBytes = (bytes?: number) => {
   if (bytes == null || !isFinite(bytes)) return '';
 

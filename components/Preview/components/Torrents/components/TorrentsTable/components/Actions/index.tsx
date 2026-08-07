@@ -8,7 +8,7 @@ import ButtonsGroup from '@/components/ui/buttons-group';
 import { Quality } from '@/data/parsers/yts/models';
 import { useM3UUrl } from '@/hooks/useM3UStreamUrl';
 import { useStreamUrl } from '@/hooks/useStreamUrl';
-import { cn, detectSafari, getMagnetHash, isStandaloneApp, torrentKey } from '@/lib/utils';
+import { cn, detectSafari, getMagnetHash, isStandaloneApp, seasonFromEpisodes, torrentKey } from '@/lib/utils';
 
 import usePinnedTorrents from '../../../../usePinnedTorrents';
 import useUnplayable from '../../../../useUnplayable';
@@ -82,9 +82,15 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
       type: show.type,
       name: show.title,
       imdb_id: show.imdb_id ?? '',
+      tmdb_id: show.id?.toString() ?? '',
       year: new Date(show.release).getFullYear().toString(),
       runtime: show.runtime?.toString() ?? ''
     });
+
+    if (show.type === 'tv') {
+      const season = seasonFromEpisodes(torrent.episodes) ?? show.airing?.season;
+      if (season != null) params.set('season', season.toString());
+    }
 
     if (isSafari) {
       const link = window.open(`${M3UUrl}?${params}`, '_blank');
