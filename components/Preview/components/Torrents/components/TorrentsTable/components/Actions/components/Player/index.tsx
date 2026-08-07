@@ -4,6 +4,7 @@ import { create, InstanceProps } from 'react-modal-promise';
 import Player from '@/components/Preview/components/Torrents/components/Player';
 import { Modal } from '@/components/ui/dialog';
 import { useCanPlay, useSetCanPlay } from '@/hooks/useCanPlay';
+import { cn } from '@/lib/utils';
 
 import { useFiles } from './useFiles';
 import { useStats } from './useStats';
@@ -32,7 +33,13 @@ const showPlayerModal = create(({ onResolve, hash, backdrop, title, magnet }: Pr
   return (
     <Modal className='overflow-hidden border-none bg-black p-0' onClose={handleClose}>
       <div className='relative w-full overflow-hidden rounded-xl pt-[56.25%]'>
-        <div className='absolute left-0 top-0 size-full'>
+        {/* keep the player mounted (Safari needs it for autoplay) but hidden until buffering is done,
+            so its UI doesn't flash through the splash screen */}
+        <div
+          className={cn('absolute left-0 top-0 size-full', {
+            'pointer-events-none opacity-0': streamError || !isReady || !canPlay
+          })}
+        >
           {sources && (
             <Player
               magnet={magnet}
@@ -72,31 +79,6 @@ const showPlayerModal = create(({ onResolve, hash, backdrop, title, magnet }: Pr
                 <p>Download speed: {downloadSpeed || '0 B/s'}</p>
               </div>
             </div>
-            {/* a highlight sweeps around the block's 2px border while it preloads */}
-            <style>{`
-              @property --preload-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
-              @keyframes preloadBorderAngle { to { --preload-angle: 360deg; } }
-              .preload-block-border {
-                position: absolute;
-                inset: 0;
-                padding: 2px;
-                border-radius: 0.75rem;
-                pointer-events: none;
-                background: conic-gradient(from var(--preload-angle),
-                  transparent 0deg,
-                  transparent 30deg,
-                  rgba(255, 255, 255, 0.7) 75deg,
-                  transparent 120deg,
-                  transparent 360deg);
-                -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-                -webkit-mask-composite: xor;
-                mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-                mask-composite: exclude;
-                filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.45));
-                animation: preloadBorderAngle 7s linear infinite;
-              }
-            `}</style>
-            <div className='preload-block-border' />
           </div>
         )}
       </div>
