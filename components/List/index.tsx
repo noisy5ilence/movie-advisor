@@ -1,33 +1,41 @@
+'use client';
+
 import { FC } from 'react';
 import { VirtuosoGrid, VirtuosoGridProps } from 'react-virtuoso';
+import { useSetAtom } from 'jotai';
 
 import Poster from '@/components/Poster';
-import { showPreviewModal } from '@/components/Preview';
+import { previewSeedAtom } from '@/components/Preview/seed';
 
 interface Props {
   shows: Show[];
   customScrollParent?: HTMLElement;
   fetchNextPage?: () => void;
-  onPreviewClose?: () => void;
+  onNavigate?: () => void;
 }
 
-const components: VirtuosoGridProps<Movie, { shows: Show[]; onClick: (show: Show) => void }>['components'] = {
+const components: VirtuosoGridProps<Movie, { shows: Show[]; onNavigate: (show: Show) => void }>['components'] = {
   Item: ({ context, 'data-index': index }) => {
-    const { shows, onClick } = context!;
+    const { shows, onNavigate } = context!;
     const show = shows?.[index];
 
     if (!show) return null;
 
-    return <Poster show={show} onClick={() => onClick?.(show)} />;
+    return <Poster show={show} href={`/${show.type}/${show.id}`} onClick={() => onNavigate(show)} />;
   }
 };
 
-const List: FC<Props> = ({ shows, fetchNextPage, onPreviewClose, customScrollParent }) => {
+const List: FC<Props> = ({ shows, fetchNextPage, onNavigate, customScrollParent }) => {
+  const setPreviewSeed = useSetAtom(previewSeedAtom);
+
   if (!shows.length) return null;
 
   const context = {
     shows,
-    onClick: (show: Show) => showPreviewModal({ show, onClose: onPreviewClose })
+    onNavigate: (show: Show) => {
+      setPreviewSeed(show);
+      onNavigate?.();
+    }
   };
 
   const handleFetchMore = () => fetchNextPage?.();

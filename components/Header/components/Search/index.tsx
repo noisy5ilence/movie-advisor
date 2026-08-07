@@ -84,7 +84,7 @@ export const showSearchModal = create(({ onResolve }) => {
                     shows={shows}
                     customScrollParent={scrollRef.current}
                     fetchNextPage={fetchNextPage}
-                    onPreviewClose={onResolve}
+                    onNavigate={onResolve}
                   />
                 </TabsContent>
               ))}
@@ -96,7 +96,7 @@ export const showSearchModal = create(({ onResolve }) => {
                 shows={shows}
                 customScrollParent={scrollRef.current}
                 fetchNextPage={fetchNextPage}
-                onPreviewClose={onResolve}
+                onNavigate={onResolve}
               />
             ))
           )}

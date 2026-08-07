@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
-import { redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
 import Person from '@/components/Person';
 import personQuery from '@/data/queries/person';
@@ -32,14 +32,12 @@ export const generateMetadata = async ({ params: { id } }: Props): Promise<Metad
       }
     };
   } catch (_) {
-    return { title: TITLE };
+    return notFound();
   }
 };
 
 const PersonPage: FC<Props> = async ({ params: { id } }) => {
   const queryClient = getQueryClient();
-
-  if (!id) return redirect('/');
 
   queryClient.prefetchQuery(personQuery({ personId: id }));
 

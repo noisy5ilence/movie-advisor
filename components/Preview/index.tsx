@@ -1,12 +1,10 @@
 'use client';
 
 import { FC, ReactNode } from 'react';
-import { create, InstanceProps } from 'react-modal-promise';
 
 import Poster from '@/components/Poster';
 import Credits from '@/components/Preview/components/Credits';
 import useDetails from '@/components/Preview/useDetails';
-import { Modal } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 import Actions from './components/Actions';
@@ -19,7 +17,7 @@ interface Props {
   showId?: Show['id'];
   className?: string;
   posterClassName?: string;
-  onClose?: () => void;
+  modal?: boolean;
   poster?: ReactNode;
   externalLink?: boolean;
 }
@@ -30,7 +28,7 @@ const Preview: FC<Props> = ({
   showId,
   className,
   posterClassName,
-  onClose,
+  modal,
   poster,
   externalLink = true
 }) => {
@@ -40,7 +38,7 @@ const Preview: FC<Props> = ({
 
   const show: Show & Partial<Details> = (detailedShow || baseShow)!;
 
-  const isModal = Boolean(onClose);
+  const isModal = Boolean(modal);
 
   return (
     <div
@@ -76,24 +74,11 @@ const Preview: FC<Props> = ({
           {show.overview}
         </p>
         <div className='order-5 mt-5 grid grid-cols-1 rounded-lg md:order-5 md:mt-auto'>
-          <Credits showType={show.type} showId={show.id} onClick={onClose} />
+          <Credits showType={show.type} showId={show.id} />
         </div>
       </div>
     </div>
   );
 };
-
-export const showPreviewModal = create(({ onResolve, onClose, show }: Props & InstanceProps<void>) => (
-  <Modal className='block bg-background p-0 md:bg-black' onClose={onResolve}>
-    <Preview
-      show={show}
-      onClose={() => {
-        onClose?.();
-        onResolve();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }}
-    />
-  </Modal>
-));
 
 export default Preview;

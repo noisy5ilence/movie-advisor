@@ -6,6 +6,7 @@ import Handlers from './components/Handlers';
 
 interface Props {
   show: Show;
+  href?: string;
   onClick?: () => void;
   className?: string;
   lazy?: boolean;
@@ -14,7 +15,7 @@ interface Props {
 
 type FetchPriorityProps = ImgHTMLAttributes<HTMLImageElement> & { fetchPriority?: 'high' | 'low' | 'auto' };
 
-const Poster: FC<Props> = ({ show, onClick, className, lazy = true, priority = false }) => {
+const Poster: FC<Props> = ({ show, href, onClick, className, lazy = true, priority = false }) => {
   const fetchPriorityProps: FetchPriorityProps = priority ? { fetchPriority: 'high' } : {};
 
   return (
@@ -38,7 +39,7 @@ const Poster: FC<Props> = ({ show, onClick, className, lazy = true, priority = f
           {...fetchPriorityProps}
         />
       </picture>
-      <Handlers show={show} onClick={onClick} />
+      <Handlers show={show} href={href} onClick={onClick} />
     </div>
   );
 };
