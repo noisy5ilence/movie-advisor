@@ -11,7 +11,12 @@ export const metadata: Metadata = {
 };
 
 const Favorites = () => {
-  return <UsersList list='favorite' label='favorites' />;
+  return (
+    <>
+      <h1 className='sr-only'>My Favorite Shows</h1>
+      <UsersList list='favorite' label='favorites' />
+    </>
+  );
 };
 
 export default Favorites;

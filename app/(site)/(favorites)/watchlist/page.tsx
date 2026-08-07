@@ -11,7 +11,12 @@ export const metadata: Metadata = {
 };
 
 const WatchList = async () => {
-  return <UsersList list='watchlist' label='watchlist' />;
+  return (
+    <>
+      <h1 className='sr-only'>My Watchlist</h1>
+      <UsersList list='watchlist' label='watchlist' />
+    </>
+  );
 };
 
 export default WatchList;

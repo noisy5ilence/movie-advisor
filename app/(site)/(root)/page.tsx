@@ -2,6 +2,7 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
 
 import randomQuery, { generatePage } from '@/data/queries/random';
+import { TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
@@ -19,6 +20,7 @@ const Random = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <h1 className='sr-only'>{TITLE} — Discover Your Next Favorite Movie</h1>
       <Container page={page} />
     </HydrationBoundary>
   );

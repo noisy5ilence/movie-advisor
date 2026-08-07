@@ -20,6 +20,7 @@ const Top = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <h1 className='sr-only'>Top Rated Movies</h1>
       <Container />
     </HydrationBoundary>
   );

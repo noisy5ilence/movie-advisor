@@ -41,7 +41,11 @@ export const generateMetadata = async ({ params: { id } }: Props): Promise<Metad
 const PersonPage: FC<Props> = async ({ params: { id } }) => {
   const queryClient = getQueryClient();
 
-  queryClient.prefetchQuery(personQuery({ personId: id }));
+  try {
+    await queryClient.fetchQuery(personQuery({ personId: id }));
+  } catch (_) {
+    return notFound();
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

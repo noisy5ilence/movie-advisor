@@ -22,6 +22,7 @@ interface Props {
   onClose?: () => void;
   poster?: ReactNode;
   externalLink?: boolean;
+  heading?: boolean;
 }
 
 const Preview: FC<Props> = ({
@@ -32,7 +33,8 @@ const Preview: FC<Props> = ({
   posterClassName,
   onClose,
   poster,
-  externalLink = true
+  externalLink = true,
+  heading = false
 }) => {
   const { data: detailedShow } = useDetails({ showId: showId || baseShow?.id, showType: showType || baseShow?.type });
 
@@ -41,6 +43,8 @@ const Preview: FC<Props> = ({
   const show: Show & Partial<Details> = (detailedShow || baseShow)!;
 
   const isModal = Boolean(onClose);
+
+  const Title = heading ? 'h1' : 'span';
 
   return (
     <div
@@ -52,7 +56,7 @@ const Preview: FC<Props> = ({
     >
       {poster || <Poster className={cn('mx-auto md:rounded-none md:rounded-l-xl', posterClassName)} show={show} />}
       <div className={cn('flex grow flex-col bg-background', { 'p-0 pt-2 md:p-2': isModal })}>
-        <span className='order-3 mb-4 text-3xl md:order-1 md:line-clamp-2'>{show.title}</span>
+        <Title className='order-3 mb-4 text-3xl md:order-1 md:line-clamp-2'>{show.title}</Title>
 
         <div className='order-3 mb-4 flex w-full flex-wrap items-center gap-5 whitespace-nowrap text-sm md:order-2'>
           {Boolean(show.availability) ? <YearHint show={show} /> : <span>{new Date(show.release).getFullYear()}</span>}

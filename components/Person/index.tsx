@@ -38,7 +38,7 @@ const Person: FC<Props> = ({ personId }) => {
           </div>
         )}
         <div className='flex grow flex-col bg-background'>
-          <span className='mb-4 text-3xl'>{profile.name}</span>
+          <h1 className='mb-4 text-3xl'>{profile.name}</h1>
 
           <div className='mb-4 flex w-full flex-wrap gap-5 whitespace-nowrap text-sm'>
             {Boolean(profile.department) && <span>{profile.department}</span>}
@@ -52,7 +52,7 @@ const Person: FC<Props> = ({ personId }) => {
 
       {Boolean(profile.shows.length) && (
         <div className='mt-5'>
-          <span className='mb-3 inline-block text-lg'>Filmography</span>
+          <h2 className='mb-3 inline-block text-lg'>Filmography</h2>
           <List shows={profile.shows} />
         </div>
       )}

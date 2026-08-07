@@ -12,6 +12,7 @@ const Container: FC<Props> = ({ showId, showType }) => (
   <div className='flex flex-1 flex-col'>
     <div className='xs:mb-4'>
       <Preview
+        heading
         showId={showId}
         showType={showType}
         className='rounded-lg bg-background'

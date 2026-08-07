@@ -20,6 +20,7 @@ const Popular = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <h1 className='sr-only'>Popular Movies</h1>
       <Container />
     </HydrationBoundary>
   );
