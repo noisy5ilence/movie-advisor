@@ -64,7 +64,7 @@ const components: VirtuosoProps<Option, string>['components'] = {
     const index = props['data-index'];
 
     return (
-      <div {...props} key={option.label} title={option.label} onClick={() => option.onSelect(option.value)}>
+      <div {...props} key={option.value} title={option.label} onClick={() => option.onSelect(option.value)}>
         {!index && <div className='h-2 w-full' />}
         <div
           className={cn(

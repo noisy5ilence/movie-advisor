@@ -214,6 +214,7 @@ interface Source {
   name: string;
   src: string;
   type: string;
+  lang?: string;
 }
 
 interface Sources {

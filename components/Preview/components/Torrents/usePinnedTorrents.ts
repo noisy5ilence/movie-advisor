@@ -5,8 +5,6 @@ const pinnedAtom = atomWithStorage<string[]>('pinned-torrents', [], undefined, {
   unstable_getOnInit: true
 });
 
-// Toloka magnets are fetched lazily, so cache the fetched magnet of a pinned torrent
-// to keep it playable right after a reload without hitting Toloka again
 const magnetsAtom = atomWithStorage<Record<string, string>>('pinned-magnets', {}, undefined, {
   unstable_getOnInit: true
 });

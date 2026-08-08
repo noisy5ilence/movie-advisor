@@ -13,7 +13,6 @@ import Actions from './components/Actions';
 
 type EpisodesSort = 'asc' | 'desc';
 
-// "S3:E7/8" -> [3, 7]; "S1-9" -> [1, 0]; missing info sorts last
 const seasonEpisode = (episodes?: string): [number, number] => [
   Number(episodes?.match(/S(\d+)/)?.[1] ?? 9999),
   Number(episodes?.match(/E(\d+)/)?.[1] ?? 0)
@@ -47,13 +46,11 @@ const TorrentsTable: FC<Props> = ({ title, torrents, show, sort, sortable, provi
       })
     : torrents;
 
-  // pinned (previously played) torrents stick to the top, keeping their order within each group
   const rows = [
     ...sorted.filter((torrent) => isPinned(torrentKey(torrent))),
     ...sorted.filter((torrent) => !isPinned(torrentKey(torrent)))
   ];
 
-  // server sort (size/seeds) refetches in a new order, so drop the client-side S:E sort
   const handleChangeSort = (next: Sort) => {
     setEpisodesSort(null);
     onChangeSort(next);

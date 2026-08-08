@@ -13,7 +13,6 @@ import { parseTolokaTitle } from './title';
 
 const COOKIE_JAR_KEY = 'toloka:cookie-jar';
 
-// UpstashError messages embed the full command, including cookie values — never log them
 const redisWarn = (message: string, error: unknown) =>
   console.warn(message, error instanceof Error ? error.message.split(', command was:')[0] : error);
 

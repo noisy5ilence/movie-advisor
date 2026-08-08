@@ -52,21 +52,17 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
   const key = torrentKey(torrent);
   const pinned = isPinned(key);
 
-  // savedMagnet keeps a pinned Toloka torrent playable after a reload without re-fetching
   const magnet = fetchMagnet.data || torrent.magnet || savedMagnet(key) || '';
 
   const hash = getMagnetHash(magnet);
 
-  // a release that already failed transcoding stays greyed out so we don't hit the same 502 twice
   const unplayable = reasonFor(hash);
 
-  // persist the fetched magnet while pinned; only Toloka needs it (others carry it in the result)
   useEffect(() => {
     if (pinned && magnet && !torrent.magnet) rememberMagnet(key, magnet);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pinned, magnet, key, torrent.magnet]);
 
-  // starting to watch a torrent pins it to the top for next time
   const pinPlayed = () => pin(key);
 
   const supportedForCast = prefix && !prefix.includes('{host}');
@@ -87,21 +83,20 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
       runtime: show.runtime?.toString() ?? ''
     });
 
+    // This app's origin — the TV calls back to /api/subtitles (and, for Toloka
+    // series, /api/refresh) here. Distinct from the m3u stream host.
+    params.set('app', window.location.origin);
+
     if (show.type === 'tv') {
       const season = seasonFromEpisodes(torrent.episodes) ?? show.airing?.season;
       if (season != null) params.set('season', season.toString());
 
-      // Toloka thread id (download.php?id=<id>): the TV stores it and later
-      // asks movie-advisor's /api/refresh to re-pull the thread's current
-      // magnet, so a still-airing season picks up new episodes on its own.
+      // Toloka thread id (download.php?id=<id>): the TV stores it and later asks
+      // movie-advisor's /api/refresh to re-pull the thread's current magnet, so
+      // a still-airing season picks up new episodes on its own.
       if (provider === providers.tlk.key && torrent.download) {
         const tid = new URLSearchParams(torrent.download.split('?')[1] || '').get('id');
-        if (tid) {
-          params.set('tlk', tid);
-          // where /api/refresh lives (this app's origin) — distinct from the
-          // m3u stream host, so the TV knows which host to call back.
-          params.set('app', window.location.origin);
-        }
+        if (tid) params.set('tlk', tid);
       }
     }
 
@@ -135,7 +130,7 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
             )}
             onClick={() => {
               pinPlayed();
-              showPlayerModal({ backdrop: show.backdrop, title, hash, magnet });
+              showPlayerModal({ backdrop: show.backdrop, title, hash, magnet, show, episodes: torrent.episodes });
             }}
             title={unplayable ? `Can’t stream in browser: ${unplayable}` : 'Play'}
           >

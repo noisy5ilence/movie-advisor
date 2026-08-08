@@ -14,9 +14,11 @@ interface Props extends InstanceProps<void> {
   backdrop: string;
   title: string;
   magnet: string;
+  show?: Show & Partial<Details>;
+  episodes?: string;
 }
 
-const showPlayerModal = create(({ onResolve, hash, backdrop, title, magnet }: Props) => {
+const showPlayerModal = create(({ onResolve, hash, backdrop, title, magnet, show, episodes }: Props) => {
   const canPlay = useCanPlay();
   const setCanPlay = useSetCanPlay();
   const { isReady, preloadingProgress, downloadSpeed } = useStats({ hash, canPlay });
@@ -33,8 +35,6 @@ const showPlayerModal = create(({ onResolve, hash, backdrop, title, magnet }: Pr
   return (
     <Modal className='overflow-hidden border-none bg-black p-0' onClose={handleClose}>
       <div className='relative w-full overflow-hidden rounded-xl pt-[56.25%]'>
-        {/* keep the player mounted (Safari needs it for autoplay) but hidden until buffering is done,
-            so its UI doesn't flash through the splash screen */}
         <div
           className={cn('absolute left-0 top-0 size-full', {
             'pointer-events-none opacity-0': streamError || !isReady || !canPlay
@@ -45,6 +45,8 @@ const showPlayerModal = create(({ onResolve, hash, backdrop, title, magnet }: Pr
               magnet={magnet}
               playlist={sources.playlist}
               subtitles={sources.subtitles}
+              show={show}
+              episodes={episodes}
               onStreamError={setStreamError}
             />
           )}
@@ -62,7 +64,6 @@ const showPlayerModal = create(({ onResolve, hash, backdrop, title, magnet }: Pr
         {!streamError && (!isReady || !canPlay) && (
           <div className='absolute left-0 top-0 size-full overflow-hidden rounded-xl'>
             <img src={backdrop} className='absolute left-0 top-0 size-full' alt={title} />
-            {/* dark cover recedes from the centre out to the top and bottom edges as it preloads */}
             <div
               className='absolute inset-x-0 top-0 bg-black/60 transition-[height] duration-700 ease-out'
               style={{ height: `${(100 - (canPlay ? 100 : preloadingProgress)) / 2}%` }}

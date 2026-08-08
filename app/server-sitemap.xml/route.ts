@@ -9,7 +9,6 @@ const LIST_PAGES = 25;
 const PERSON_PAGES = 10;
 const BATCH_SIZE = 20;
 
-// Mirrors the discover filters used by the /popular and /top pages (data/queries/popular.ts)
 const DISCOVER_FILTERS = {
   'vote_count.gte': '300',
   'vote_average.gte': '5',
@@ -36,7 +35,6 @@ const fetchEntries = async (path: string, params: Record<string, string>): Promi
   return results.map(({ id, title, name }) => ({ id, title: title || name || '' }));
 };
 
-// TMDB allows ~50 requests per second, so the task list is drained in small batches
 const collectEntries = async (tasks: (() => Promise<Entry[]>)[]) => {
   const entries = new Map<number, string>();
 

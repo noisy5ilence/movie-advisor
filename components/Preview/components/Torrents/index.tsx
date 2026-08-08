@@ -50,7 +50,6 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
 
   const year = new Date(show.release).getFullYear();
 
-  // YTS is a movies-only API, so it has nothing to offer for series
   const isSeries = show.type === 'tv';
 
   const yts = useTorrents({

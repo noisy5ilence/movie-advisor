@@ -35,13 +35,11 @@ export const useGstAudio = (src?: string) => {
 
   const { data: tracks = [], error } = useQuery<GstAudioTrack[]>({
     enabled: Boolean(hash && index),
-    // a rejected codec/container won't change on retry
     retry: false,
     queryKey: ['gst-audio', hash, index],
     queryFn: async () => {
       const response = await fetch(`${base}/gst/${hash}/probe?index=${index}`);
 
-      // the transcoder answers 5xx with a plain-text reason, e.g. "unsupported video codec"
       if (!response.ok) throw new Error((await response.text()).trim() || `stream error ${response.status}`);
 
       const data: { Tracks?: ProbeTrack[] } = await response.json();
@@ -54,7 +52,6 @@ export const useGstAudio = (src?: string) => {
 
   const reason = error instanceof Error ? error.message : undefined;
 
-  // codec/container rejections are permanent for this backend — remember them to grey out Play
   useEffect(() => {
     if (reason && /unsupported (video codec|container)/i.test(reason)) markUnplayable(hash, reason);
     // eslint-disable-next-line react-hooks/exhaustive-deps

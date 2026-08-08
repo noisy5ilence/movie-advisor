@@ -14,7 +14,6 @@ interface Props {
 const Handlers: FC<Props> = ({ href, onClick, show }) => {
   const { mutate } = useMutateShowState(show);
 
-  // The link exists for crawlers and new-tab clicks; a plain click opens the preview modal in place
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     if (!onClick) return;
 

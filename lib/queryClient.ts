@@ -16,8 +16,6 @@ const makeQueryClient = () => {
 
 let browserQueryClient: QueryClient | undefined = undefined;
 
-// One client per server request (React cache is request-scoped), so generateMetadata
-// and the page share fetches instead of hitting TMDB twice for the same data.
 const getServerQueryClient = cache(makeQueryClient);
 
 const getQueryClient = () => {
@@ -25,8 +23,6 @@ const getQueryClient = () => {
     try {
       return getServerQueryClient();
     } catch (_) {
-      // cache() only works in the RSC runtime; the SSR pass of client components
-      // (e.g. Providers) lands here and keeps its own per-render client as before
       return makeQueryClient();
     }
   }

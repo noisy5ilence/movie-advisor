@@ -13,8 +13,6 @@ export const slugify = (value: string) =>
     .slice(0, 60)
     .replace(/-+$/, '');
 
-// Keyword-carrying show URL (/movie/27205-inception); the slug is optional decoration —
-// routing only relies on the leading numeric id.
 export const showPath = ({ type, id, title }: Pick<Show, 'type' | 'id' | 'title'>) => {
   const slug = slugify(title || '');
 
@@ -50,10 +48,15 @@ export const getMagnetHash = (link: string) => {
   return hash?.toUpperCase();
 };
 
-// Stable identity for a torrent that survives the lazy empty -> fetched magnet transition:
-// Toloka has a permanent download URL, the rest always carry a magnet infohash.
 export const torrentKey = (torrent: Torrent) =>
   torrent.download || getMagnetHash(torrent.magnet) || torrent.hash || torrent.id;
+
+export const parseSeasonEpisode = (value?: string): { season?: number; episode?: number } => {
+  const [, season, episode] =
+    value?.match(/S(\d{1,2})[ ._-]*E(\d{1,3})/i) || value?.match(/\b(\d{1,2})x(\d{2,3})\b/) || [];
+
+  return season ? { season: Number(season), episode: Number(episode) } : {};
+};
 
 export const seasonFromEpisodes = (episodes?: string): number | undefined => {
   if (!episodes) return undefined;

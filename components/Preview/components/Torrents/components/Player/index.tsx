@@ -23,6 +23,7 @@ import Captions from './components/Captions';
 import Playlist from './components/Playlist';
 import { useGstAudio } from './useGstAudio';
 import useSource from './useSource';
+import { useSubtitles } from './useSubtitles';
 
 import '@vidstack/react/player/styles/plyr/theme.css';
 
@@ -30,10 +31,12 @@ interface Props {
   magnet: string;
   subtitles: Source[];
   playlist: Source[];
+  show?: Show & Partial<Details>;
+  episodes?: string;
   onStreamError?: (reason?: string) => void;
 }
 
-const Player: FC<Props> = ({ magnet, playlist, subtitles, onStreamError }) => {
+const Player: FC<Props> = ({ magnet, playlist, subtitles, show, episodes, onStreamError }) => {
   const setCanPlay = useSetCanPlay();
   const { index, setIndex } = useSource({ magnet });
 
@@ -49,7 +52,26 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles, onStreamError }) => {
     setIndex((index) => index + 1);
   }, [isEnded, hasNext, setIndex]);
 
+  useEffect(() => {
+    const textTracks = player.current?.textTracks;
+    if (!textTracks) return;
+
+    const removeHlsTracks = () => {
+      for (const track of textTracks.toArray()) {
+        if (track.id.startsWith('hls-')) textTracks.remove(track);
+      }
+    };
+
+    removeHlsTracks();
+    textTracks.addEventListener('add', removeHlsTracks);
+    return () => textTracks.removeEventListener('add', removeHlsTracks);
+  }, []);
+
   const source = playlist[index];
+
+  const externalSubtitles = useSubtitles({ show, episodes, filename: source?.name });
+
+  const tracks = useMemo(() => [...subtitles, ...externalSubtitles], [subtitles, externalSubtitles]);
 
   const { tracks: audioTracks, audio, setAudio, resolvedSrc, error } = useGstAudio(source?.src);
 
@@ -60,7 +82,6 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles, onStreamError }) => {
     setAudio(track);
   };
 
-  // report the transcoder rejection up to the modal and stop hls.js from retrying a dead stream
   useEffect(() => {
     onStreamError?.(error);
   }, [error, onStreamError]);
@@ -102,15 +123,16 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles, onStreamError }) => {
       className={cn('relative size-full select-none')}
     >
       <MediaProvider className='relative flex size-full justify-center [&>video]:!h-full'>
-        {subtitles.map((track, index) => (
+        {tracks.map((track, index) => (
           <Track
-            key={track.name}
+            key={track.src}
             src={track.src}
             kind='subtitles'
             label={track.name}
-            type='srt'
-            default={!index}
-            id={track.name}
+            lang={track.lang}
+            type={track.type as 'srt' | 'vtt'}
+            default={!index && !!subtitles.length}
+            id={track.src}
           />
         ))}
       </MediaProvider>

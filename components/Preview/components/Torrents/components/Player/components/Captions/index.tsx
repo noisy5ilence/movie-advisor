@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { CaptionOption, useCaptionOptions } from '@vidstack/react';
 import { ClosedCaptionsIcon, ClosedCaptionsOnIcon } from '@vidstack/react/icons';
 
@@ -8,6 +8,9 @@ import PlayerMenu from '../Menu';
 
 const CaptionsMenu = () => {
   const tracks = useCaptionOptions();
+
+  const live = useRef(tracks);
+  live.current = tracks;
 
   const captions = useMemo(() => {
     const record = tracks.reduce<Record<string, CaptionOption>>((record, track) => {
@@ -27,7 +30,7 @@ const CaptionsMenu = () => {
       options={captions.map((track) => ({
         label: track.label,
         value: track.value,
-        onSelect: () => track.select()
+        onSelect: (value) => (live.current.find((option) => option.value === value) ?? track).select()
       }))}
     >
       {tracks.selectedTrack ? (
