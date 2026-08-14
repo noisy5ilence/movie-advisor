@@ -6,7 +6,7 @@ import JsonLd from '@/components/JsonLd';
 import detailsQuery from '@/data/queries/details';
 import { SITE_URL, TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
-import { showPath } from '@/lib/utils';
+import { isMissing, showPath } from '@/lib/utils';
 
 import Container from './container';
 
@@ -41,8 +41,10 @@ export const createShowMetadata =
           url: path
         }
       };
-    } catch (_) {
-      return notFound();
+    } catch (error) {
+      if (isMissing(error)) return notFound();
+
+      throw error;
     }
   };
 
@@ -54,7 +56,11 @@ export const createShowPage = (showType: Show['type']) => {
 
     if (!showId) return notFound();
 
-    const details = await queryClient.fetchQuery(detailsQuery({ showId, showType })).catch(() => null);
+    const details = await queryClient.fetchQuery(detailsQuery({ showId, showType })).catch((error) => {
+      if (isMissing(error)) return null;
+
+      throw error;
+    });
 
     if (!details) return notFound();
 

@@ -1,6 +1,4 @@
-import { isServer } from '@tanstack/react-query';
-
-import { SITE_URL } from '@/env';
+import { REVALIDATE } from '@/lib/cache';
 
 type Search = Record<string, string | number | boolean | null | undefined>;
 
@@ -16,7 +14,7 @@ class Http {
     base = this.base,
     search,
     body,
-    preventCache = true
+    preventCache = false
   }: {
     method: 'GET' | 'POST';
     url: string;
@@ -34,7 +32,9 @@ class Http {
       }, new URLSearchParams())
     );
 
-    if (preventCache) {
+    const uncached = preventCache || method === 'POST';
+
+    if (uncached) {
       searchParams.append('preventCache', '1');
     }
 
@@ -48,7 +48,7 @@ class Http {
           'Content-Type': 'application/json'
         },
         body: body ? JSON.stringify(body) : undefined,
-        next: preventCache ? undefined : { revalidate: 3600 }
+        next: uncached ? undefined : { revalidate: REVALIDATE }
       });
 
       if (!response.ok) {

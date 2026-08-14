@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { MOVIE_DB_API_URL, MOVIE_DB_TOKEN } from '@/env';
+import { PRIVATE_CACHE_CONTROL, PUBLIC_CACHE_CONTROL, REVALIDATE } from '@/lib/cache';
+
+import trim from './trim';
 
 type TMDBParams = {
   params: {
@@ -8,15 +11,25 @@ type TMDBParams = {
   };
 };
 
+const upstream = (path: string[], searchParams: URLSearchParams) => {
+  const params = new URLSearchParams(searchParams);
+
+  params.delete('preventCache');
+
+  const query = params.toString();
+
+  return `${MOVIE_DB_API_URL}/${path.join('/')}${query ? `?${query}` : ''}`;
+};
+
+const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${MOVIE_DB_TOKEN}` };
+
 export async function GET({ nextUrl: { searchParams } }: NextRequest, { params: { path } }: TMDBParams) {
+  const isPrivate = Boolean(searchParams.get('preventCache') || searchParams.get('session_id'));
+
   try {
-    const params = searchParams.toString();
-    const response = await fetch(`${MOVIE_DB_API_URL}/${path.join('/')}${params ? `?${params}` : ''}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${MOVIE_DB_TOKEN}`
-      },
-      next: searchParams.get('preventCache') || searchParams.get('session_id') ? undefined : { revalidate: 3600 }
+    const response = await fetch(upstream(path, searchParams), {
+      headers,
+      next: isPrivate ? undefined : { revalidate: REVALIDATE }
     });
 
     if (!response.ok) {
@@ -25,7 +38,9 @@ export async function GET({ nextUrl: { searchParams } }: NextRequest, { params: 
 
     const data = await response.json();
 
-    return NextResponse.json(data);
+    return NextResponse.json(trim(path.join('/'), data), {
+      headers: { 'Cache-Control': isPrivate ? PRIVATE_CACHE_CONTROL : PUBLIC_CACHE_CONTROL }
+    });
   } catch (error) {
     return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
@@ -34,14 +49,10 @@ export async function GET({ nextUrl: { searchParams } }: NextRequest, { params: 
 export async function POST(request: NextRequest, { params: { path } }: TMDBParams) {
   try {
     const requestBody = await request.json();
-    const searchParams = request.nextUrl.searchParams.toString();
 
-    const response = await fetch(`${MOVIE_DB_API_URL}/${path.join('/')}?${searchParams}`, {
+    const response = await fetch(upstream(path, request.nextUrl.searchParams), {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${MOVIE_DB_TOKEN}`
-      },
+      headers,
       body: JSON.stringify(requestBody)
     });
 
@@ -51,7 +62,7 @@ export async function POST(request: NextRequest, { params: { path } }: TMDBParam
 
     const data = await response.json();
 
-    return NextResponse.json(data);
+    return NextResponse.json(data, { headers: { 'Cache-Control': PRIVATE_CACHE_CONTROL } });
   } catch (error) {
     return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }

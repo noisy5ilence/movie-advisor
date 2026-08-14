@@ -91,3 +91,5 @@ export const detectSafari = () => {
 };
 
 export const isStandaloneApp = () => window.matchMedia('screen and (display-mode: standalone)').matches;
+
+export const isMissing = (error: unknown) => (error as { status?: number })?.status === 404;

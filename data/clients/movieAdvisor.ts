@@ -1,13 +1,9 @@
 import { isServer } from '@tanstack/react-query';
 
-import { SITE_URL } from '@/env';
+import { MOVIE_DB_API_URL, MOVIE_DB_TOKEN } from '@/env';
 
 import Http from './Http';
 
-const PUBLIC_ORIGIN = `${SITE_URL?.startsWith('http') ? SITE_URL : `https://${SITE_URL}`}`;
-
-const ROOT = process.env.NODE_ENV === 'development' ? `http://127.0.0.1:${process.env.PORT || 3000}` : PUBLIC_ORIGIN;
-
-const movieAdvisor = new Http(`${isServer ? ROOT : ''}/api/tmdb`);
+const movieAdvisor = isServer ? new Http(MOVIE_DB_API_URL, `Bearer ${MOVIE_DB_TOKEN}`) : new Http('/api/tmdb');
 
 export default movieAdvisor;

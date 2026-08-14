@@ -8,12 +8,15 @@ import Person from '@/components/Person';
 import personQuery from '@/data/queries/person';
 import { SITE_URL, TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
+import { isMissing } from '@/lib/utils';
 
 interface Props {
   params: { id: string };
 }
 
 export const revalidate = 86400;
+
+export const generateStaticParams = async () => [];
 
 export const generateMetadata = async ({ params: { id } }: Props): Promise<Metadata> => {
   const queryClient = getQueryClient();
@@ -36,15 +39,21 @@ export const generateMetadata = async ({ params: { id } }: Props): Promise<Metad
         url: `/person/${id}`
       }
     };
-  } catch (_) {
-    return notFound();
+  } catch (error) {
+    if (isMissing(error)) return notFound();
+
+    throw error;
   }
 };
 
 const PersonPage: FC<Props> = async ({ params: { id } }) => {
   const queryClient = getQueryClient();
 
-  const profile = await queryClient.fetchQuery(personQuery({ personId: id })).catch(() => null);
+  const profile = await queryClient.fetchQuery(personQuery({ personId: id })).catch((error) => {
+    if (isMissing(error)) return null;
+
+    throw error;
+  });
 
   if (!profile) return notFound();
 
