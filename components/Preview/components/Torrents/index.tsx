@@ -52,7 +52,7 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
 
   const isSeries = show.type === 'tv';
 
-  const tracked = { id: show.id, type: show.type };
+  const tracked = { id: show.id, type: show.type, title: show.title };
 
   const yts = useTorrents({
     query: isSeries ? '' : show.title,

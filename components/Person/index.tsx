@@ -25,7 +25,10 @@ const lifespan = ({ birthday, deathday }: Profile) => {
 const Person: FC<Props> = ({ personId }) => {
   const { data: profile, isError } = useProfile({ personId });
 
-  useTrackOnce(analytics.personViewed, profile ? personId : undefined, () => ({ personId }));
+  useTrackOnce(analytics.personViewed, profile ? personId : undefined, () => ({
+    personId,
+    personName: profile!.name
+  }));
 
   if (isError) return <NoResults />;
 

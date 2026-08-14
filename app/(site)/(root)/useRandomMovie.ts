@@ -1,6 +1,6 @@
 'use client';
 
-import { startTransition, useCallback } from 'react';
+import { startTransition, useCallback, useRef } from 'react';
 import { atom, getDefaultStore, useAtom } from 'jotai';
 
 import randomQuery from '@/data/queries/random';
@@ -24,6 +24,10 @@ const useRandomMovie = ({ page }: Props) => {
     list: 'random'
   });
 
+  const moviesRef = useRef(movies);
+
+  moviesRef.current = movies;
+
   if (movies.length && !movies[index]) {
     setIndex(0);
   }
@@ -34,7 +38,7 @@ const useRandomMovie = ({ page }: Props) => {
     fetchNextPage,
     onIndexChange: useCallback(
       (index: number) => {
-        analytics.randomShuffled({ index });
+        analytics.randomShuffled({ index, showTitle: moviesRef.current[index]?.title ?? '' });
         startTransition(() => setIndex(index));
       },
       [setIndex]

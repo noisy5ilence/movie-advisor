@@ -16,11 +16,6 @@ const OPTIONS = {
   trackOutgoingLinks: true
 };
 
-/**
- * next/script emits a `rel=preload` even on `lazyOnload`, which pulls the sdk during the
- * initial load. The inline stub below is a few hundred bytes and makes `window.op` queue
- * calls immediately, so the real script can wait until the page is loaded and idle.
- */
 const Analytics = () => {
   useEffect(() => {
     if (!OPENPANEL_CLIENT_ID) return;

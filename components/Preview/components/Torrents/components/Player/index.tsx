@@ -92,6 +92,7 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles, show, episodes, onStre
   useTrackOnce(analytics.playbackFailed, error && show ? `${magnet}:${error}` : undefined, () => ({
     showId: show!.id,
     showType: show!.type,
+    showTitle: show!.title,
     reason: error!
   }));
 
@@ -126,7 +127,7 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles, show, episodes, onStre
         setCanPlay(true);
         if (show && startedRef.current !== magnet) {
           startedRef.current = magnet;
-          analytics.playbackStarted({ showId: show.id, showType: show.type });
+          analytics.playbackStarted({ showId: show.id, showType: show.type, showTitle: show.title });
         }
         if (resumeTime.current) {
           player.current!.currentTime = resumeTime.current;

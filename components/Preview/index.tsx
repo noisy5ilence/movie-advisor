@@ -47,7 +47,7 @@ const Preview: FC<Props> = ({
   useTrackOnce(analytics.showViewed, show?.id, () => ({
     showId: show!.id,
     showType: show!.type,
-    title: show!.title,
+    showTitle: show!.title,
     surface: isModal ? ('modal' as const) : ('page' as const)
   }));
 

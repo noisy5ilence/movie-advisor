@@ -16,7 +16,7 @@ const useTorrents = ({
   query: string;
   sort: Sort;
   imdbID: string;
-  show: { id: Show['id']; type: Show['type'] };
+  show: { id: Show['id']; type: Show['type']; title: Show['title'] };
   queryFn: (params: { query: string; sort: Sort; imdbID: string }) => Promise<Torrent[]>;
 }) => {
   const result = useQuery({
@@ -28,6 +28,7 @@ const useTorrents = ({
   useTrackOnce(analytics.torrentsSearched, result.data ? `${key}:${query}` : undefined, () => ({
     showId: show.id,
     showType: show.type,
+    showTitle: show.title,
     provider: key,
     results: result.data?.length ?? 0
   }));

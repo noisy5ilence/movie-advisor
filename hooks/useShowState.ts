@@ -52,7 +52,7 @@ export const useMutateShowState = (show: Show) => {
     list: mutation.variables?.list,
     isPending: session ? mutation.isPending : false,
     mutate: ({ list, value }: { list: 'favorite' | 'watchlist'; value: boolean }) => {
-      analytics.libraryToggled({ showId: show.id, showType: show.type, list, value });
+      analytics.libraryToggled({ showId: show.id, showType: show.type, showTitle: show.title, list, value });
 
       if (session) return mutation.mutate({ showId: show.id, showType: show.type, list, value });
 

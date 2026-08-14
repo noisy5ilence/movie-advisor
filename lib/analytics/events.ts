@@ -1,16 +1,12 @@
-type ShowRef = { showId: Show['id']; showType: Show['type'] };
+type ShowRef = { showId: Show['id']; showType: Show['type']; showTitle: string };
 
 export type ListName = 'popular' | 'top' | 'search' | 'favorite' | 'watchlist' | 'random';
 
-/**
- * The whole analytics surface of the app. Adding an event means adding a line here first,
- * which keeps names and payloads consistent and makes `track` calls type checked.
- */
 export type AnalyticsEvents = {
-  show_viewed: ShowRef & { title: string; surface: 'page' | 'modal' };
-  person_viewed: { personId: string };
+  show_viewed: ShowRef & { surface: 'page' | 'modal' };
+  person_viewed: { personId: string; personName: string };
   list_loaded_more: { list: ListName; page: number };
-  random_shuffled: { index: number };
+  random_shuffled: { index: number; showTitle: string };
 
   search_performed: { query: string; showType: Show['type']; results: number };
   gallery_tab_changed: { tab: string };
@@ -20,8 +16,15 @@ export type AnalyticsEvents = {
   auth_signed_out: void;
 
   torrents_searched: ShowRef & { provider: string; results: number };
-  torrent_selected: { provider: string; seeders: number; quality?: string; source?: string; codec?: string };
-  playback_started: ShowRef & { quality?: string };
+  torrent_selected: ShowRef & {
+    provider: string;
+    torrentTitle: string;
+    seeders: number;
+    quality?: string;
+    source?: string;
+    codec?: string;
+  };
+  playback_started: ShowRef;
   playback_failed: ShowRef & { reason: string };
   subtitles_selected: { language: string };
 };

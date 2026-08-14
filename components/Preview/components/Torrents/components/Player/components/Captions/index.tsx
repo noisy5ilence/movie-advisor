@@ -32,9 +32,11 @@ const CaptionsMenu = () => {
         label: track.label,
         value: track.value,
         onSelect: (value) => {
-          analytics.subtitlesSelected({ language: value });
+          const option = live.current.find((option) => option.value === value) ?? track;
 
-          return (live.current.find((option) => option.value === value) ?? track).select();
+          analytics.subtitlesSelected({ language: option.label });
+
+          return option.select();
         }
       }))}
     >

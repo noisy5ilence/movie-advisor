@@ -66,7 +66,11 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
 
   const pinPlayed = () => {
     analytics.torrentSelected({
+      showId: show.id,
+      showType: show.type,
+      showTitle: show.title,
       provider,
+      torrentTitle: torrent.title,
       seeders: torrent.seeders,
       quality: torrent.quality,
       source: torrent.source,
