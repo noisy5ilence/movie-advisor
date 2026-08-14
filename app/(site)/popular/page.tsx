@@ -1,26 +1,50 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
 
+import JsonLd from '@/components/JsonLd';
 import popularQuery from '@/data/queries/popular';
 import { TITLE } from '@/env';
+import { itemList } from '@/lib/jsonLd';
 import getQueryClient from '@/lib/queryClient';
 
 import Container from './container';
 
+const HEADING = 'Popular Movies';
+
+const DESCRIPTION = `Check out the most popular movies right now on ${TITLE}. See what’s trending and don’t miss out on the latest hits.`;
+
 export const metadata: Metadata = {
-  title: `Popular Movies | ${TITLE}`,
-  description: `Check out the most popular movies right now on ${TITLE}. See what’s trending and don’t miss out on the latest hits.`,
-  alternates: { canonical: '/popular' }
+  title: `${HEADING} | ${TITLE}`,
+  description: DESCRIPTION,
+  alternates: { canonical: '/popular' },
+  openGraph: {
+    type: 'website',
+    siteName: TITLE,
+    title: HEADING,
+    description: DESCRIPTION,
+    url: '/popular'
+  },
+  twitter: {
+    title: HEADING,
+    description: DESCRIPTION
+  }
 };
 
 const Popular = async () => {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchInfiniteQuery(popularQuery());
+  const query = popularQuery();
+
+  await queryClient.prefetchInfiniteQuery(query);
+
+  const shows = queryClient
+    .getQueryData<{ pages: Pagination<Show>[] }>(query.queryKey)
+    ?.pages.flatMap(({ results }) => results);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <h1 className='sr-only'>Popular Movies</h1>
+      {Boolean(shows?.length) && <JsonLd data={itemList(shows!)} />}
+      <h1 className='sr-only'>{HEADING}</h1>
       <Container />
     </HydrationBoundary>
   );

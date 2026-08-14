@@ -4,6 +4,7 @@ import { notFound, permanentRedirect } from 'next/navigation';
 
 import JsonLd from '@/components/JsonLd';
 import detailsQuery from '@/data/queries/details';
+import similarQuery from '@/data/queries/similar';
 import { SITE_URL, TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
 import { isMissing, showPath } from '@/lib/utils';
@@ -36,7 +37,7 @@ export const createShowMetadata =
           title,
           description: overview,
           siteName: TITLE,
-          images: [backdrop || poster['2x']],
+          images: [{ url: backdrop || poster['2x'], alt: title }],
           type: showType === 'movie' ? 'video.movie' : 'video.tv_show',
           url: path
         }
@@ -67,6 +68,8 @@ export const createShowPage = (showType: Show['type']) => {
     const path = showPath({ type: showType, id: showId, title: details.title });
 
     if (decodeURIComponent(`/${showType}/${id}`) !== path) permanentRedirect(path);
+
+    await queryClient.prefetchQuery(similarQuery({ showId, showType, type: 'similar' }));
 
     const jsonLd = {
       '@context': 'https://schema.org',

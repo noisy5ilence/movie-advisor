@@ -14,7 +14,7 @@ interface Props {
   params: { id: string };
 }
 
-export const revalidate = 86400;
+export const revalidate = 604800;
 
 export const generateStaticParams = async () => [];
 
@@ -34,7 +34,7 @@ export const generateMetadata = async ({ params: { id } }: Props): Promise<Metad
         title: name,
         description,
         siteName: TITLE,
-        images: photo ? [photo] : [],
+        images: photo ? [{ url: photo, alt: name }] : [],
         type: 'profile',
         url: `/person/${id}`
       }

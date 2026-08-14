@@ -31,7 +31,11 @@ const Handlers: FC<Props> = ({ href, onClick, show }) => {
 
   if (!href) return <div {...handlers} />;
 
-  return <Link {...handlers} href={href} prefetch={false} aria-label={show.title} />;
+  return (
+    <Link {...handlers} href={href} prefetch={false}>
+      <span className='sr-only'>{show.title}</span>
+    </Link>
+  );
 };
 
 export default Handlers;
