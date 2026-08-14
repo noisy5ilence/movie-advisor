@@ -2,6 +2,7 @@ import { useRef } from 'react';
 
 import searchQuery, { SearchQueryProps } from '@/data/queries/search';
 import useInfiniteList from '@/hooks/useInfiniteList';
+import analytics from '@/lib/analytics';
 import useTrackOnce from '@/lib/analytics/useTrackOnce';
 
 const useSearch = (props: SearchQueryProps) => {
@@ -10,7 +11,7 @@ const useSearch = (props: SearchQueryProps) => {
   const infiniteQuery = useInfiniteList({ ...searchQuery(props), mode: 'default', list: 'search' });
 
   useTrackOnce(
-    'search_performed',
+    analytics.searchPerformed,
     props.query && infiniteQuery.isFetched ? `${props.type}:${props.query}` : undefined,
     () => ({ query: props.query, showType: props.type, results: infiniteQuery.shows.length })
   );

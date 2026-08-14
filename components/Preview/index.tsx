@@ -7,6 +7,7 @@ import Poster from '@/components/Poster';
 import Credits from '@/components/Preview/components/Credits';
 import useDetails from '@/components/Preview/useDetails';
 import { Modal } from '@/components/ui/dialog';
+import analytics from '@/lib/analytics';
 import useTrackOnce from '@/lib/analytics/useTrackOnce';
 import { cn } from '@/lib/utils';
 
@@ -43,11 +44,11 @@ const Preview: FC<Props> = ({
 
   const isModal = Boolean(onClose);
 
-  useTrackOnce('show_viewed', show?.id, () => ({
+  useTrackOnce(analytics.showViewed, show?.id, () => ({
     showId: show!.id,
     showType: show!.type,
     title: show!.title,
-    surface: isModal ? 'modal' : 'page'
+    surface: isModal ? ('modal' as const) : ('page' as const)
   }));
 
   if (!show) return null;

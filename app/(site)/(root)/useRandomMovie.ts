@@ -5,7 +5,7 @@ import { atom, getDefaultStore, useAtom } from 'jotai';
 
 import randomQuery from '@/data/queries/random';
 import useInfiniteList from '@/hooks/useInfiniteList';
-import { track } from '@/lib/analytics';
+import analytics from '@/lib/analytics';
 
 const indexAtom = atom(0);
 
@@ -34,7 +34,7 @@ const useRandomMovie = ({ page }: Props) => {
     fetchNextPage,
     onIndexChange: useCallback(
       (index: number) => {
-        track('random_shuffled', { index });
+        analytics.randomShuffled({ index });
         startTransition(() => setIndex(index));
       },
       [setIndex]

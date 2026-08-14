@@ -4,7 +4,7 @@ import { FC, useState } from 'react';
 
 import useSimilar from '@/components/Trending/useSimilar';
 import Nav from '@/components/ui/nav';
-import { track } from '@/lib/analytics';
+import analytics from '@/lib/analytics';
 
 import Gallery from './components/Gallery';
 import { tabs as initialTabs } from './constants';
@@ -46,7 +46,7 @@ const Trending: FC<Props> = ({ showId, showType, preview }) => {
           tabs={tabs}
           active={active}
           onChange={(active) => {
-            track('gallery_tab_changed', { tab: active.type });
+            analytics.galleryTabChanged({ tab: active.type });
             setActive(active);
           }}
           className='mb-3'

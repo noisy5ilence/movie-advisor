@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import statesMutation from '@/data/mutations/accountStates';
 import statesQuery from '@/data/queries/accountStates';
 import { KEY as USERS_SHOWS_KEY } from '@/data/queries/usersShows';
-import { track } from '@/lib/analytics';
+import analytics from '@/lib/analytics';
 
 import { useFavorites, useFavoritesStateToggle, useWatchList, useWatchListStateToggle } from './useLocalUsersLists';
 import { useSession } from './useSession';
@@ -52,7 +52,7 @@ export const useMutateShowState = (show: Show) => {
     list: mutation.variables?.list,
     isPending: session ? mutation.isPending : false,
     mutate: ({ list, value }: { list: 'favorite' | 'watchlist'; value: boolean }) => {
-      track('library_toggled', { showId: show.id, showType: show.type, list, value });
+      analytics.libraryToggled({ showId: show.id, showType: show.type, list, value });
 
       if (session) return mutation.mutate({ showId: show.id, showType: show.type, list, value });
 

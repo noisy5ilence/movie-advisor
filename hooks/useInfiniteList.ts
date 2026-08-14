@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { QueryKey, useInfiniteQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
-import { track } from '@/lib/analytics';
+import analytics from '@/lib/analytics';
 import type { ListName } from '@/lib/analytics/events';
 
 interface Props {
@@ -51,7 +51,7 @@ const useInfiniteList = ({
   const pages = data?.pages.length ?? 0;
 
   const loadNextPage = useCallback(() => {
-    if (list) track('list_loaded_more', { list, page: pages + 1 });
+    if (list) analytics.listLoadedMore({ list, page: pages + 1 });
 
     return fetchNextPage();
   }, [list, pages, fetchNextPage]);

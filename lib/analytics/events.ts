@@ -16,8 +16,8 @@ export type AnalyticsEvents = {
   gallery_tab_changed: { tab: string };
 
   library_toggled: ShowRef & { list: 'favorite' | 'watchlist'; value: boolean };
-  auth_completed: EmptyPayload;
-  auth_signed_out: EmptyPayload;
+  auth_completed: void;
+  auth_signed_out: void;
 
   torrents_searched: ShowRef & { provider: string; results: number };
   torrent_selected: { provider: string; seeders: number; quality?: string; source?: string; codec?: string };
@@ -25,7 +25,5 @@ export type AnalyticsEvents = {
   playback_failed: ShowRef & { reason: string };
   subtitles_selected: { language: string };
 };
-
-export type EmptyPayload = Record<string, never>;
 
 export type AnalyticsEvent = keyof AnalyticsEvents;

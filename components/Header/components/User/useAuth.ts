@@ -5,7 +5,7 @@ import sessionMutation from '@/data/mutations/session';
 import tokenMutation from '@/data/mutations/token';
 import { useSetSession } from '@/hooks/useSession';
 import { useToast } from '@/hooks/useToast';
-import { track } from '@/lib/analytics';
+import analytics from '@/lib/analytics';
 
 const AUTH_RETRIES = 10;
 
@@ -25,7 +25,7 @@ const useAuth = () => {
   const session = useMutation({
     ...sessionMutation(),
     onSuccess({ session_id }) {
-      track('auth_completed', {});
+      analytics.authCompleted();
       setSession(session_id);
       clearInterval(intervalRef.current);
 

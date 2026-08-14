@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { Sort } from '@/data/parsers';
+import analytics from '@/lib/analytics';
 import useTrackOnce from '@/lib/analytics/useTrackOnce';
 
 const useTorrents = ({
@@ -24,7 +25,7 @@ const useTorrents = ({
     queryFn: () => queryFn({ query, sort, imdbID })
   });
 
-  useTrackOnce('torrents_searched', result.data ? `${key}:${query}` : undefined, () => ({
+  useTrackOnce(analytics.torrentsSearched, result.data ? `${key}:${query}` : undefined, () => ({
     showId: show.id,
     showType: show.type,
     provider: key,

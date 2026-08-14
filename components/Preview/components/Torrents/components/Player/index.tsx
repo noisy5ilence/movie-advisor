@@ -16,7 +16,7 @@ import { NextIcon } from '@vidstack/react/icons';
 import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr';
 
 import { useSetCanPlay } from '@/hooks/useCanPlay';
-import { track } from '@/lib/analytics';
+import analytics from '@/lib/analytics';
 import useTrackOnce from '@/lib/analytics/useTrackOnce';
 import { cn } from '@/lib/utils';
 
@@ -89,7 +89,7 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles, show, episodes, onStre
     onStreamError?.(error);
   }, [error, onStreamError]);
 
-  useTrackOnce('playback_failed', error && show ? `${magnet}:${error}` : undefined, () => ({
+  useTrackOnce(analytics.playbackFailed, error && show ? `${magnet}:${error}` : undefined, () => ({
     showId: show!.id,
     showType: show!.type,
     reason: error!
@@ -126,7 +126,7 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles, show, episodes, onStre
         setCanPlay(true);
         if (show && startedRef.current !== magnet) {
           startedRef.current = magnet;
-          track('playback_started', { showId: show.id, showType: show.type });
+          analytics.playbackStarted({ showId: show.id, showType: show.type });
         }
         if (resumeTime.current) {
           player.current!.currentTime = resumeTime.current;

@@ -2,7 +2,7 @@ import { useMemo, useRef } from 'react';
 import { CaptionOption, useCaptionOptions } from '@vidstack/react';
 import { ClosedCaptionsIcon, ClosedCaptionsOnIcon } from '@vidstack/react/icons';
 
-import { track as track_ } from '@/lib/analytics';
+import analytics from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 
 import PlayerMenu from '../Menu';
@@ -32,7 +32,7 @@ const CaptionsMenu = () => {
         label: track.label,
         value: track.value,
         onSelect: (value) => {
-          track_('subtitles_selected', { language: value });
+          analytics.subtitlesSelected({ language: value });
 
           return (live.current.find((option) => option.value === value) ?? track).select();
         }
