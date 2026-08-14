@@ -5,6 +5,7 @@ import { atom, getDefaultStore, useAtom } from 'jotai';
 
 import randomQuery from '@/data/queries/random';
 import useInfiniteList from '@/hooks/useInfiniteList';
+import { track } from '@/lib/analytics';
 
 const indexAtom = atom(0);
 
@@ -17,7 +18,11 @@ interface Props {
 const useRandomMovie = ({ page }: Props) => {
   const [index, setIndex] = useAtom(indexAtom);
 
-  const { shows: movies, fetchNextPage } = useInfiniteList({ ...randomQuery({ page }), mode: 'default' });
+  const { shows: movies, fetchNextPage } = useInfiniteList({
+    ...randomQuery({ page }),
+    mode: 'default',
+    list: 'random'
+  });
 
   if (movies.length && !movies[index]) {
     setIndex(0);
@@ -29,6 +34,7 @@ const useRandomMovie = ({ page }: Props) => {
     fetchNextPage,
     onIndexChange: useCallback(
       (index: number) => {
+        track('random_shuffled', { index });
         startTransition(() => setIndex(index));
       },
       [setIndex]

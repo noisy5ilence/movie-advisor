@@ -52,26 +52,31 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
 
   const isSeries = show.type === 'tv';
 
+  const tracked = { id: show.id, type: show.type };
+
   const yts = useTorrents({
     query: isSeries ? '' : show.title,
     queryFn: providers.yts.queryFn,
     sort,
     key: providers.yts.key,
-    imdbID: show.imdb_id!
+    imdbID: show.imdb_id!,
+    show: tracked
   });
   const tpb = useTorrents({
     query,
     queryFn: providers.tpb.queryFn,
     sort,
     key: providers.tpb.key,
-    imdbID: show.imdb_id!
+    imdbID: show.imdb_id!,
+    show: tracked
   });
   const tlk = useTorrents({
     query,
     queryFn: providers.tlk.queryFn,
     sort,
     key: providers.tlk.key,
-    imdbID: show.imdb_id!
+    imdbID: show.imdb_id!,
+    show: tracked
   });
 
   const queries = { yts, tpb, tlk };

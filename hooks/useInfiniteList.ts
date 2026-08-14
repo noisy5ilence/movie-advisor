@@ -1,5 +1,8 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { QueryKey, useInfiniteQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query';
+
+import { track } from '@/lib/analytics';
+import type { ListName } from '@/lib/analytics/events';
 
 interface Props {
   enabled?: boolean;
@@ -8,6 +11,7 @@ interface Props {
   initialPageParam?: string;
   getNextPageParam?: () => string | undefined;
   mode?: 'suspense' | 'default';
+  list?: ListName;
 }
 
 const useInfiniteList = ({
@@ -16,7 +20,8 @@ const useInfiniteList = ({
   initialPageParam,
   getNextPageParam,
   mode = 'suspense',
-  enabled
+  enabled,
+  list
 }: Props) => {
   const { data, hasNextPage, fetchNextPage, isFetched, isLoading } = (
     mode === 'suspense' ? useSuspenseInfiniteQuery : useInfiniteQuery
@@ -43,7 +48,15 @@ const useInfiniteList = ({
     );
   }, [data?.pages]);
 
-  return { shows, fetchNextPage: hasNextPage ? fetchNextPage : undefined, isFetched, isLoading };
+  const pages = data?.pages.length ?? 0;
+
+  const loadNextPage = useCallback(() => {
+    if (list) track('list_loaded_more', { list, page: pages + 1 });
+
+    return fetchNextPage();
+  }, [list, pages, fetchNextPage]);
+
+  return { shows, fetchNextPage: hasNextPage ? loadNextPage : undefined, isFetched, isLoading };
 };
 
 export default useInfiniteList;

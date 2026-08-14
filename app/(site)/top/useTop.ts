@@ -3,6 +3,7 @@
 import popularQuery from '@/data/queries/popular';
 import useInfiniteList from '@/hooks/useInfiniteList';
 
-const useTop = () => useInfiniteList({ ...popularQuery({ sortBy: 'vote_average.desc' }), mode: 'default' });
+const useTop = () =>
+  useInfiniteList({ ...popularQuery({ sortBy: 'vote_average.desc' }), mode: 'default', list: 'top' });
 
 export default useTop;

@@ -3,6 +3,6 @@
 import popularQuery from '@/data/queries/popular';
 import useInfiniteList from '@/hooks/useInfiniteList';
 
-const usePopular = () => useInfiniteList({ ...popularQuery(), mode: 'default' });
+const usePopular = () => useInfiniteList({ ...popularQuery(), mode: 'default', list: 'popular' });
 
 export default usePopular;

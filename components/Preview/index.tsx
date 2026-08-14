@@ -7,6 +7,7 @@ import Poster from '@/components/Poster';
 import Credits from '@/components/Preview/components/Credits';
 import useDetails from '@/components/Preview/useDetails';
 import { Modal } from '@/components/ui/dialog';
+import useTrackOnce from '@/lib/analytics/useTrackOnce';
 import { cn } from '@/lib/utils';
 
 import Actions from './components/Actions';
@@ -38,11 +39,18 @@ const Preview: FC<Props> = ({
 }) => {
   const { data: detailedShow } = useDetails({ showId: showId || baseShow?.id, showType: showType || baseShow?.type });
 
-  if (!baseShow && !detailedShow) return null;
-
-  const show: Show & Partial<Details> = (detailedShow || baseShow)!;
+  const show = (detailedShow || baseShow) as (Show & Partial<Details>) | undefined;
 
   const isModal = Boolean(onClose);
+
+  useTrackOnce('show_viewed', show?.id, () => ({
+    showId: show!.id,
+    showType: show!.type,
+    title: show!.title,
+    surface: isModal ? 'modal' : 'page'
+  }));
+
+  if (!show) return null;
 
   const Title = heading ? 'h1' : 'span';
 

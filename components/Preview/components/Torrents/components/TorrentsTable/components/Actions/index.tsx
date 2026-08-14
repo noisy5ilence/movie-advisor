@@ -8,6 +8,7 @@ import ButtonsGroup from '@/components/ui/buttons-group';
 import { Quality } from '@/data/parsers/yts/models';
 import { useM3UUrl } from '@/hooks/useM3UStreamUrl';
 import { useStreamUrl } from '@/hooks/useStreamUrl';
+import { track } from '@/lib/analytics';
 import { cn, detectSafari, getMagnetHash, isStandaloneApp, seasonFromEpisodes, torrentKey } from '@/lib/utils';
 
 import usePinnedTorrents from '../../../../usePinnedTorrents';
@@ -63,7 +64,17 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pinned, magnet, key, torrent.magnet]);
 
-  const pinPlayed = () => pin(key);
+  const pinPlayed = () => {
+    track('torrent_selected', {
+      provider,
+      seeders: torrent.seeders,
+      quality: torrent.quality,
+      source: torrent.source,
+      codec: torrent.codec
+    });
+
+    pin(key);
+  };
 
   const supportedForCast = prefix && !prefix.includes('{host}');
 

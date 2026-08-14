@@ -4,6 +4,7 @@ import { FC, useState } from 'react';
 
 import useSimilar from '@/components/Trending/useSimilar';
 import Nav from '@/components/ui/nav';
+import { track } from '@/lib/analytics';
 
 import Gallery from './components/Gallery';
 import { tabs as initialTabs } from './constants';
@@ -41,7 +42,15 @@ const Trending: FC<Props> = ({ showId, showType, preview }) => {
   return (
     (streaming.isFetched || similar.isFetched) && (
       <div className='hidden md:block'>
-        <Nav tabs={tabs} active={active} onChange={(active) => setActive(active)} className='mb-3' />
+        <Nav
+          tabs={tabs}
+          active={active}
+          onChange={(active) => {
+            track('gallery_tab_changed', { tab: active.type });
+            setActive(active);
+          }}
+          className='mb-3'
+        />
         {!tab.isPending && <Gallery key={active.type} shows={tab.data || []} />}
       </div>
     )

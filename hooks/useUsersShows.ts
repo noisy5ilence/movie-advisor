@@ -26,7 +26,7 @@ const useUsersShows = ({
   const { shows: favorite } = useFavorites();
   const { shows: watchlist } = useWatchList();
 
-  const query = useInfiniteList({ ...usersShowsQuery({ showType, list, session }), mode });
+  const query = useInfiniteList({ ...usersShowsQuery({ showType, list, session }), mode, list });
 
   return session
     ? query

@@ -16,6 +16,8 @@ import { NextIcon } from '@vidstack/react/icons';
 import { PlyrLayout, plyrLayoutIcons } from '@vidstack/react/player/layouts/plyr';
 
 import { useSetCanPlay } from '@/hooks/useCanPlay';
+import { track } from '@/lib/analytics';
+import useTrackOnce from '@/lib/analytics/useTrackOnce';
 import { cn } from '@/lib/utils';
 
 import Audio from './components/Audio';
@@ -76,6 +78,7 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles, show, episodes, onStre
   const { tracks: audioTracks, audio, setAudio, resolvedSrc, error } = useGstAudio(source?.src);
 
   const resumeTime = useRef(0);
+  const startedRef = useRef<string>();
 
   const changeAudio = (track: number) => {
     resumeTime.current = player.current?.currentTime ?? 0;
@@ -85,6 +88,12 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles, show, episodes, onStre
   useEffect(() => {
     onStreamError?.(error);
   }, [error, onStreamError]);
+
+  useTrackOnce('playback_failed', error && show ? `${magnet}:${error}` : undefined, () => ({
+    showId: show!.id,
+    showType: show!.type,
+    reason: error!
+  }));
 
   const playerSrc = useMemo(
     () => (source && !error ? ({ ...source, src: resolvedSrc } as VideoSrc) : []),
@@ -115,6 +124,10 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles, show, episodes, onStre
       onProviderChange={onProviderChange}
       onCanPlay={() => {
         setCanPlay(true);
+        if (show && startedRef.current !== magnet) {
+          startedRef.current = magnet;
+          track('playback_started', { showId: show.id, showType: show.type });
+        }
         if (resumeTime.current) {
           player.current!.currentTime = resumeTime.current;
           resumeTime.current = 0;

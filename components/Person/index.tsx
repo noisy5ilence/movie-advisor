@@ -4,6 +4,7 @@ import { FC } from 'react';
 
 import List from '@/components/List';
 import NoResults from '@/components/NoResults';
+import useTrackOnce from '@/lib/analytics/useTrackOnce';
 import { formatDate } from '@/lib/utils';
 
 import Biography from './components/Biography';
@@ -22,6 +23,8 @@ const lifespan = ({ birthday, deathday }: Profile) => {
 
 const Person: FC<Props> = ({ personId }) => {
   const { data: profile, isError } = useProfile({ personId });
+
+  useTrackOnce('person_viewed', profile ? personId : undefined, () => ({ personId }));
 
   if (isError) return <NoResults />;
 

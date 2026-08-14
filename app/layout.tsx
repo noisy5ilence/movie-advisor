@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
-import { Analytics } from '@vercel/analytics/next';
 import type { Metadata, Viewport } from 'next';
 import { Jost } from 'next/font/google';
 
+import Analytics from '@/components/Analytics';
 import Header from '@/components/Header';
 import ThemeColor from '@/components/ThemeColor';
 import { SITE_URL, TITLE } from '@/env';
