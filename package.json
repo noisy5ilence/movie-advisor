@@ -1,8 +1,0 @@
-{
-  "name": "movie-advisor-redirect",
-  "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "next": "15.3.2"
-  }
-}
