@@ -2,6 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
+      "source": "/",
+      "destination": "https://watchnext.online/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "destination": "https://watchnext.online/:path*",
       "permanent": true
