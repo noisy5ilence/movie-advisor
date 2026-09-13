@@ -8,6 +8,29 @@ import { DialogContentProps } from '@radix-ui/react-dialog';
 import useScrollDelta from '@/hooks/useScrollDelta';
 import { cn } from '@/lib/utils';
 
+// Safari does not re-evaluate `:has()` when a sibling is removed, so stacked
+// backdrops (only the topmost overlay should be dark) are tracked in JS instead:
+// each open overlay registers itself and we flag the newest one as the top.
+const overlayStack: HTMLDivElement[] = [];
+
+const markTopOverlay = () => {
+  // The top overlay is the last one in document order (portals append on open and
+  // re-renders never move the node), NOT the last registered one: React may re-fire
+  // a ref callback on the same node on re-render, which must not reorder anything.
+  let top: HTMLDivElement | null = null;
+
+  for (const overlay of overlayStack) {
+    if (!top || top.compareDocumentPosition(overlay) & Node.DOCUMENT_POSITION_FOLLOWING) {
+      top = overlay;
+    }
+  }
+
+  for (const overlay of overlayStack) {
+    if (overlay === top) overlay.setAttribute('data-overlay-top', '');
+    else overlay.removeAttribute('data-overlay-top');
+  }
+};
+
 const Dialog = DialogPrimitive.Root;
 
 const DialogTrigger = DialogPrimitive.Trigger;
@@ -47,11 +70,29 @@ const DialogContent = React.forwardRef<
 
   const canBeCloseRef = React.useRef(false);
 
-  const wrapperRef = React.useRef<HTMLDivElement>(null);
+  const wrapperRef = React.useRef<HTMLDivElement | null>(null);
   const overlayRef = React.useRef<HTMLDivElement>(null) as React.MutableRefObject<HTMLDivElement>;
   const contentRef = React.useRef<HTMLDivElement | null>(null);
 
   const { delta, onScroll } = useScrollDelta();
+
+  // A ref callback (not an effect) because Radix's Portal defers attaching the
+  // overlay to a re-render, so a one-shot effect would see a null ref.
+  const handleWrapperRef = React.useCallback((element: HTMLDivElement | null) => {
+    const previous = wrapperRef.current;
+
+    wrapperRef.current = element;
+
+    if (element) {
+      if (!overlayStack.includes(element)) overlayStack.push(element);
+    } else if (previous) {
+      const index = overlayStack.indexOf(previous);
+
+      if (index !== -1) overlayStack.splice(index, 1);
+    }
+
+    markTopOverlay();
+  }, []);
 
   const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
     position.current = event.touches[0].clientY;
@@ -104,7 +145,7 @@ const DialogContent = React.forwardRef<
 
   return (
     <DialogPortal container={portal}>
-      <div className='fixed inset-0 z-50 size-full bg-black/80' data-overlay ref={wrapperRef}>
+      <div className='fixed inset-0 z-50 size-full bg-black/80' data-overlay ref={handleWrapperRef}>
         <DialogOverlay
           ref={(element) => {
             if (!element) return;

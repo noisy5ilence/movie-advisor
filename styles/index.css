@@ -107,7 +107,9 @@
     @apply bg-background text-foreground;
   }
 
-  body [data-overlay]:has(~ [data-overlay]) {
+  /* The topmost overlay is flagged by JS (see markTopOverlay in dialog.tsx); Safari
+     does not re-evaluate :has() when a sibling overlay is removed. */
+  body [data-overlay]:not([data-overlay-top]) {
     background: none;
   }
 
