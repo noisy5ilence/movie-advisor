@@ -21,9 +21,11 @@ export const showSearchModal = create(({ onResolve }) => {
   const isFetchedRef = useRef(false);
 
   const query = useDistinctUntilChanged(title);
+  const settledTitle = useDistinctUntilChanged(title, 1000);
+  const settled = title === settledTitle;
 
-  const movies = useSearch({ query, type: 'movie' });
-  const series = useSearch({ query, type: 'tv' });
+  const movies = useSearch({ query, type: 'movie', settled });
+  const series = useSearch({ query, type: 'tv', settled });
 
   const handleChangeTitle = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => setTitle(value);
 

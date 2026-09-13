@@ -1,16 +1,23 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Bookmark, Cast, Download, ListVideo, Loader, Magnet, Play, TrafficCone } from 'lucide-react';
+import { Cast, Download, ListVideo, Loader, Magnet, MoreHorizontal, Play, TrafficCone } from 'lucide-react';
 
 import { providers } from '@/components/Preview/components/Torrents/constants';
 import { useCastMagnet, usePrefix } from '@/components/Preview/components/Torrents/hooks/useMagnetHosts';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import { Quality } from '@/data/parsers/yts/models';
 import { useM3UUrl } from '@/hooks/useM3UStreamUrl';
 import { useStreamUrl } from '@/hooks/useStreamUrl';
 import analytics from '@/lib/analytics';
 import { cn, detectSafari, getMagnetHash, isStandaloneApp, seasonFromEpisodes, torrentKey } from '@/lib/utils';
 
+import useLaunchedTorrents from '../../../../useLaunchedTorrents';
 import usePinnedTorrents from '../../../../usePinnedTorrents';
 import useUnplayable from '../../../../useUnplayable';
 
@@ -47,11 +54,12 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
 
   const fetchMagnet = useMagnet(torrent);
 
-  const { pin, toggle, isPinned, savedMagnet, rememberMagnet } = usePinnedTorrents();
+  const { savedMagnet, rememberMagnet } = usePinnedTorrents();
+  const { isLaunched, launch } = useLaunchedTorrents();
   const { reasonFor } = useUnplayable();
 
   const key = torrentKey(torrent);
-  const pinned = isPinned(key);
+  const launched = isLaunched(key);
 
   const magnet = fetchMagnet.data || torrent.magnet || savedMagnet(key) || '';
 
@@ -60,11 +68,11 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
   const unplayable = reasonFor(hash);
 
   useEffect(() => {
-    if (pinned && magnet && !torrent.magnet) rememberMagnet(key, magnet);
+    if (magnet && !torrent.magnet) rememberMagnet(key, magnet);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pinned, magnet, key, torrent.magnet]);
+  }, [magnet, key, torrent.magnet]);
 
-  const pinPlayed = () => {
+  const trackLaunch = () => {
     analytics.torrentSelected({
       showId: show.id,
       showType: show.type,
@@ -77,13 +85,18 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
       codec: torrent.codec
     });
 
-    pin(key);
+    launch(key);
   };
 
   const supportedForCast = prefix && !prefix.includes('{host}');
+  const showCast = Boolean(M3UUrl || supportedForCast);
+  const m3uUrl = `${streamUrl}/stream?m3u&link=${encodeURIComponent(magnet)}`;
+  const vlcUrl = `vlc://${m3uUrl}`;
+
+  const launchedCastClass = 'border-blue-600 bg-blue-600 text-white hover:bg-blue-600 hover:text-white';
 
   const handleM3ULink = () => {
-    pinPlayed();
+    trackLaunch();
     setIsStreamPending(true);
 
     const params = new URLSearchParams({
@@ -144,74 +157,100 @@ const Actions: FC<Props> = ({ torrent, title, provider, show }) => {
               { invisible: !magnet || fetchMagnet.isPending }
             )}
             onClick={() => {
-              pinPlayed();
+              trackLaunch();
               showPlayerModal({ backdrop: show.backdrop, title, hash, magnet, show, episodes: torrent.episodes });
             }}
             title={unplayable ? `Can’t stream in browser: ${unplayable}` : 'Play'}
           >
-            <Play size={15} />
+            <Play size={15} fill={launched ? 'currentColor' : 'none'} />
           </Button>
         )}
-        <Button
-          variant='outline'
-          className='grow-0 px-3'
-          onClick={() => toggle(key)}
-          title={pinned ? 'Unpin' : 'Pin to top'}
-        >
-          <Bookmark size={16} className={cn(pinned && 'fill-current')} />
-        </Button>
-        <Button variant='outline' className='relative grow-0 px-3' title='Download m3u playlist'>
-          <a
-            className='absolute left-0 top-0 size-full'
-            target='_blank'
-            rel='noopener noreferrer'
-            href={`${streamUrl}/stream?m3u&link=${encodeURIComponent(magnet)}`}
-          />
-          <ListVideo size={20} />
-        </Button>
-        <Button className='relative grow-0 px-3' variant='outline' title='Download magnet'>
-          <a className='absolute left-0 top-0 size-full' target='_blank' rel='noopener noreferrer' href={magnet} />
-          <Magnet size={20} />
-        </Button>
-        {M3UUrl ? (
-          <Button
-            className='relative h-[32px] w-[45px] grow-0 px-3'
-            variant='outline'
-            title='Play m3u playlist'
-            onClick={handleM3ULink}
-            disabled={isStreamPending}
-          >
-            {isStreamPending ? (
-              <div className='animate-spin'>
-                <Loader size={18} />
-              </div>
-            ) : (
-              <Cast size={20} />
-            )}
-          </Button>
-        ) : (
-          supportedForCast && (
+        {showCast &&
+          (M3UUrl ? (
             <Button
-              className='grow-0 px-3'
+              className={cn(
+                'relative h-[32px] w-[45px] grow-0 px-3',
+                supportedForStream && '-ml-px',
+                launched && launchedCastClass
+              )}
               variant='outline'
+              title='Play m3u playlist'
+              onClick={handleM3ULink}
+              disabled={isStreamPending}
+            >
+              {isStreamPending ? (
+                <div className='animate-spin'>
+                  <Loader size={18} />
+                </div>
+              ) : (
+                <Cast size={20} />
+              )}
+            </Button>
+          ) : (
+            <Button
+              className={cn('grow-0 px-3', supportedForStream && '-ml-px', launched && launchedCastClass)}
+              variant='outline'
+              title='Cast to TV'
               onClick={() => {
-                pinPlayed();
+                trackLaunch();
                 cast(magnet);
               }}
             >
               <Cast size={20} />
             </Button>
-          )
+          ))}
+        {!showCast && (
+          <Button variant='outline' className='relative grow-0 px-3' title='Download m3u playlist'>
+            <a className='absolute left-0 top-0 size-full' target='_blank' rel='noopener noreferrer' href={m3uUrl} />
+            <ListVideo size={20} />
+          </Button>
         )}
-        {isStandalone && (
+        {!showCast && (
+          <Button className='relative grow-0 px-3' variant='outline' title='Download magnet'>
+            <a className='absolute left-0 top-0 size-full' target='_blank' rel='noopener noreferrer' href={magnet} />
+            <Magnet size={20} />
+          </Button>
+        )}
+        {!showCast && isStandalone && (
           <Button className='relative grow-0 px-3' variant='outline' title='Play in VLC' asChild>
-            <a
-              className='absolute left-0 top-0 size-full'
-              rel='noopener noreferrer'
-              href={`vlc://${streamUrl}/stream?m3u&link=${encodeURIComponent(magnet)}`}
-            />
+            <a className='absolute left-0 top-0 size-full' rel='noopener noreferrer' href={vlcUrl} />
             <TrafficCone size={19} />
           </Button>
+        )}
+        {showCast && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant='outline'
+                className='h-8 grow-0 rounded-none rounded-r-md border-l-0 px-3 focus-visible:ring-0 data-[state=open]:bg-accent'
+                aria-label='More options'
+              >
+                <MoreHorizontal size={18} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end'>
+              <DropdownMenuItem asChild>
+                <a target='_blank' rel='noopener noreferrer' href={m3uUrl}>
+                  <ListVideo />
+                  Download m3u playlist
+                </a>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a target='_blank' rel='noopener noreferrer' href={magnet}>
+                  <Magnet />
+                  Download magnet
+                </a>
+              </DropdownMenuItem>
+              {isStandalone && (
+                <DropdownMenuItem asChild>
+                  <a rel='noopener noreferrer' href={vlcUrl}>
+                    <TrafficCone />
+                    Play in VLC
+                  </a>
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </ButtonsGroup>
       {!magnet && (

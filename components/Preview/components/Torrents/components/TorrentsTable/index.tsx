@@ -3,9 +3,8 @@ import { ArrowDownIcon } from 'lucide-react';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Sort } from '@/data/parsers';
-import { cn, torrentKey } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
-import usePinnedTorrents from '../../usePinnedTorrents';
 import showHostManagerModal from '../HostManager';
 import TableHeadSortable from '../TableHeadSortable';
 
@@ -34,8 +33,6 @@ const TorrentsTable: FC<Props> = ({ title, torrents, show, sort, sortable, provi
 
   const [episodesSort, setEpisodesSort] = useState<EpisodesSort | null>(null);
 
-  const { isPinned } = usePinnedTorrents();
-
   const sorted = episodesSort
     ? [...torrents].sort((a, b) => {
         const [seasonA, episodeA] = seasonEpisode(a.episodes);
@@ -46,11 +43,6 @@ const TorrentsTable: FC<Props> = ({ title, torrents, show, sort, sortable, provi
       })
     : torrents;
 
-  const rows = [
-    ...sorted.filter((torrent) => isPinned(torrentKey(torrent))),
-    ...sorted.filter((torrent) => !isPinned(torrentKey(torrent)))
-  ];
-
   const handleChangeSort = (next: Sort) => {
     setEpisodesSort(null);
     onChangeSort(next);
@@ -59,10 +51,10 @@ const TorrentsTable: FC<Props> = ({ title, torrents, show, sort, sortable, provi
   const toggleEpisodesSort = () => setEpisodesSort((current) => (current === 'asc' ? 'desc' : 'asc'));
 
   return (
-    <Table className='overflow-hidden rounded-xl'>
+    <Table className='overflow-hidden'>
       {Boolean(torrents?.length) && (
         <TableHeader>
-          <TableRow className='hover:bg-transparent'>
+          <TableRow className='border-border/50 hover:bg-transparent'>
             <TableHead className='hidden px-2 md:table-cell'>Title</TableHead>
             {isSeries && (
               <TableHead className='hidden cursor-pointer select-none px-2 md:table-cell' onClick={toggleEpisodesSort}>
@@ -97,36 +89,36 @@ const TorrentsTable: FC<Props> = ({ title, torrents, show, sort, sortable, provi
       )}
 
       <TableBody>
-        {rows?.map((torrent) => {
+        {sorted.map((torrent) => {
           return (
             <Fragment key={torrent.magnet + torrent.id + torrent.download}>
-              <TableRow className='table-row border-b-0 hover:bg-transparent md:hidden'>
-                <TableCell className='break-all p-2' colSpan={colSpan}>
+              <TableRow className='table-row border-b-0 md:hidden'>
+                <TableCell className='break-all px-2 py-3' colSpan={colSpan}>
                   <span className='flex w-full flex-wrap items-center gap-3'>
                     {torrent.title} {isSeries && torrent.episodes && `[${torrent.episodes}]`}{' '}
                     {torrent.quality && `[${torrent.quality}]`}
                   </span>
                 </TableCell>
               </TableRow>
-              <TableRow className='hover:bg-transparent'>
-                <TableCell className='hidden break-all p-2 md:table-cell' title={torrent.originalTitle}>
+              <TableRow className='border-border/50'>
+                <TableCell className='hidden break-all px-2 py-3 md:table-cell' title={torrent.originalTitle}>
                   {torrent.title}
                 </TableCell>
                 {isSeries && (
-                  <TableCell className='hidden p-2 md:table-cell'>
+                  <TableCell className='hidden px-2 py-3 md:table-cell'>
                     <div className='flex shrink-0 items-center gap-1'>{torrent.episodes}</div>
                   </TableCell>
                 )}
-                <TableCell className='hidden p-2 lg:table-cell'>
+                <TableCell className='hidden px-2 py-3 lg:table-cell'>
                   <div className='flex shrink-0 items-center gap-1'>{torrent.year}</div>
                 </TableCell>
-                <TableCell className='hidden p-2 md:table-cell'>
+                <TableCell className='hidden px-2 py-3 md:table-cell'>
                   <div className='flex shrink-0 items-center gap-1'>{torrent.quality}</div>
                 </TableCell>
-                <TableCell className='truncate p-2'>
+                <TableCell className='truncate px-2 py-3'>
                   <div className='flex shrink-0 items-center gap-1'>{torrent.size}</div>
                 </TableCell>
-                <TableCell className='truncate p-2'>{torrent.seeders}</TableCell>
+                <TableCell className='truncate px-2 py-3'>{torrent.seeders}</TableCell>
                 <TableCell className='p-1 pr-2 text-center'>
                   <Actions show={show} title={title} torrent={torrent} provider={provider} />
                 </TableCell>

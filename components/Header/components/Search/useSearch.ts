@@ -5,14 +5,14 @@ import useInfiniteList from '@/hooks/useInfiniteList';
 import analytics from '@/lib/analytics';
 import useTrackOnce from '@/lib/analytics/useTrackOnce';
 
-const useSearch = (props: SearchQueryProps) => {
+const useSearch = (props: SearchQueryProps & { settled: boolean }) => {
   const previousRef = useRef<Show[]>([]);
 
   const infiniteQuery = useInfiniteList({ ...searchQuery(props), mode: 'default', list: 'search' });
 
   useTrackOnce(
     analytics.searchPerformed,
-    props.query && infiniteQuery.isFetched ? `${props.type}:${props.query}` : undefined,
+    props.query && props.settled && infiniteQuery.isFetched ? `${props.type}:${props.query}` : undefined,
     () => ({ query: props.query, showType: props.type, results: infiniteQuery.shows.length })
   );
 

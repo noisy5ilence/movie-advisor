@@ -52,6 +52,10 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
 
   const isSeries = show.type === 'tv';
 
+  // Toloka's search is a plain "contains" word-AND match with no IMDB filter, so
+  // scope the query by the show's year to keep, e.g., "Dune" (2021) away from "Dune: Part Two" (2024).
+  const tolokaQuery = query && Number.isFinite(year) ? `${query} ${year}` : query;
+
   const tracked = { id: show.id, type: show.type, title: show.title };
 
   const yts = useTorrents({
@@ -71,7 +75,7 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
     show: tracked
   });
   const tlk = useTorrents({
-    query,
+    query: tolokaQuery,
     queryFn: providers.tlk.queryFn,
     sort,
     key: providers.tlk.key,

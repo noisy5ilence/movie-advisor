@@ -49,7 +49,9 @@ export const getMagnetHash = (link: string) => {
 };
 
 export const torrentKey = (torrent: Torrent) =>
-  torrent.download || getMagnetHash(torrent.magnet) || torrent.hash || torrent.id;
+  torrent.download
+    ? torrent.download.replace(/[?&]sid=[^&]*/, '')
+    : getMagnetHash(torrent.magnet) || torrent.hash || torrent.id;
 
 export const parseSeasonEpisode = (value?: string): { season?: number; episode?: number } => {
   const [, season, episode] =
