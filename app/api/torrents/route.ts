@@ -13,11 +13,12 @@ export async function GET({ nextUrl: { searchParams } }: NextRequest) {
   const imdbID = searchParams.get('imdbID') as string;
   const query = searchParams.get('query') as string;
   const sort = searchParams.get('sort') as Sort;
+  const type = searchParams.get('type') as 'movie' | 'tv' | null;
 
   const providers = { yts, tpb, tlk };
 
   try {
-    const torrents = await providers[key].search({ imdbID, query, sort });
+    const torrents = await providers[key].search({ imdbID, query, sort, type: type ?? undefined });
 
     return NextResponse.json(torrents.filter((torrent) => torrent.seeders >= MIN_SEEDERS));
   } catch (_) {

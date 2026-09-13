@@ -1,9 +1,11 @@
 import { Sort } from '@/data/parsers';
 
-type Options = { query: string; sort: Sort; imdbID: string };
+type Options = { query: string; sort: Sort; imdbID: string; type?: 'movie' | 'tv' };
 
-const queryFn = ({ query, sort, imdbID, key }: Options & { key: keyof typeof providers }) =>
-  fetch(`/api/torrents?key=${key}&query=${query}&sort=${sort}&imdbID=${imdbID}`).then((response) => response.json());
+const queryFn = ({ query, sort, imdbID, type, key }: Options & { key: keyof typeof providers }) =>
+  fetch(`/api/torrents?key=${key}&query=${query}&sort=${sort}&imdbID=${imdbID}&type=${type ?? ''}`).then((response) =>
+    response.json()
+  );
 
 export const providers = {
   yts: {

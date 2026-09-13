@@ -52,9 +52,10 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
 
   const isSeries = show.type === 'tv';
 
-  // Toloka's search is a plain "contains" word-AND match with no IMDB filter, so
-  // scope the query by the show's year to keep, e.g., "Dune" (2021) away from "Dune: Part Two" (2024).
-  const tolokaQuery = query && Number.isFinite(year) ? `${query} ${year}` : query;
+  // Toloka's search is a plain "contains" word-AND match with no IMDB filter. For movies,
+  // scope the query by the show's year to keep, e.g., "Dune" (2021) away from "Dune: Part Two" (2024);
+  // for series the TV sections do the disambiguation and a year suffix would hide other seasons.
+  const tolokaQuery = isSeries ? query : query && Number.isFinite(year) ? `${query} ${year}` : query;
 
   const tracked = { id: show.id, type: show.type, title: show.title };
 
@@ -64,6 +65,7 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
     sort,
     key: providers.yts.key,
     imdbID: show.imdb_id!,
+    type: show.type,
     show: tracked
   });
   const tpb = useTorrents({
@@ -72,6 +74,7 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
     sort,
     key: providers.tpb.key,
     imdbID: show.imdb_id!,
+    type: show.type,
     show: tracked
   });
   const tlk = useTorrents({
@@ -80,6 +83,7 @@ const showTorrentsModal = create(({ onResolve, ...show }: Props) => {
     sort,
     key: providers.tlk.key,
     imdbID: show.imdb_id!,
+    type: show.type,
     show: tracked
   });
 

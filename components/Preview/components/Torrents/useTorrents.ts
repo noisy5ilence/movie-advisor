@@ -8,6 +8,7 @@ const useTorrents = ({
   query,
   sort,
   imdbID,
+  type,
   key,
   queryFn,
   show
@@ -16,13 +17,14 @@ const useTorrents = ({
   query: string;
   sort: Sort;
   imdbID: string;
+  type?: Show['type'];
   show: { id: Show['id']; type: Show['type']; title: Show['title'] };
-  queryFn: (params: { query: string; sort: Sort; imdbID: string }) => Promise<Torrent[]>;
+  queryFn: (params: { query: string; sort: Sort; imdbID: string; type?: Show['type'] }) => Promise<Torrent[]>;
 }) => {
   const result = useQuery({
     enabled: Boolean(query),
-    queryKey: [key, query, sort, imdbID],
-    queryFn: () => queryFn({ query, sort, imdbID })
+    queryKey: [key, query, sort, imdbID, type],
+    queryFn: () => queryFn({ query, sort, imdbID, type })
   });
 
   useTrackOnce(analytics.torrentsSearched, result.data ? `${key}:${query}` : undefined, () => ({

@@ -13,6 +13,13 @@ import { parseTolokaTitle } from './title';
 
 const COOKIE_JAR_KEY = 'toloka:cookie-jar';
 
+type ShowType = 'movie' | 'tv';
+
+// Section ids for the `f[]` search filter: the movie/TV sets keep releases of the
+// other media type (and non-video sections) out of the results.
+const MOVIE_SECTIONS = [16, 42, 55, 70, 96, 129];
+const TV_SECTIONS = [32, 124, 173, 192];
+
 const redisWarn = (message: string, error: unknown) =>
   console.warn(message, error instanceof Error ? error.message.split(', command was:')[0] : error);
 
@@ -95,10 +102,19 @@ export class Toloka {
     await this.persist();
   }
 
-  async search({ query, sort = Sort.size }: { query: string; sort?: Sort }): Promise<Torrent[]> {
-    await this.hydrate();
+  private buildSearchUrl(query: string, sections: number[], sort: Sort) {
+    const params = new URLSearchParams();
 
-    const fetchPage = () => this.client.get(`/tracker.php?o=${this.sort[sort]}&nm=${query}`);
+    params.append('o', this.sort[sort].toString());
+    params.append('nm', query);
+
+    for (const section of sections) params.append('f[]', section.toString());
+
+    return `/tracker.php?${params.toString()}`;
+  }
+
+  private async runSearch(url: string): Promise<Torrent[]> {
+    const fetchPage = () => this.client.get(url);
 
     const parseTorrents = (data: string) => {
       const $ = load(data);
@@ -141,6 +157,24 @@ export class Toloka {
     page = await fetchPage();
 
     return parseTorrents(page.data);
+  }
+
+  async search({ query, sort = Sort.size, type }: { query: string; sort?: Sort; type?: ShowType }): Promise<Torrent[]> {
+    await this.hydrate();
+
+    const sections = type === 'tv' ? TV_SECTIONS : type === 'movie' ? MOVIE_SECTIONS : [];
+
+    const search = (searchQuery: string) => this.runSearch(this.buildSearchUrl(searchQuery, sections, sort));
+
+    const torrents = await search(query);
+
+    if (torrents.length) return torrents;
+
+    // The query is scoped by the show's year to disambiguate sequels, but the TMDB
+    // release year can differ from the year in release names, so fall back to the bare title.
+    const fallback = query.replace(/\s\d{4}$/, '');
+
+    return fallback === query ? torrents : search(fallback);
   }
 
   async magnet(url: string) {
