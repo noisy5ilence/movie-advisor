@@ -1,9 +1,10 @@
 'use client';
 
 import { FC } from 'react';
+import { useAtomValue } from 'jotai';
 
 import List from '@/components/List';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { showTypeAtom } from '@/components/ShowTypeToggle';
 import useUsersShows from '@/hooks/useUsersShows';
 
 interface Props {
@@ -13,36 +14,18 @@ interface Props {
 }
 
 const UsersList: FC<Props> = ({ list, label, session }) => {
-  const movies = useUsersShows({ list, showType: 'movie', session, mode: 'default' });
-  const series = useUsersShows({ list, showType: 'tv', session, mode: 'default' });
+  const showType = useAtomValue(showTypeAtom);
+  const { shows, fetchNextPage, isFetched } = useUsersShows({ list, showType, session, mode: 'default' });
 
-  const tabs = [
-    { query: movies, title: 'Movies', key: 'movie' as const },
-    { query: series, title: 'Series', key: 'tv' as const }
-  ];
+  if (isFetched && !shows.length) {
+    return (
+      <div className='flex h-40 w-full items-center justify-center text-center text-xl text-muted-foreground'>
+        There are no {showType === 'tv' ? 'series' : 'movies'} in your {label}
+      </div>
+    );
+  }
 
-  return (
-    <Tabs defaultValue='movie' className='flex w-full flex-col items-center'>
-      <TabsList className='grid w-full grid-cols-2'>
-        {tabs.map(({ title, key }) => (
-          <TabsTrigger key={key} value={key}>
-            {title}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-      {tabs.map(({ query, key, title }) => (
-        <TabsContent key={key} value={key} className='w-full'>
-          {query.isFetched && !query.shows.length ? (
-            <div className='flex h-40 w-full items-center justify-center text-center text-xl text-muted-foreground'>
-              There are no {title.toLowerCase()} in your {label}
-            </div>
-          ) : (
-            <List shows={query.shows} fetchNextPage={query.fetchNextPage} />
-          )}
-        </TabsContent>
-      ))}
-    </Tabs>
-  );
+  return <List shows={shows} fetchNextPage={fetchNextPage} />;
 };
 
 export default UsersList;

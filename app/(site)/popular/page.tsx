@@ -6,34 +6,49 @@ import popularQuery from '@/data/queries/popular';
 import { TITLE } from '@/env';
 import { itemList } from '@/lib/jsonLd';
 import getQueryClient from '@/lib/queryClient';
+import { parseShowType } from '@/lib/showType';
 
 import Container from './container';
 
-const HEADING = 'Popular Movies';
+interface SearchParams {
+  type?: string;
+}
 
-const DESCRIPTION = `Check out the most popular movies right now on ${TITLE}. See what’s trending and don’t miss out on the latest hits.`;
+const heading = (type: Show['type']) => (type === 'tv' ? 'Popular Series' : 'Popular Movies');
 
-export const metadata: Metadata = {
-  title: `${HEADING} | ${TITLE}`,
-  description: DESCRIPTION,
-  alternates: { canonical: '/popular' },
-  openGraph: {
-    type: 'website',
-    siteName: TITLE,
-    title: HEADING,
-    description: DESCRIPTION,
-    url: '/popular'
-  },
-  twitter: {
-    title: HEADING,
-    description: DESCRIPTION
-  }
+const description = (type: Show['type']) =>
+  type === 'tv'
+    ? `Check out the most popular series right now on ${TITLE}. See what’s trending and don’t miss out on the latest hits.`
+    : `Check out the most popular movies right now on ${TITLE}. See what’s trending and don’t miss out on the latest hits.`;
+
+export const generateMetadata = ({ searchParams }: { searchParams: SearchParams }): Metadata => {
+  const type = parseShowType(searchParams.type);
+  const title = heading(type);
+  const text = description(type);
+
+  return {
+    title: `${title} | ${TITLE}`,
+    description: text,
+    alternates: { canonical: '/popular' },
+    openGraph: {
+      type: 'website',
+      siteName: TITLE,
+      title,
+      description: text,
+      url: '/popular'
+    },
+    twitter: {
+      title,
+      description: text
+    }
+  };
 };
 
-const Popular = async () => {
+const Popular = async ({ searchParams }: { searchParams: SearchParams }) => {
   const queryClient = getQueryClient();
 
-  const query = popularQuery();
+  const type = parseShowType(searchParams.type);
+  const query = popularQuery({ type });
 
   await queryClient.prefetchInfiniteQuery(query);
 
@@ -44,7 +59,7 @@ const Popular = async () => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       {Boolean(shows?.length) && <JsonLd data={itemList(shows!)} />}
-      <h1 className='sr-only'>{HEADING}</h1>
+      <h1 className='sr-only'>{heading(type)}</h1>
       <Container />
     </HydrationBoundary>
   );

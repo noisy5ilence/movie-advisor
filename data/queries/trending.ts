@@ -2,14 +2,34 @@ import movieAdvisor from '../clients/movieAdvisor';
 import mapMoviesSeriesResponseToShows from '../dto/Show';
 
 export type TrendingQueryProps = {
-  type: 'trending' | 'streaming' | 'theater';
+  type: 'trending' | 'streaming' | 'theater' | 'apple' | 'netflix' | 'hbo';
   enabled?: boolean;
+};
+
+const TV_WATCH_PROVIDERS: Partial<Record<TrendingQueryProps['type'], number>> = {
+  apple: 350,
+  netflix: 8,
+  hbo: 1899
 };
 
 const trendingQuery = ({ type, enabled }: TrendingQueryProps) => ({
   enabled,
   queryKey: ['trending', `type-${type}`],
   queryFn: () => {
+    const provider = TV_WATCH_PROVIDERS[type];
+
+    if (provider) {
+      return movieAdvisor
+        .get<TMDBPagination<Series>>('/discover/tv', {
+          params: {
+            watch_region: 'US',
+            with_watch_monetization_types: 'flatrate',
+            with_watch_providers: provider
+          }
+        })
+        .then((response) => mapMoviesSeriesResponseToShows(response, 'tv').results);
+    }
+
     const params: Record<string, string | number> = {};
 
     if (type !== 'trending') {

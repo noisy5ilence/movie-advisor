@@ -3,14 +3,15 @@ import mapMoviesSeriesResponseToShows from '../dto/Show';
 
 export type PopularQueryProps = {
   sortBy?: string;
+  type?: Show['type'];
 };
 
-const popularQuery = ({ sortBy = 'popularity.desc' }: PopularQueryProps = {}) => ({
-  queryKey: ['popular', sortBy],
+const popularQuery = ({ sortBy = 'popularity.desc', type = 'movie' }: PopularQueryProps = {}) => ({
+  queryKey: ['popular', type, sortBy],
   initialPageParam: '1',
   queryFn: ({ pageParam = '1' }: { pageParam?: string }) =>
     movieAdvisor
-      .get<TMDBPagination<Movie>>('/discover/movie', {
+      .get<TMDBPagination<Movie> | TMDBPagination<Series>>(`/discover/${type}`, {
         params: {
           page: pageParam,
           sort_by: sortBy,
@@ -19,7 +20,7 @@ const popularQuery = ({ sortBy = 'popularity.desc' }: PopularQueryProps = {}) =>
           'vote_average.gte': 5
         }
       })
-      .then(mapMoviesSeriesResponseToShows)
+      .then((response) => mapMoviesSeriesResponseToShows(response, type))
 });
 
 export default popularQuery;

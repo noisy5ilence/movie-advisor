@@ -20,3 +20,26 @@ export const tabs = [
     type: 'recommendations'
   }
 ];
+
+export const seriesTabs = [
+  {
+    title: 'Apple',
+    type: 'apple'
+  },
+  {
+    title: 'Netflix',
+    type: 'netflix'
+  },
+  {
+    title: 'HBO',
+    type: 'hbo'
+  },
+  {
+    title: 'Similar',
+    type: 'similar'
+  },
+  {
+    title: 'Recommendations',
+    type: 'recommendations'
+  }
+];

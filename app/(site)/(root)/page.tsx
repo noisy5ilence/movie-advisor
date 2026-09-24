@@ -6,30 +6,36 @@ import JsonLd from '@/components/JsonLd';
 import randomQuery, { generatePage } from '@/data/queries/random';
 import { SITE_URL, TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
+import { parseShowType } from '@/lib/showType';
 
 import Container from './container';
+
+interface SearchParams {
+  type?: string;
+}
 
 export const metadata: Metadata = {
   alternates: { canonical: '/' }
 };
 
-const Random = async () => {
+const Random = async ({ searchParams }: { searchParams: SearchParams }) => {
   const queryClient = getQueryClient();
 
-  const page = generatePage();
+  const type = parseShowType(searchParams.type);
+  const page = generatePage(type);
 
-  await queryClient.prefetchInfiniteQuery(randomQuery({ page }));
+  await queryClient.prefetchInfiniteQuery(randomQuery({ page, type }));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <JsonLd data={{ '@context': 'https://schema.org', '@type': 'WebSite', name: TITLE, url: SITE_URL }} />
       <h1 className='sr-only'>{TITLE} — Discover Your Next Favorite Movie</h1>
-      <Container page={page} />
+      <Container page={page} type={type} />
       <section className='sr-only'>
         <h2>Discover your next favorite movie</h2>
         <p>
-          {TITLE} helps you decide what to watch: spin through random movie recommendations right on this page, browse
-          the{' '}
+          {TITLE} helps you decide what to watch: spin through random movie and series recommendations right on this
+          page, browse the{' '}
           <Link className='underline underline-offset-2' href='/popular'>
             most popular movies
           </Link>{' '}

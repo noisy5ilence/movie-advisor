@@ -2,14 +2,15 @@
 
 import { ChangeEvent, MutableRefObject, useRef, useState } from 'react';
 import { create } from 'react-modal-promise';
+import { useAtomValue } from 'jotai';
 import { Search as SearchIcon, X } from 'lucide-react';
 
 import List from '@/components/List';
+import { showTypeAtom } from '@/components/ShowTypeToggle';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useDistinctUntilChanged from '@/hooks/useDistinctUntilChanged';
 
 import useSearch from './useSearch';
@@ -19,13 +20,13 @@ export const showSearchModal = create(({ onResolve }) => {
   const scrollRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement>;
   const inputRef = useRef<HTMLInputElement>(null);
   const isFetchedRef = useRef(false);
+  const showType = useAtomValue(showTypeAtom);
 
   const query = useDistinctUntilChanged(title);
   const settledTitle = useDistinctUntilChanged(title, 1000);
   const settled = title === settledTitle;
 
-  const movies = useSearch({ query, type: 'movie', settled });
-  const series = useSearch({ query, type: 'tv', settled });
+  const search = useSearch({ query, type: showType, settled });
 
   const handleChangeTitle = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => setTitle(value);
 
@@ -34,12 +35,7 @@ export const showSearchModal = create(({ onResolve }) => {
     inputRef.current?.focus();
   };
 
-  const tabs = [
-    { title: 'Movies', data: movies, type: 'movie' as const },
-    { title: 'Series', data: series, type: 'tv' as const }
-  ].filter(({ data: { shows } }) => shows.length);
-
-  if (!isFetchedRef.current && movies.isFetched && series.isFetched) {
+  if (!isFetchedRef.current && search.isFetched) {
     isFetchedRef.current = true;
   }
 
@@ -69,39 +65,14 @@ export const showSearchModal = create(({ onResolve }) => {
           </Button>
         </ButtonsGroup>
       </div>
-      {isFetchedRef.current && (
+      {isFetchedRef.current && search.shows.length > 0 && (
         <div className='px-2'>
-          {tabs.length > 1 ? (
-            <Tabs defaultValue='movie'>
-              <TabsList className='grid w-full grid-cols-2'>
-                {tabs.map(({ type, title }) => (
-                  <TabsTrigger key={type} value={type}>
-                    {title}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              {tabs.map(({ data: { shows, fetchNextPage }, type }) => (
-                <TabsContent value={type} key={type}>
-                  <List
-                    shows={shows}
-                    customScrollParent={scrollRef.current}
-                    fetchNextPage={fetchNextPage}
-                    onPreviewClose={onResolve}
-                  />
-                </TabsContent>
-              ))}
-            </Tabs>
-          ) : (
-            tabs.map(({ data: { shows, fetchNextPage }, type }) => (
-              <List
-                key={type}
-                shows={shows}
-                customScrollParent={scrollRef.current}
-                fetchNextPage={fetchNextPage}
-                onPreviewClose={onResolve}
-              />
-            ))
-          )}
+          <List
+            shows={search.shows}
+            customScrollParent={scrollRef.current}
+            fetchNextPage={search.fetchNextPage}
+            onPreviewClose={onResolve}
+          />
         </div>
       )}
     </Modal>

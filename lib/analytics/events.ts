@@ -7,6 +7,7 @@ export type AnalyticsEvents = {
   person_viewed: { personId: string; personName: string };
   list_loaded_more: { list: ListName; page: number };
   random_shuffled: { index: number; showTitle: string };
+  random_type_changed: { type: Show['type'] };
 
   search_performed: { query: string; showType: Show['type']; results: number };
   gallery_tab_changed: { tab: string };

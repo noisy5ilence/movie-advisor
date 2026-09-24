@@ -1,13 +1,13 @@
 'use client';
 
-import { FC, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 
 import useSimilar from '@/components/Trending/useSimilar';
 import Nav from '@/components/ui/nav';
 import analytics from '@/lib/analytics';
 
 import Gallery from './components/Gallery';
-import { tabs as initialTabs } from './constants';
+import { seriesTabs, tabs as movieTabs } from './constants';
 import useTrending from './useTrending';
 
 interface Props {
@@ -17,13 +17,28 @@ interface Props {
 }
 
 const Trending: FC<Props> = ({ showId, showType, preview }) => {
-  const tabs = preview ? initialTabs.filter(({ type }) => ['similar', 'recommendations'].includes(type)) : initialTabs;
+  const isSeries = showType === 'tv';
+
+  const tabs = useMemo(
+    () =>
+      (isSeries ? seriesTabs : movieTabs).filter(({ type }) =>
+        preview ? ['similar', 'recommendations'].includes(type) : true
+      ),
+    [isSeries, preview]
+  );
 
   const [active, setActive] = useState(tabs[0]);
 
-  const streaming = useTrending({ type: 'streaming', enabled: !preview });
+  useEffect(() => {
+    setActive(tabs[0]);
+  }, [tabs]);
+
+  const streaming = useTrending({ type: 'streaming', enabled: !preview && !isSeries });
   const trending = useTrending({ type: 'trending', enabled: active.type === 'trending' });
   const theater = useTrending({ type: 'theater', enabled: active.type === 'theater' });
+  const apple = useTrending({ type: 'apple', enabled: isSeries && !preview });
+  const netflix = useTrending({ type: 'netflix', enabled: isSeries && active.type === 'netflix' });
+  const hbo = useTrending({ type: 'hbo', enabled: isSeries && active.type === 'hbo' });
   const similar = useSimilar({
     showId,
     showType,
@@ -37,10 +52,10 @@ const Trending: FC<Props> = ({ showId, showType, preview }) => {
     enabled: active.type === 'recommendations'
   });
 
-  const tab = { trending, streaming, theater, similar, recommendations }[active.type]!;
+  const tab = { streaming, trending, theater, apple, netflix, hbo, similar, recommendations }[active.type]!;
 
   return (
-    (streaming.isFetched || similar.isFetched) && (
+    (streaming.isFetched || apple.isFetched || similar.isFetched) && (
       <div className='hidden md:block'>
         <Nav
           tabs={tabs}

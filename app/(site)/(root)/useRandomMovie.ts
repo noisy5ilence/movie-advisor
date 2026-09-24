@@ -1,6 +1,6 @@
 'use client';
 
-import { startTransition, useCallback, useRef } from 'react';
+import { startTransition, useCallback, useEffect, useRef } from 'react';
 import { atom, getDefaultStore, useAtom } from 'jotai';
 
 import randomQuery from '@/data/queries/random';
@@ -13,32 +13,38 @@ export const useSilentIndex = () => getDefaultStore().get(indexAtom);
 
 interface Props {
   page: number;
+  type: Show['type'];
 }
 
-const useRandomMovie = ({ page }: Props) => {
+const useRandomMovie = ({ page, type }: Props) => {
   const [index, setIndex] = useAtom(indexAtom);
 
-  const { shows: movies, fetchNextPage } = useInfiniteList({
-    ...randomQuery({ page }),
+  useEffect(() => {
+    setIndex(0);
+  }, [type, setIndex]);
+
+  const { shows, fetchNextPage, isLoading } = useInfiniteList({
+    ...randomQuery({ page, type }),
     mode: 'default',
     list: 'random'
   });
 
-  const moviesRef = useRef(movies);
+  const showsRef = useRef(shows);
 
-  moviesRef.current = movies;
+  showsRef.current = shows;
 
-  if (movies.length && !movies[index]) {
+  if (shows.length && !shows[index]) {
     setIndex(0);
   }
 
   return {
-    movie: movies[index],
-    movies,
+    show: shows[index],
+    shows,
+    isLoading,
     fetchNextPage,
     onIndexChange: useCallback(
       (index: number) => {
-        analytics.randomShuffled({ index, showTitle: moviesRef.current[index]?.title ?? '' });
+        analytics.randomShuffled({ index, showTitle: showsRef.current[index]?.title ?? '' });
         startTransition(() => setIndex(index));
       },
       [setIndex]

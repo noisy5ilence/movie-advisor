@@ -30,7 +30,7 @@ const Hint: FC<Props> = ({ lines, children, className }) => {
         role='tooltip'
         aria-hidden={!open}
         className={cn(
-          'pointer-events-none absolute left-1/2 top-full z-10 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md border bg-popover px-2 py-1 text-xs text-popover-foreground shadow-md transition-opacity',
+          'pointer-events-none absolute left-0 top-full z-10 mt-1.5 whitespace-nowrap rounded-md border bg-popover px-2 py-1 text-xs text-popover-foreground shadow-md transition-opacity md:left-1/2 md:-translate-x-1/2',
           open ? 'opacity-100' : 'opacity-0'
         )}
       >
