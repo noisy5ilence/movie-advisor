@@ -39,6 +39,7 @@ const Trending: FC<Props> = ({ showId, showType, preview }) => {
   const apple = useTrending({ type: 'apple', enabled: isSeries && !preview });
   const netflix = useTrending({ type: 'netflix', enabled: isSeries && active.type === 'netflix' });
   const hbo = useTrending({ type: 'hbo', enabled: isSeries && active.type === 'hbo' });
+  const amazon = useTrending({ type: 'amazon', enabled: isSeries && active.type === 'amazon' });
   const similar = useSimilar({
     showId,
     showType,
@@ -52,7 +53,17 @@ const Trending: FC<Props> = ({ showId, showType, preview }) => {
     enabled: active.type === 'recommendations'
   });
 
-  const tab = { streaming, trending, theater, apple, netflix, hbo, similar, recommendations }[active.type]!;
+  const tab = {
+    streaming,
+    trending,
+    theater,
+    apple,
+    netflix,
+    hbo,
+    amazon,
+    similar,
+    recommendations
+  }[active.type]!;
 
   return (
     (streaming.isFetched || apple.isFetched || similar.isFetched) && (

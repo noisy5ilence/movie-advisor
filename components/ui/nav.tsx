@@ -1,8 +1,8 @@
-import { FC, ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import { FC, Fragment, ReactNode, useLayoutEffect, useRef, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 
-type Tab = { title: string };
+type Tab = { title: string; divider?: boolean };
 
 type CursorProps = { left: number; width: number; opacity: number; onTransitionEnd: () => void };
 
@@ -36,23 +36,25 @@ function Nav<T extends Tab>({ tabs, active, className, children, onChange }: Nav
 
   return (
     <ul className={cn('relative hidden md:flex items-center whitespace-nowrap text-[13px] gap-3', className)}>
-      {tabs.map((tab) => {
+      {tabs.map((tab, index) => {
         const { title } = tab;
 
         const isActive = title === active?.title;
 
         return (
-          <li
-            key={title}
-            ref={isActive ? currentRef : undefined}
-            onClick={() => onChange?.(tab)}
-            className={cn('z-10 px-2.5 py-0.5 font-normal text-[15px] leading-[20px] cursor-pointer', {
-              'cursor-default text-secondary': isActive,
-              'mix-blend-difference text-white': active && !transitionEnded
-            })}
-          >
-            {children?.(tab) || <div>{title}</div>}
-          </li>
+          <Fragment key={title}>
+            {index > 0 && tab.divider && <span aria-hidden className='h-4 w-px shrink-0 bg-muted-foreground/40' />}
+            <li
+              ref={isActive ? currentRef : undefined}
+              onClick={() => onChange?.(tab)}
+              className={cn('z-10 px-2.5 py-0.5 font-normal text-[15px] leading-[20px] cursor-pointer', {
+                'cursor-default text-secondary': isActive,
+                'mix-blend-difference text-white': active && !transitionEnded
+              })}
+            >
+              {children?.(tab) || <div>{title}</div>}
+            </li>
+          </Fragment>
         );
       })}
       <Cursor {...cursor} onTransitionEnd={() => setTransitionEnded(true)} />

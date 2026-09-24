@@ -2,14 +2,15 @@ import movieAdvisor from '../clients/movieAdvisor';
 import mapMoviesSeriesResponseToShows from '../dto/Show';
 
 export type TrendingQueryProps = {
-  type: 'trending' | 'streaming' | 'theater' | 'apple' | 'netflix' | 'hbo';
+  type: 'trending' | 'streaming' | 'theater' | 'apple' | 'netflix' | 'hbo' | 'amazon';
   enabled?: boolean;
 };
 
 const TV_WATCH_PROVIDERS: Partial<Record<TrendingQueryProps['type'], number>> = {
   apple: 350,
   netflix: 8,
-  hbo: 1899
+  hbo: 1899,
+  amazon: 9
 };
 
 const trendingQuery = ({ type, enabled }: TrendingQueryProps) => ({

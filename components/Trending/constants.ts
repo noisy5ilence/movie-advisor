@@ -13,7 +13,8 @@ export const tabs = [
   },
   {
     title: 'Similar',
-    type: 'similar'
+    type: 'similar',
+    divider: true
   },
   {
     title: 'Recommendations',
@@ -35,8 +36,13 @@ export const seriesTabs = [
     type: 'hbo'
   },
   {
+    title: 'Amazon',
+    type: 'amazon'
+  },
+  {
     title: 'Similar',
-    type: 'similar'
+    type: 'similar',
+    divider: true
   },
   {
     title: 'Recommendations',

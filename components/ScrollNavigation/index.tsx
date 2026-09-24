@@ -33,6 +33,9 @@ function ScrollNavigation<E extends HTMLElement>({
   children
 }: Props<E>) {
   const [scrollElement, setScrollElement] = useState<E | null>(null);
+  const scrollElementRef = useRef<E | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isArrowHoveredRef = useRef(false);
   const onEndReachedRef = useRef(onEndReached);
   const endReachedFiredRef = useRef(false);
 
@@ -42,6 +45,10 @@ function ScrollNavigation<E extends HTMLElement>({
   const [isShowNext, setIsShowNext] = useState(true);
 
   const [isArrowHovered, setIsArrowHovered] = useState(false);
+
+  useEffect(() => {
+    scrollElementRef.current = scrollElement;
+  }, [scrollElement]);
 
   const [childWidth, setChildWidth] = useState(0);
 
@@ -92,6 +99,65 @@ function ScrollNavigation<E extends HTMLElement>({
     };
   }, [scrollElement, initialSlideWidth]);
 
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) return;
+
+    let accumulated = 0;
+
+    const handleWheel = (event: WheelEvent) => {
+      if (!isArrowHoveredRef.current) return;
+
+      const element = scrollElementRef.current;
+
+      if (!element) return;
+
+      const delta = event.deltaY;
+
+      if (!delta) return;
+
+      const atStart = element.scrollLeft <= 0;
+      const atEnd = element.scrollLeft + element.clientWidth >= element.scrollWidth - 1;
+
+      if ((delta > 0 && atEnd) || (delta < 0 && atStart)) {
+        accumulated = 0;
+        return;
+      }
+
+      event.preventDefault();
+
+      if (accumulated * delta < 0) accumulated = 0;
+
+      accumulated += delta;
+
+      const first = element.querySelector('.snap-start') as HTMLElement | null;
+
+      if (!first) return;
+
+      const second = first.nextElementSibling as HTMLElement | null;
+      const step = second ? second.offsetLeft - first.offsetLeft : first.clientWidth + gap;
+
+      if (!step || Math.abs(accumulated) < step / 2) return;
+
+      const index = Math.round(element.scrollLeft / step);
+      const direction = accumulated > 0 ? 1 : -1;
+
+      accumulated = 0;
+
+      element.scrollTo({
+        left: (index + direction) * step,
+        behavior: 'smooth'
+      });
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, [gap]);
+
   const handleScrollNext = (direction: 1 | -1) => () => {
     if (!scrollElement) return;
 
@@ -102,7 +168,7 @@ function ScrollNavigation<E extends HTMLElement>({
   };
 
   return (
-    <div className={cn('relative group', className)}>
+    <div ref={containerRef} className={cn('relative group', className)}>
       {children({ setScrollElement, isArrowHovered })}
       {[
         {
@@ -127,8 +193,14 @@ function ScrollNavigation<E extends HTMLElement>({
         <div
           key={className}
           onClick={handleScroll}
-          onMouseEnter={() => setIsArrowHovered(true)}
-          onMouseLeave={() => setIsArrowHovered(false)}
+          onMouseEnter={() => {
+            isArrowHoveredRef.current = true;
+            setIsArrowHovered(true);
+          }}
+          onMouseLeave={() => {
+            isArrowHoveredRef.current = false;
+            setIsArrowHovered(false);
+          }}
           className={cn(
             'opacity-0 hover-none:hidden hover-none:pointer-events-none transition-opacity absolute top-1/2 transform -translate-y-1/2 bg-gradient-to-r h-full w-14 flex items-center cursor-pointer',
             {
