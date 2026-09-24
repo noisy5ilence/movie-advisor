@@ -66,7 +66,7 @@ const Trending: FC<Props> = ({ showId, showType, preview }) => {
           }}
           className='mb-3'
         />
-        {!tab.isPending && <Gallery key={active.type} shows={tab.data || []} />}
+        {tab.isFetched && <Gallery key={active.type} shows={tab.shows} onEndReached={tab.fetchNextPage} />}
       </div>
     )
   );

@@ -9,10 +9,11 @@ import { showPath } from '@/lib/utils';
 
 interface Props {
   shows: Show[];
+  onEndReached?: () => void;
 }
 
-const Gallery: FC<Props> = ({ shows }) => (
-  <ScrollNavigation<HTMLUListElement>>
+const Gallery: FC<Props> = ({ shows, onEndReached }) => (
+  <ScrollNavigation<HTMLUListElement> onEndReached={onEndReached}>
     {({ setScrollElement }) => (
       <ul
         ref={setScrollElement}

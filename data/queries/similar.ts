@@ -9,14 +9,15 @@ export type SimilarQueryProps = {
 
 const similarQuery = ({ showId, showType, type }: SimilarQueryProps) => ({
   queryKey: [type, showId, showType],
-  queryFn: () =>
+  initialPageParam: '1',
+  queryFn: ({ pageParam = '1' }: { pageParam?: string }) =>
     movieAdvisor
       .get<TMDBPagination<Movie> | TMDBPagination<Series>>(`/${showType}/${showId}/${type}`, {
         params: {
-          page: 1
+          page: pageParam
         }
       })
-      .then((response) => mapMoviesSeriesResponseToShows(response, showType).results)
+      .then((response) => mapMoviesSeriesResponseToShows(response, showType))
 });
 
 export default similarQuery;

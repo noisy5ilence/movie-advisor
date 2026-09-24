@@ -69,7 +69,7 @@ export const createShowPage = (showType: Show['type']) => {
 
     if (decodeURIComponent(`/${showType}/${id}`) !== path) permanentRedirect(path);
 
-    await queryClient.prefetchQuery(similarQuery({ showId, showType, type: 'similar' }));
+    await queryClient.prefetchInfiniteQuery(similarQuery({ showId, showType, type: 'similar' }));
 
     const jsonLd = {
       '@context': 'https://schema.org',

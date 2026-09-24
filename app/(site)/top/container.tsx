@@ -1,12 +1,14 @@
 'use client';
 
+import { FC } from 'react';
+
 import List from '@/components/List';
 import NoResults from '@/components/NoResults';
 
 import useTop from './useTop';
 
-const Container = () => {
-  const { shows, fetchNextPage, isFetched } = useTop();
+const Container: FC<{ type: Show['type'] }> = ({ type }) => {
+  const { shows, fetchNextPage, isFetched } = useTop(type);
 
   if (isFetched && !shows.length) return <NoResults />;
 

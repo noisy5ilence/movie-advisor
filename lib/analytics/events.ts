@@ -1,6 +1,15 @@
 type ShowRef = { showId: Show['id']; showType: Show['type']; showTitle: string };
 
-export type ListName = 'popular' | 'top' | 'search' | 'favorite' | 'watchlist' | 'random';
+export type ListName =
+  | 'popular'
+  | 'top'
+  | 'search'
+  | 'favorite'
+  | 'watchlist'
+  | 'random'
+  | 'trending'
+  | 'similar'
+  | 'recommendations';
 
 export type AnalyticsEvents = {
   show_viewed: ShowRef & { surface: 'page' | 'modal' };

@@ -2,16 +2,16 @@
 
 import { ChangeEvent, MutableRefObject, useRef, useState } from 'react';
 import { create } from 'react-modal-promise';
-import { useAtomValue } from 'jotai';
 import { Search as SearchIcon, X } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 import List from '@/components/List';
-import { showTypeAtom } from '@/components/ShowTypeToggle';
 import { Button } from '@/components/ui/button';
 import ButtonsGroup from '@/components/ui/buttons-group';
 import { Modal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import useDistinctUntilChanged from '@/hooks/useDistinctUntilChanged';
+import { showTypeFromPath } from '@/lib/showType';
 
 import useSearch from './useSearch';
 
@@ -20,7 +20,7 @@ export const showSearchModal = create(({ onResolve }) => {
   const scrollRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement>;
   const inputRef = useRef<HTMLInputElement>(null);
   const isFetchedRef = useRef(false);
-  const showType = useAtomValue(showTypeAtom);
+  const showType = showTypeFromPath(usePathname());
 
   const query = useDistinctUntilChanged(title);
   const settledTitle = useDistinctUntilChanged(title, 1000);

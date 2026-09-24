@@ -1,12 +1,12 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 import JsonLd from '@/components/JsonLd';
 import randomQuery, { generatePage } from '@/data/queries/random';
 import { SITE_URL, TITLE } from '@/env';
 import getQueryClient from '@/lib/queryClient';
-import { parseShowType } from '@/lib/showType';
 
 import Container from './container';
 
@@ -19,18 +19,19 @@ export const metadata: Metadata = {
 };
 
 const Random = async ({ searchParams }: { searchParams: SearchParams }) => {
+  if (searchParams.type === 'tv') redirect('/series');
+
   const queryClient = getQueryClient();
 
-  const type = parseShowType(searchParams.type);
-  const page = generatePage(type);
+  const page = generatePage('movie');
 
-  await queryClient.prefetchInfiniteQuery(randomQuery({ page, type }));
+  await queryClient.prefetchInfiniteQuery(randomQuery({ page, type: 'movie' }));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <JsonLd data={{ '@context': 'https://schema.org', '@type': 'WebSite', name: TITLE, url: SITE_URL }} />
       <h1 className='sr-only'>{TITLE} — Discover Your Next Favorite Movie</h1>
-      <Container page={page} type={type} />
+      <Container page={page} type='movie' />
       <section className='sr-only'>
         <h2>Discover your next favorite movie</h2>
         <p>

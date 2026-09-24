@@ -15,22 +15,26 @@ const TV_WATCH_PROVIDERS: Partial<Record<TrendingQueryProps['type'], number>> = 
 const trendingQuery = ({ type, enabled }: TrendingQueryProps) => ({
   enabled,
   queryKey: ['trending', `type-${type}`],
-  queryFn: () => {
+  initialPageParam: '1',
+  queryFn: ({ pageParam = '1' }: { pageParam?: string }) => {
     const provider = TV_WATCH_PROVIDERS[type];
 
     if (provider) {
       return movieAdvisor
         .get<TMDBPagination<Series>>('/discover/tv', {
           params: {
+            page: pageParam,
             watch_region: 'US',
             with_watch_monetization_types: 'flatrate',
             with_watch_providers: provider
           }
         })
-        .then((response) => mapMoviesSeriesResponseToShows(response, 'tv').results);
+        .then((response) => mapMoviesSeriesResponseToShows(response, 'tv'));
     }
 
-    const params: Record<string, string | number> = {};
+    const params: Record<string, string | number> = {
+      page: pageParam
+    };
 
     if (type !== 'trending') {
       params['watch_region'] = 'US';
@@ -48,11 +52,7 @@ const trendingQuery = ({ type, enabled }: TrendingQueryProps) => ({
       .get<TMDBPagination<Movie>>(type === 'trending' ? '/trending/movie/day' : '/discover/movie', {
         params
       })
-      .then((response) => {
-        const data = mapMoviesSeriesResponseToShows(response);
-
-        return data.results;
-      });
+      .then((response) => mapMoviesSeriesResponseToShows(response));
   }
 });
 

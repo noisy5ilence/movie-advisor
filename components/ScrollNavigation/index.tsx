@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -11,6 +11,7 @@ interface Props<E extends HTMLElement> {
   iconClassName?: string;
   slideWidth?: number;
   gap?: number;
+  onEndReached?: () => void;
   children: ({
     setScrollElement,
     isArrowHovered
@@ -28,9 +29,14 @@ function ScrollNavigation<E extends HTMLElement>({
   iconClassName,
   slideWidth: initialSlideWidth,
   gap = 0,
+  onEndReached,
   children
 }: Props<E>) {
   const [scrollElement, setScrollElement] = useState<E | null>(null);
+  const onEndReachedRef = useRef(onEndReached);
+  const endReachedFiredRef = useRef(false);
+
+  onEndReachedRef.current = onEndReached;
 
   const [isShowBack, setIsShowBack] = useState(true);
   const [isShowNext, setIsShowNext] = useState(true);
@@ -58,8 +64,22 @@ function ScrollNavigation<E extends HTMLElement>({
       const DELAY = 50;
 
       timeout = setTimeout(() => {
+        const remaining = scrollElement.scrollWidth - (scrollElement.clientWidth + scrollElement.scrollLeft);
+
         setIsShowBack(Boolean(scrollElement.scrollLeft));
-        setIsShowNext(Boolean(scrollElement.scrollWidth - (scrollElement.clientWidth + scrollElement.scrollLeft)));
+        setIsShowNext(Boolean(remaining));
+
+        if (onEndReachedRef.current) {
+          const slide = scrollElement.firstChild as HTMLElement;
+          const threshold = (slide?.clientWidth ?? 0) * 2 || 300;
+
+          if (remaining <= threshold && !endReachedFiredRef.current) {
+            endReachedFiredRef.current = true;
+            onEndReachedRef.current();
+          } else if (remaining > threshold) {
+            endReachedFiredRef.current = false;
+          }
+        }
       }, DELAY);
     };
 

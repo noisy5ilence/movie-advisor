@@ -1,16 +1,14 @@
 'use client';
 
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
-import { atom, useAtom } from 'jotai';
 import { Check, ChevronDown, Clapperboard, LucideIcon, Tv } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
 import analytics from '@/lib/analytics';
-import { parseShowType } from '@/lib/showType';
+import { showTypeFromPath, toShowTypePath } from '@/lib/showType';
 import { cn } from '@/lib/utils';
-
-export const showTypeAtom = atom<Show['type']>('movie');
 
 interface Option {
   value: Show['type'];
@@ -28,24 +26,17 @@ interface Props {
 }
 
 const ShowTypeToggle: FC<Props> = ({ className }) => {
-  const [value, setValue] = useAtom(showTypeAtom);
-
-  useEffect(() => {
-    const urlType = parseShowType(new URLSearchParams(window.location.search).get('type'));
-
-    if (urlType !== value) setValue(urlType);
-  }, [value, setValue]);
+  const router = useRouter();
+  const pathname = usePathname();
+  const value = showTypeFromPath(pathname);
 
   const current = options.find(({ value: optionValue }) => optionValue === value) ?? options[0];
 
   const handleChange = (next: Show['type']) => {
-    analytics.randomTypeChanged({ type: next });
-    setValue(next);
+    if (next === value) return;
 
-    const url = new URL(window.location.href);
-    if (next === 'tv') url.searchParams.set('type', 'tv');
-    else url.searchParams.delete('type');
-    window.history.replaceState(null, '', url);
+    analytics.randomTypeChanged({ type: next });
+    router.replace(toShowTypePath(pathname, next), { scroll: false });
   };
 
   return (
@@ -59,7 +50,7 @@ const ShowTypeToggle: FC<Props> = ({ className }) => {
           )}
         >
           <Link
-            href={value === 'tv' ? '/?type=tv' : '/'}
+            href={toShowTypePath('/', value)}
             onPointerDown={(event) => event.stopPropagation()}
             onClick={(event) => event.stopPropagation()}
             className='pl-2.5 pr-1.5 text-[15px] font-normal leading-[18px]'

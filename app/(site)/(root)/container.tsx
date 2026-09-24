@@ -1,13 +1,10 @@
 'use client';
 
-import { FC, useRef } from 'react';
-import { useAtom } from 'jotai';
+import { FC } from 'react';
 
 import Preview from '@/components/Preview';
-import { showTypeAtom } from '@/components/ShowTypeToggle';
 import Trending from '@/components/Trending';
 import { Skeleton } from '@/components/ui/skeleton';
-import { generatePage } from '@/data/queries/random';
 
 import Carousel from './components/Carousel';
 import useRandomMovie from './useRandomMovie';
@@ -18,20 +15,7 @@ interface Props {
 }
 
 const Container: FC<Props> = ({ page, type }) => {
-  const [showType] = useAtom(showTypeAtom);
-  const pagesRef = useRef<Record<Show['type'], number>>();
-
-  if (!pagesRef.current) {
-    pagesRef.current = {
-      movie: type === 'movie' ? page : generatePage('movie'),
-      tv: type === 'tv' ? page : generatePage('tv')
-    };
-  }
-
-  const { show, shows, onIndexChange, fetchNextPage, isLoading } = useRandomMovie({
-    page: pagesRef.current[showType],
-    type: showType
-  });
+  const { show, shows, onIndexChange, fetchNextPage } = useRandomMovie({ page, type });
 
   return (
     <div className='flex flex-1 flex-col'>
@@ -40,9 +24,7 @@ const Container: FC<Props> = ({ page, type }) => {
           <Preview
             show={show}
             className='rounded-md bg-background'
-            poster={
-              <Carousel key={showType} shows={shows} onIndexChange={onIndexChange} onEndReached={fetchNextPage} />
-            }
+            poster={<Carousel key={type} shows={shows} onIndexChange={onIndexChange} onEndReached={fetchNextPage} />}
           />
         ) : (
           <Skeleton className='card-aspect-ratio static-aspect-ratio mx-auto rounded-lg' />
