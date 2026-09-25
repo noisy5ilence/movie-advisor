@@ -159,3 +159,41 @@
   --plyr-video-control-color: white;
   --plyr-color-main: white;
 }
+
+/* The theme gives every :first-child controls item margin-right:auto, but our
+   menu buttons live in display:contents wrappers and are :first-child of
+   those, so they match too. Two auto margins split the free space and scatter
+   the buttons; pin the auto margin to the real first item only. */
+.plyr .plyr__controls .plyr__controls__item:first-child {
+  margin-right: 0;
+}
+
+.plyr .plyr__controls > .plyr__controls__item:first-child {
+  margin-right: auto;
+}
+
+/* Small screens: move the seek bar and time onto their own full-width row so
+   the fixed-size buttons don't squeeze the slider into a sliver. The bar's
+   theme basis is 0%, so an explicit basis is needed to force the line break. */
+@media (max-width: 480px) {
+  .plyr__controls {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  /* The theme grows the volume slider up to 128px, leaving a dead zone to the
+     right of it; pin it to its natural width so the whole cluster hugs the right. */
+  .plyr__controls .plyr__controls__item.plyr__volume {
+    flex-grow: 0;
+  }
+
+  .plyr__controls .plyr__controls__item.plyr__progress__container {
+    order: 99;
+    flex-basis: calc(100% - 90px);
+  }
+
+  .plyr__controls .plyr__controls__item.plyr__time {
+    order: 100;
+    flex: 0 0 auto;
+  }
+}

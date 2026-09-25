@@ -120,6 +120,7 @@ const Player: FC<Props> = ({ magnet, playlist, subtitles, show, episodes, onStre
       load='eager'
       preload='none'
       storage='movie-advisor'
+      controlsDelay={5000}
       ref={player}
       src={playerSrc}
       onProviderChange={onProviderChange}
