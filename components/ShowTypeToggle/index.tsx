@@ -69,7 +69,7 @@ const ShowTypeToggle: FC<Props> = ({ className }) => {
           align='start'
           sideOffset={8}
           className={cn(
-            'z-50 w-60 rounded-2xl border border-border/60 bg-popover p-2 text-popover-foreground shadow-xl',
+            'z-50 w-36 rounded-lg border border-border/60 bg-popover p-1 text-popover-foreground shadow-xl',
             'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
             'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2'
           )}
@@ -80,14 +80,14 @@ const ShowTypeToggle: FC<Props> = ({ className }) => {
                 key={optionValue}
                 value={optionValue}
                 className={cn(
-                  'flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-lg outline-none transition-colors',
+                  'flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none transition-colors',
                   'focus:bg-secondary data-[state=checked]:bg-secondary'
                 )}
               >
-                <Icon className='size-5 shrink-0' />
+                <Icon className='size-3.5 shrink-0' />
                 <span>{label}</span>
                 <DropdownMenuPrimitive.ItemIndicator className='ml-auto'>
-                  <Check className='size-5' />
+                  <Check className='size-3.5' />
                 </DropdownMenuPrimitive.ItemIndicator>
               </DropdownMenuPrimitive.RadioItem>
             ))}
