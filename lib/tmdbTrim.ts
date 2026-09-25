@@ -2,6 +2,16 @@ type Unknown = Record<string, any>;
 
 const identity = (payload: Unknown) => payload;
 
+const pick = (source: Unknown, keys: string[]): Unknown => {
+  const out: Unknown = {};
+
+  keys.forEach((key) => {
+    if (key in source) out[key] = source[key];
+  });
+
+  return out;
+};
+
 const named = ({ id, name, profile_path }: Unknown) => ({ id, name, profile_path });
 
 const castMember = (member: Unknown) => ({
@@ -60,15 +70,80 @@ const person = ({ combined_credits, ...profile }: Unknown) => ({
     : {})
 });
 
+// Keys must survive even when null: mappers distinguish movie from tv via key presence
+// (e.g. `'release_date' in item`) and filter on truthy values.
+
+const listItem = (item: Unknown) =>
+  pick(item, [
+    'id',
+    'title',
+    'name',
+    'overview',
+    'poster_path',
+    'backdrop_path',
+    'release_date',
+    'first_air_date',
+    'vote_average',
+    'vote_count'
+  ]);
+
+const list = ({ page, total_pages, results }: Unknown) => ({
+  page,
+  total_pages,
+  results: (results || []).map(listItem)
+});
+
+const releaseDates = ({ results = [] }: Unknown) => ({
+  results: results.map(({ release_dates = [] }: Unknown) => ({
+    release_dates: release_dates
+      .filter(({ type, release_date }: Unknown) => type && release_date)
+      .map(({ type, release_date }: Unknown) => ({ type, release_date }))
+  }))
+});
+
+const details = (payload: Unknown) => {
+  const out = pick(payload, [
+    'id',
+    'title',
+    'name',
+    'overview',
+    'poster_path',
+    'backdrop_path',
+    'release_date',
+    'first_air_date',
+    'vote_average',
+    'vote_count',
+    'runtime',
+    'genres',
+    'imdb_id',
+    'tagline',
+    'status',
+    'number_of_seasons',
+    'last_episode_to_air',
+    'next_episode_to_air'
+  ]);
+
+  if ('release_dates' in payload) out.release_dates = releaseDates(payload.release_dates);
+
+  return out;
+};
+
 const trimmers: Array<[RegExp, (payload: Unknown) => Unknown]> = [
   [/^(movie|tv)\/\d+\/(aggregate_)?credits$/, credits],
-  [/^person\/\d+$/, person]
+  [/^person\/\d+$/, person],
+  [/^(movie|tv)\/\d+\/(similar|recommendations)$/, list],
+  [/^account\/[^/]+\/(favorite|watchlist)\/(movies|tv)$/, list],
+  [/^(discover|search)\/(movie|tv)$/, list],
+  [/^trending\/(movie|tv|all)\/(day|week)$/, list],
+  [/^(movie|tv)\/\d+$/, details]
 ];
 
 const trim = (path: string, payload: unknown) => {
   if (!payload || typeof payload !== 'object') return payload;
 
-  const [, trimmer = identity] = trimmers.find(([pattern]) => pattern.test(path)) || [];
+  const cleanPath = path.replace(/^\//, '');
+
+  const [, trimmer = identity] = trimmers.find(([pattern]) => pattern.test(cleanPath)) || [];
 
   return trimmer(payload as Unknown);
 };

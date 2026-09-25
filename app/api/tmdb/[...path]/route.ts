@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { MOVIE_DB_API_URL, MOVIE_DB_TOKEN } from '@/env';
 import { PRIVATE_CACHE_CONTROL, PUBLIC_CACHE_CONTROL, REVALIDATE } from '@/lib/cache';
-
-import trim from './trim';
+import trimTmdb from '@/lib/tmdbTrim';
 
 type TMDBParams = {
   params: {
@@ -38,7 +37,7 @@ export async function GET({ nextUrl: { searchParams } }: NextRequest, { params: 
 
     const data = await response.json();
 
-    return NextResponse.json(trim(path.join('/'), data), {
+    return NextResponse.json(trimTmdb(path.join('/'), data), {
       headers: { 'Cache-Control': isPrivate ? PRIVATE_CACHE_CONTROL : PUBLIC_CACHE_CONTROL }
     });
   } catch (error) {
