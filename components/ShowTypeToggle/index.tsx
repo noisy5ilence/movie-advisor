@@ -41,32 +41,29 @@ const ShowTypeToggle: FC<Props> = ({ className }) => {
 
   return (
     <DropdownMenuPrimitive.Root>
-      <DropdownMenuPrimitive.Trigger asChild>
-        <span
-          aria-label={`Watch Next: ${current.label}`}
-          className={cn(
-            'inline-flex h-6 cursor-pointer items-center whitespace-nowrap rounded-full bg-primary text-primary-foreground transition-opacity hover:opacity-90',
-            className
-          )}
-        >
-          <Link
-            href={toShowTypePath('/', value)}
-            onPointerDown={(event) => event.stopPropagation()}
-            onClick={(event) => event.stopPropagation()}
-            className='pl-2.5 pr-1.5 text-[15px] font-normal leading-[18px]'
+      <span
+        className={cn(
+          'inline-flex h-6 items-center whitespace-nowrap rounded-full bg-primary text-primary-foreground transition-opacity hover:opacity-90',
+          className
+        )}
+      >
+        <Link href={toShowTypePath('/', value)} className='pl-2.5 pr-1.5 text-[15px] font-normal leading-[18px]'>
+          Watch Next
+        </Link>
+        <span aria-hidden className='h-4 w-px bg-primary-foreground/40' />
+        <DropdownMenuPrimitive.Trigger asChild>
+          <button
+            type='button'
+            className='inline-flex cursor-pointer items-center gap-1.5 pl-1.5 pr-2.5 text-[15px] font-normal leading-[18px]'
           >
-            Watch Next
-          </Link>
-          <span aria-hidden className='h-4 w-px bg-primary-foreground/40' />
-          <span className='flex items-center gap-1.5 pl-1.5 pr-2.5 text-[15px] font-normal leading-[18px]'>
             <span className='text-primary-foreground/70'>{current.label}</span>
             <ChevronDown className='size-3.5 text-primary-foreground/70' />
-          </span>
-        </span>
-      </DropdownMenuPrimitive.Trigger>
+          </button>
+        </DropdownMenuPrimitive.Trigger>
+      </span>
       <DropdownMenuPrimitive.Portal>
         <DropdownMenuPrimitive.Content
-          align='start'
+          align='end'
           sideOffset={8}
           className={cn(
             'z-50 w-36 rounded-lg border border-border/60 bg-popover p-1 text-popover-foreground shadow-xl',
