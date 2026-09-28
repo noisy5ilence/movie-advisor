@@ -9,12 +9,23 @@ const SCRIPT_ID = 'openpanel-sdk';
 
 const SRC = OPENPANEL_SCRIPT_URL || 'https://openpanel.dev/op1.js';
 
-const OPTIONS = {
-  clientId: OPENPANEL_CLIENT_ID,
-  apiUrl: OPENPANEL_API_URL,
-  trackScreenViews: true,
-  trackOutgoingLinks: true
-};
+const BOT_FILTER = `function () {
+  try {
+    const ua = navigator.userAgent;
+
+    return !/bot|crawl|spider|headless|lighthouse|prerender|slurp/i.test(ua) && !navigator.webdriver;
+  } catch {
+    return true;
+  }
+}`;
+
+const INIT_OPTIONS = [
+  `clientId: ${JSON.stringify(OPENPANEL_CLIENT_ID)}`,
+  `apiUrl: ${JSON.stringify(OPENPANEL_API_URL)}`,
+  'trackScreenViews: true',
+  'trackOutgoingLinks: true',
+  `filter: ${BOT_FILTER}`
+].join(', ');
 
 const Analytics = () => {
   useEffect(() => {
@@ -52,7 +63,7 @@ const Analytics = () => {
   return (
     <script
       dangerouslySetInnerHTML={{
-        __html: `${getInitSnippet()}window.op('init', ${JSON.stringify(OPTIONS)});`
+        __html: `${getInitSnippet()}window.op('init', {${INIT_OPTIONS}});`
       }}
     />
   );
