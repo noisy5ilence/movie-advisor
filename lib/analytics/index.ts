@@ -44,10 +44,10 @@ const analytics = new Proxy({} as Analytics, {
   }
 });
 
-export const identify = (profileId: string) => {
+export const identify = (profile: { profileId: string } & Record<string, unknown>) => {
   if (!ready()) return;
 
-  op()?.('identify', { profileId });
+  op()?.('identify', profile);
 };
 
 export const clearIdentity = () => {

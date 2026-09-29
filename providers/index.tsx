@@ -7,17 +7,25 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from 'next-themes';
 
 import { Toaster } from '@/components/ui/toaster';
+import useIdentify from '@/hooks/useIdentify';
 import getQueryClient from '@/lib/queryClient';
 
 interface Props {
   children: ReactNode;
 }
 
+const Identify: FC = () => {
+  useIdentify();
+
+  return null;
+};
+
 const Providers: FC<Props> = ({ children }) => {
   const queryClient = getQueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <Identify />
       <ThemeProvider attribute='data-mode'>{children}</ThemeProvider>
       <ModalContainer exitTimeout={0} enterTimeout={0} />
       <Toaster />
