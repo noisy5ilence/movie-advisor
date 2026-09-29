@@ -1,8 +1,7 @@
 node_modules
 .next
 .git
-.env
-.env.local
+.env*
 Dockerfile
 .dockerignore
 *.log
