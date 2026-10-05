@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  // ISR/fetch cache in one size-capped SQLite file instead of millions of files, see cache-handler.js
+  cacheHandler: require.resolve('./cache-handler.js'),
+  cacheMaxMemorySize: 0,
   experimental: {
     optimizeCss: true,
     staleTimes: {
